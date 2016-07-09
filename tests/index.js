@@ -28,7 +28,7 @@ describe('server', function () {
     it('should respond to GET', function (done) {
       superagent
         .get('http://localhost:' + port)
-        .end(function (err, res) {
+        .end(function (err, res) { // jshint ignore:line
           assert(res.status, 200);
           done();
         });
