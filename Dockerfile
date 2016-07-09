@@ -1,13 +1,13 @@
 FROM node:argon
 
-# Create node directory
-RUN mkdir /node
-WORKDIR /node
+# Create newzxnode directory
+RUN mkdir /newzxnode
+WORKDIR /newzxnode
 
 # Install app dependencies
-COPY . /node
-RUN npm install -g mocha && npm install
+COPY . /newzxnode
+#RUN npm install -g forever && npm install -g mocha@2.5.3 && npm install
+RUN npm install -g mocha@2.5.3 && npm install
 
-EXPOSE 3000
-# CMD  forever /node/server.js
-# CMD [ "npm", "start" ]
+EXPOSE 8080
+# CMD  forever /newzxnode/server.js

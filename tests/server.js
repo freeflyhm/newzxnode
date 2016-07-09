@@ -20,9 +20,9 @@ describe('server', function () {
     boot();
   });
 
-  describe('homepage', function () {
-    it('port should equal 3000', function () {
-      assert(port, 3000);
+  describe('request', function () {
+    it('port should equal 8080', function () {
+      assert(port, 8080);
     });
 
     it('should respond to GET', function (done) {

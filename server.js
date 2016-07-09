@@ -1,5 +1,5 @@
 /*
- * server.js - Express server with routing
+ * server.js - node 入口文件
 */
 
 /* jshint      node:  true, devel:  true,
@@ -8,41 +8,21 @@
 'use strict';
 
 /* 引入模块依赖 */
-var express = require('express');
 var http = require('http');
-
-/* 实例化 Express.js 对象 */
-var app = express();
-
-/* 所有var前置 */
-var server;
-var boot;
-var shutdown;
-
-/* 相关配置 */
-app.set('port', process.env.PORT || 3000);
-
-/* 连接数据库 */
-/* 定义中间件 */
-
-/* 定义路由 */
-app.get('/', function (req, res) {  // jshint ignore:line
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('服务器运行正常\n');
-});
+var app = require('./app/app');
 
 /* 定义服务 */
-server = http.createServer(app);
+var server = http.createServer(app);
 
 /* 定义对外暴露的公共方法 */
-boot = function () {
+var boot = function () {
   /* 在多核系统上启动 cluster 多核处理模块(可选，待实现) */
   server.listen(app.get('port'), function () {
     console.info('Express server listening on port ' + app.get('port'));
   });
 };
 
-shutdown = function () {
+var shutdown = function () {
   server.close();
 };
 
