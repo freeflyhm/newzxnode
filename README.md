@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/freeflyhm/newzxnode.png)](travis-ci.org/freeflyhm/newzxnode)
+
 docker build -t joehe/newzxnode:1.0.0 .
 
 开发 --------------------------
