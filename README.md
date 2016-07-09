@@ -1,4 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/freeflyhm/newzxnode.png)](travis-ci.org/freeflyhm/newzxnode)
+[![Code Climate](https://codeclimate.com/github/freeflyhm/newzxnode/badges/gpa.svg)](https://codeclimate.com/github/freeflyhm/newzxnode)
 
 docker build -t joehe/newzxnode:1.0.0 .
 
@@ -21,3 +22,13 @@ date -R
 tzselect
 5 → 回车 → 9 → 回车 → 1 → 回车 → 1
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+
+图片
+https://travis-ci.org/
+https://coveralls.io/
+https://codeship.com/
+https://codeclimate.com/
+https://gitter.im/
+https://github.com/mochajs/mocha#backers
+https://github.com/mochajs/mocha#sponsors
