@@ -1,0 +1,26 @@
+{
+  "name": "newzxnode",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "new zx node on docker",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha test"
+  },
+  "keywords": [
+    "zx",
+    "node",
+    "docker"
+  ],
+  "author": "joehe <leanbrown@live.cn>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "superagent": "^2.0.0",
+    "should": "^9.0.2"
+  }
+}
