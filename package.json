@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "mocha": "^2.5.3",
-    "superagent": "^2.0.0",
-    "should": "^9.0.2"
+    "superagent": "^2.0.0"
   }
 }

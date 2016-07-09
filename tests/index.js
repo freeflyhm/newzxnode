@@ -13,7 +13,7 @@ var boot = require('../server').boot;
 var shutdown = require('../server').shutdown;
 var port = require('../server').port;
 var superagent = require('superagent');
-var should = require('should');
+var assert = require('assert');
 
 describe('server', function () {
   before(function () {
@@ -21,11 +21,15 @@ describe('server', function () {
   });
 
   describe('homepage', function () {
+    it('port should equal 3000', function () {
+      assert(port, 3000);
+    });
+
     it('should respond to GET', function (done) {
       superagent
         .get('http://localhost:' + port)
-        .end(function (res) {
-          should(res.status).to.equal(200);
+        .end(function (err, res) {
+          assert(res.status, 200);
           done();
         });
     });
