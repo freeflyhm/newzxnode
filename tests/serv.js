@@ -5,7 +5,7 @@
 /* jshint      node:  true, devel:  true, maxstatements: 4,
    maxerr: 50, nomen: true, regexp: true */
 
-/* globals describe, before, it, after */
+/* globals describe, before, it, after, beforeEach */
 
 'use strict';
 
@@ -42,11 +42,10 @@ describe('server', function () {
   });
 });
 
-describe("echo", function () {
-  var server;
+describe('echo', function () {
   var options = {
     transports: ['websocket'],
-    'force new connection': true
+    'force new connection': true,
   };
 
   beforeEach(function (done) {
@@ -56,19 +55,19 @@ describe("echo", function () {
     done();
   });
 
-  it("echos message", function (done) {
-      var client = io.connect("http://localhost:8080", options);
+  it('echos message', function (done) {
+    var client = io.connect('http://localhost:8080', options);
 
-      client.once("connect", function () {
-          client.once("echo", function (message) {
-              assert(message, "Hello World");
-              
-              client.disconnect();
-              done();
-          });
+    client.once('connect', function () {
+      client.once('echo', function (message) {
+        assert(message, 'Hello World');
 
-          client.emit("echo", "Hello World");
+        client.disconnect();
+        done();
       });
+
+      client.emit('echo', 'Hello World');
+    });
   });
 
   after(function () {

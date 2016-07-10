@@ -2,7 +2,7 @@
  * serv.js - socket.io
 */
 
-/* jshint      node:  true, devel:  true,
+/* jshint      node:  true, devel:  true, maxstatements: 4, maxparams: 2,
    maxerr: 50, nomen: true, regexp: true */
 
 'use strict';
@@ -17,14 +17,14 @@ var serv = http.createServer(app);
 var io = require('socket.io').listen(serv);
 
 // the important parts of echo server
-io.sockets.on("connection", function (socket) {
-    socket.on("echo", function (msg, callback) {
-        callback = callback || function () {};
- 
-        socket.emit("echo", msg);
- 
-        callback(null, "Done.");
-    });
+io.sockets.on('connection', function (socket) {
+  socket.on('echo', function (msg, callback) {
+    callback = callback || function () {};
+
+    socket.emit('echo', msg);
+
+    callback(null, 'Done.');
+  });
 });
 
 /* 定义对外暴露的公共方法 */
