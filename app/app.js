@@ -1,5 +1,5 @@
 /*
- * app.js - Express app with routing
+ * app.js - Express app
 */
 
 /* jshint      node:  true, devel:  true,

@@ -1,8 +1,8 @@
 /*
- * serv.js - socket.io
+ * serv.js - 服务器
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 4, maxparams: 2,
+/* jshint      node:  true, devel:  true,
    maxerr: 50, nomen: true, regexp: true */
 
 'use strict';
@@ -14,18 +14,8 @@ var app = require('./app');
 /* 定义服务 */
 var serv = http.createServer(app);
 
-var io = require('socket.io').listen(serv);
-
-// the important parts of echo server
-io.sockets.on('connection', function (socket) {
-  socket.on('echo', function (msg, callback) {
-    callback = callback || function () {};
-
-    socket.emit('echo', msg);
-
-    callback(null, 'Done.');
-  });
-});
+/* socket.io */
+require('./io').listen(serv);
 
 /* 定义对外暴露的公共方法 */
 var boot = function () {
