@@ -4,4 +4,5 @@ node_js:
   - "4"
 services:
   - mongodb
-script: make test-coveralls
+after_script:
+  - npm run coverage
