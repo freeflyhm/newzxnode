@@ -1,6 +1,7 @@
 [![Build Status](https://secure.travis-ci.org/freeflyhm/newzxnode.png)](travis-ci.org/freeflyhm/newzxnode)
 [![Coverage Status](https://coveralls.io/repos/github/freeflyhm/newzxnode/badge.svg?branch=master)](https://coveralls.io/github/freeflyhm/newzxnode?branch=master)
 [![Code Climate](https://codeclimate.com/github/freeflyhm/newzxnode/badges/gpa.svg)](https://codeclimate.com/github/freeflyhm/newzxnode)
+[![Dependency Status](https://gemnasium.com/badges/github.com/freeflyhm/newzxnode.svg)](https://gemnasium.com/github.com/freeflyhm/newzxnode)
 
 docker build -t joehe/newzxnode:1.0.0 .
 
@@ -26,10 +27,23 @@ cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 
 图片
+
 https://travis-ci.org/
+
 https://coveralls.io/
-https://codeship.com/
+
 https://codeclimate.com/
+
+https://gemnasium.com/
+
+https://codeship.com/
+
+https://ci.appveyor.com/
+
+https://saucelabs.com/
+
 https://gitter.im/
+
 https://github.com/mochajs/mocha#backers
+
 https://github.com/mochajs/mocha#sponsors
