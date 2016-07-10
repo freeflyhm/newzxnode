@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --colors ./configs/mocha/**/*.test.js",
+    "test": "node ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --colors ./tests/*.js",
      "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "keywords": [
