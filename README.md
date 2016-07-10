@@ -37,6 +37,8 @@ https://codeclimate.com/
 
 https://gemnasium.com/
 
+https://david-dm.org/
+
 https://codeship.com/
 
 https://ci.appveyor.com/
