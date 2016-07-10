@@ -24,6 +24,7 @@
     "coveralls": "^2.11.9",
     "mocha-lcov-reporter": "^1.2.0",
     "istanbul": "^0.4.4",
-    "superagent": "^2.0.0"
+    "superagent": "^2.0.0",
+    "socket.io-client":"^1.4.8"
   }
 }
