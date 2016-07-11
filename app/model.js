@@ -20,22 +20,18 @@
 
 var models = {};
 
-// 首字母大写
-var _replaceFirstUpper = function (str) {
-  return str.replace(/(\w)/, function (v) {
-    return v.toUpperCase();
-  });
-};
-
 var _createModel = function (schemaName, dbName) {
   var schemaObj = require('./schemas/' + schemaName);
   var conn = require('./conn');
+
+  // 首字母大写
+  var replaceFirstUpper = require('./util').replaceFirstUpper;
   var c = conn.getConn(dbName);
 
   // 首字母大写
   //var USchemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
 
-  return c.model(_replaceFirstUpper(schemaName), schemaObj);
+  return c.model(replaceFirstUpper(schemaName), schemaObj);
 };
 
 exports.getModel = function (schemaName, dbName) {

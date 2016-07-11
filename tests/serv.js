@@ -1,5 +1,5 @@
 /*
- * index.js - Mocha test
+ * index.js - Mocha serv test
 */
 
 /* jshint      node:  true, devel:  true, maxstatements: 5,
@@ -24,14 +24,14 @@ describe('server', function () {
 
   describe('request', function () {
     it('port should equal 8080', function () {
-      assert(port, 8080);
+      assert.strictEqual(port, 8080);
     });
 
     it('should respond to GET', function (done) {
       superagent
         .get('http://localhost:' + port)
         .end(function (err, res) { // jshint ignore:line
-          assert(res.status, 200);
+          assert.strictEqual(res.status, 200);
           done();
         });
     });
@@ -47,7 +47,7 @@ describe('server', function () {
       var client = io.connect('http://localhost:8080', options);
       client.once('connect', function () {
         client.emit('echo', 'Hello World', function (message) {
-          assert(message, 'Hello World');
+          assert.strictEqual(message, 'Hello World');
 
           client.disconnect();
           done();
@@ -75,7 +75,6 @@ describe('server', function () {
                     'emit-remove',
                     { id: id },
                     function (results) {
-                      console.log(results);
                       assert.strictEqual(results.success.ok, 1);
 
                       client.disconnect();
