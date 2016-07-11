@@ -5,6 +5,6 @@ node_js:
 services:
   - mongodb
 env:
-  - DB_HOST="http://localhost:27017"
+  - DB_HOST="http://127.0.0.1"
 after_script:
   - npm run coverage
