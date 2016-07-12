@@ -9,9 +9,9 @@
 
 'use strict';
 
+var PORT = 3000;
 var boot = require('../app/serv').boot;
 var shutdown = require('../app/serv').shutdown;
-var port = require('../app/serv').port;
 var superagent = require('superagent');
 var assert = require('assert');
 
@@ -19,17 +19,17 @@ var io = require('socket.io-client');
 
 describe('server', function () {
   before(function () {
-    boot();
+    boot(PORT);
   });
 
   describe('request', function () {
-    it('port should equal 8080', function () {
-      assert.strictEqual(port, 8080);
+    it('port should equal 3000', function () {
+      assert.strictEqual(PORT, 3000);
     });
 
     it('should respond to GET', function (done) {
       superagent
-        .get('http://localhost:' + port)
+        .get('http://localhost:' + PORT)
         .end(function (err, res) { // jshint ignore:line
           assert.strictEqual(res.status, 200);
           done();
@@ -44,7 +44,7 @@ describe('server', function () {
     };
 
     it('echos message', function (done) {
-      var client = io.connect('http://localhost:8080', options);
+      var client = io.connect('http://localhost:' + PORT, options);
       client.once('connect', function () {
         client.emit('echo', 'Hello World', function (message) {
           assert.strictEqual(message, 'Hello World');
@@ -56,7 +56,7 @@ describe('server', function () {
     });
 
     it('emit-register', function (done) {
-      var client = io.connect('http://localhost:8080', options);
+      var client = io.connect('http://localhost:' + PORT, options);
       client.once('connect', function () {
         client.emit(
             'emit-register',

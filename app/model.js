@@ -3,7 +3,7 @@
 */
 
 /* jshint             node:  true,  devel:  true,
-   maxstatements: 11, maxparams: 2, maxdepth: 2,
+   maxstatements: 11, maxparams: 3, maxdepth: 2,
    maxerr: 50,        nomen: true,  regexp: true */
 
 'use strict';
@@ -20,13 +20,13 @@
 
 var models = {};
 
-var _createModel = function (schemaName, dbName) {
+var _createModel = function (host, schemaName, dbName) {
   var schemaObj = require('./schemas/' + schemaName);
   var conn = require('./conn');
 
   // 首字母大写
   var replaceFirstUpper = require('./util').replaceFirstUpper;
-  var c = conn.getConn(dbName);
+  var c = conn.getConn(host, dbName);
 
   // 首字母大写
   //var USchemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
@@ -34,7 +34,7 @@ var _createModel = function (schemaName, dbName) {
   return c.model(replaceFirstUpper(schemaName), schemaObj);
 };
 
-exports.getModel = function (schemaName, dbName) {
+exports.getModel = function (host, schemaName, dbName) {
   var md;
 
   if (models[schemaName]) {
@@ -42,13 +42,13 @@ exports.getModel = function (schemaName, dbName) {
 
       return models[schemaName][dbName];
     } else {
-      md = _createModel(schemaName, dbName);
+      md = _createModel(host, schemaName, dbName);
       models[schemaName][dbName] = md;
 
       return md;
     }
   } else {
-    md = _createModel(schemaName, dbName);
+    md = _createModel(host, schemaName, dbName);
     models[schemaName] = {};
     models[schemaName][dbName] = md;
 

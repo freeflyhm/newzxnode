@@ -14,10 +14,11 @@ exports.listen = function (serv) {
 
   // the important parts of echo server
   io.sockets.on('connection', function (socket) {
+    var host = process.env.DB_HOST;
     var dbname = 'sz';
 
     // 初始化 Controllers
-    var User = Ctrl.getCtrl('user', dbname);
+    var User = Ctrl.getCtrl(host, 'user', dbname);
 
     socket.on('echo', function (msg, callback) {
       callback(msg);

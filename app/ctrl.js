@@ -3,7 +3,7 @@
 */
 
 /* jshint             node:  true,  devel:  true,
-   maxstatements: 14, maxparams: 2, maxdepth: 2,
+   maxstatements: 14, maxparams: 3, maxdepth: 2,
    maxerr: 50,        nomen: true,  regexp: true */
 
 'use strict';
@@ -20,7 +20,7 @@
 
 var ctrls = {};
 
-exports.getCtrl = function (ctrlName, dbName) {
+exports.getCtrl = function (host, ctrlName, dbName) {
   var ctrl;
   var ctrlObj;
 
@@ -30,14 +30,14 @@ exports.getCtrl = function (ctrlName, dbName) {
       return ctrls[ctrlName][dbName];
     } else {
       ctrlObj = require('./controllers/' + ctrlName);
-      ctrl = ctrlObj.createCtrl(dbName);
+      ctrl = ctrlObj.createCtrl(host, dbName);
       ctrls[ctrlName][dbName] = ctrl;
 
       return ctrl;
     }
   } else {
     ctrlObj = require('./controllers/' + ctrlName);
-    ctrl = ctrlObj.createCtrl(dbName);
+    ctrl = ctrlObj.createCtrl(host, dbName);
     ctrls[ctrlName] = {};
     ctrls[ctrlName][dbName] = ctrl;
 

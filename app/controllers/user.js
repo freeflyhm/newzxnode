@@ -7,9 +7,9 @@
 
 'use strict';
 
-exports.createCtrl = function () {
+exports.createCtrl = function (host) {
   var Model = require('../model');
-  var User  = Model.getModel('user', 'auth');
+  var User  = Model.getModel(host, 'user', 'auth');
   var register;
   var remove;
 

@@ -19,15 +19,13 @@ var _createConn = function (host, db) {
   return require('mongoose').createConnection(host, db);
 };
 
-exports.getConn = function (db) {
-  var host;
+exports.getConn = function (host, db) {
   var conn;
 
   if (conns[db]) {
     return conns[db];
   }
 
-  host = process.env.DB_HOST || 'newzxmongo';
   conn = _createConn(host, db);
   conns[db] = conn;
   return conn;

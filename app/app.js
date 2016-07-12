@@ -16,7 +16,8 @@ var express = require('express');
 var app = express();
 
 /* 相关配置 */
-app.set('port', process.env.PORT || 8080);
+
+//app.set('port', process.env.PORT || 3000);
 
 /* 连接数据库 */
 /* 定义中间件 */

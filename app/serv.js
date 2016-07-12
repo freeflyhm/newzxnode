@@ -18,10 +18,10 @@ var serv = http.createServer(app);
 require('./io').listen(serv);
 
 /* 定义对外暴露的公共方法 */
-var boot = function () {
+var boot = function (port) {
   /* 在多核系统上启动 cluster 多核处理模块(可选，待实现) */
-  serv.listen(app.get('port'), function () {
-    console.info('Express server listening on port ' + app.get('port'));
+  serv.listen(port, function () {
+    console.info('Express server listening on port ' + port);
   });
 };
 
@@ -31,4 +31,5 @@ var shutdown = function () {
 
 exports.boot = boot;
 exports.shutdown = shutdown;
-exports.port = app.get('port');
+
+//exports.port = app.get('port');
