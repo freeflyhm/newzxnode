@@ -2,8 +2,9 @@
  * user.js - Schema user
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 9, maxparams: 2,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint            node:  true,  devel:  true,
+   maxstatements: 9, maxparams: 2, maxdepth: 2,
+   maxerr: 50,       nomen: true,  regexp: true */
 
 'use strict';
 
@@ -11,6 +12,7 @@ exports.createCtrl = function (host) {
   var Model = require('../model');
   var User  = Model.getModel(host, 'user', 'auth');
   var register;
+  var login;
   var remove;
 
   // register 注册
@@ -45,6 +47,21 @@ exports.createCtrl = function (host) {
     });
   };
 
+  // login 登录
+  login = function (obj, callback) {
+    User.findOneByUserName(obj.userName, function (err, user) {
+      if (err) {
+        console.log(err);
+      }
+
+      if (user) {
+        if (user.password === obj.password) {
+          callback({ success: 1, user: user });
+        }
+      }
+    });
+  };
+
   // remove user
   remove = function (id, callback) {
     if (id) {
@@ -60,6 +77,7 @@ exports.createCtrl = function (host) {
 
   return {
     register: register,
+    login: login,
     remove:  remove,
   };
 };

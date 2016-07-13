@@ -15,18 +15,18 @@
 */
 
 var conns = {};
-var _createConn = function (host, db) {
-  return require('mongoose').createConnection(host, db);
+var _createConn = function (dbHost, db) {
+  return require('mongoose').createConnection(dbHost, db);
 };
 
-exports.getConn = function (host, db) {
+exports.getConn = function (dbHost, db) {
   var conn;
 
   if (conns[db]) {
     return conns[db];
   }
 
-  conn = _createConn(host, db);
+  conn = _createConn(dbHost, db);
   conns[db] = conn;
   return conn;
 };

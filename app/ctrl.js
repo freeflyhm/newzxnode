@@ -20,7 +20,7 @@
 
 var ctrls = {};
 
-exports.getCtrl = function (host, ctrlName, dbName) {
+exports.getCtrl = function (dbHost, ctrlName, dbName) {
   var ctrl;
   var ctrlObj;
 
@@ -30,14 +30,14 @@ exports.getCtrl = function (host, ctrlName, dbName) {
       return ctrls[ctrlName][dbName];
     } else {
       ctrlObj = require('./controllers/' + ctrlName);
-      ctrl = ctrlObj.createCtrl(host, dbName);
+      ctrl = ctrlObj.createCtrl(dbHost, dbName);
       ctrls[ctrlName][dbName] = ctrl;
 
       return ctrl;
     }
   } else {
     ctrlObj = require('./controllers/' + ctrlName);
-    ctrl = ctrlObj.createCtrl(host, dbName);
+    ctrl = ctrlObj.createCtrl(dbHost, dbName);
     ctrls[ctrlName] = {};
     ctrls[ctrlName][dbName] = ctrl;
 

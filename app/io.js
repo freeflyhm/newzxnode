@@ -2,33 +2,39 @@
  * io.js - socket.io
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 5, maxparams: 2,
+/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 2,
    maxerr: 50, nomen: true, regexp: true */
 
 'use strict';
 
 exports.listen = function (serv) {
-  var Ctrl = require('./ctrl');
+  var Ctrl  = require('./ctrl');
+  var ioJwt = require('socketio-jwt');
+  var io    = require('socket.io').listen(serv);
 
-  var io   = require('socket.io').listen(serv);
+  // io.set('authorization', ioJwt.authorize({
+  //   secret: process.env.JWT_TOKEN_SECRET,
+  //   handshake: true,
+  // }));
 
   // the important parts of echo server
-  io.sockets.on('connection', function (socket) {
+  io.sockets.on('connection', ioJwt.authorize({
+    secret: process.env.JWT_TOKEN_SECRET,
+    timeout: 15000,
+    callback: 15000,
+  })).on('authenticated', function (socket) {
+    //console.log(socket.decoded_token.userName, ' connected');
+
     var host = process.env.DB_HOST;
-    var dbname = 'sz';
+
+    //var dbname = 'sz';
 
     // 初始化 Controllers
-    var User = Ctrl.getCtrl(host, 'user', dbname);
+    var User = Ctrl.getCtrl(host, 'user', 'auth');
 
-    socket.on('echo', function (msg, callback) {
+    // echo 测试专用
+    socket.on('emit-echo', function (msg, callback) {
       callback(msg);
-    });
-
-    // 注册
-    socket.on('emit-register', function (obj, callback) {
-      User.register(obj, function (results) {
-        callback(results);
-      });
     });
 
     // 删除

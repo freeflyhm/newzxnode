@@ -20,13 +20,13 @@
 
 var models = {};
 
-var _createModel = function (host, schemaName, dbName) {
+var _createModel = function (dbHost, schemaName, dbName) {
   var schemaObj = require('./schemas/' + schemaName);
   var conn = require('./conn');
 
   // 首字母大写
   var replaceFirstUpper = require('./util').replaceFirstUpper;
-  var c = conn.getConn(host, dbName);
+  var c = conn.getConn(dbHost, dbName);
 
   // 首字母大写
   //var USchemaName = schemaName[0].toUpperCase() + schemaName.substr(1);
@@ -34,7 +34,7 @@ var _createModel = function (host, schemaName, dbName) {
   return c.model(replaceFirstUpper(schemaName), schemaObj);
 };
 
-exports.getModel = function (host, schemaName, dbName) {
+exports.getModel = function (dbHost, schemaName, dbName) {
   var md;
 
   if (models[schemaName]) {
@@ -42,13 +42,13 @@ exports.getModel = function (host, schemaName, dbName) {
 
       return models[schemaName][dbName];
     } else {
-      md = _createModel(host, schemaName, dbName);
+      md = _createModel(dbHost, schemaName, dbName);
       models[schemaName][dbName] = md;
 
       return md;
     }
   } else {
-    md = _createModel(host, schemaName, dbName);
+    md = _createModel(dbHost, schemaName, dbName);
     models[schemaName] = {};
     models[schemaName][dbName] = md;
 
