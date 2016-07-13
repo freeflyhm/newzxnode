@@ -43,6 +43,7 @@ exports.createApp = function (dbHost) {
   app.post('/api/login', function (req, res) {
     // TODO: validate the actual user user
     User.login(req.body, function (results) {
+      console.log(process.env.JWT_TOKEN_SECRET);
       var user = results.user;
 
       var profile = {
@@ -65,7 +66,9 @@ exports.createApp = function (dbHost) {
     var decoded;
     var id;
 
-    if (dbHost === 'newzxmongotest') {
+    if (dbHost === 'newzxmongo') {
+      res.json({ success: 2 });
+    } else {
       decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
       id = decoded && decoded._id;
 
@@ -76,8 +79,6 @@ exports.createApp = function (dbHost) {
       } else {
         res.json({ success: 2 });
       }
-    } else {
-      res.json({ success: 2 });
     }
   });
 
