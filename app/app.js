@@ -43,7 +43,6 @@ exports.createApp = function (dbHost) {
   app.post('/api/login', function (req, res) {
     // TODO: validate the actual user user
     User.login(req.body, function (results) {
-      console.log(process.env.JWT_TOKEN_SECRET);
       var user = results.user;
 
       var profile = {

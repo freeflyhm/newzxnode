@@ -50,12 +50,19 @@ describe('server', function () {
           assert.strictEqual(err, null);
           assert.strictEqual(res.body.success, 1);
 
-          superagent.post(site + '/api/login')
+          superagent.post(site + '/api/register')
             .send({ userName: 'test', password: '123456' })
             .end(function (err, res) {
-              token = res.body.token;
               assert.strictEqual(err, null);
-              done();
+              assert.strictEqual(res.body.success, 13);
+
+              superagent.post(site + '/api/login')
+                .send({ userName: 'test', password: '123456' })
+                .end(function (err, res) {
+                  token = res.body.token;
+                  assert.strictEqual(err, null);
+                  done();
+                });
             });
         });
     });

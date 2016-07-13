@@ -38,10 +38,10 @@ exports.listen = function (serv) {
     });
 
     // 删除
-    socket.on('emit-remove', function (obj, callback) {
-      User.remove(obj.id, function (results) {
-        callback(results);
-      });
-    });
+    // socket.on('emit-remove', function (obj, callback) {
+    //   User.remove(obj.id, function (results) {
+    //     callback(results);
+    //   });
+    // });
   });
 };
