@@ -3,7 +3,7 @@
 */
 
 /* jshint            node:  true,  devel:  true,
-   maxstatements: 13, maxparams: 2, maxdepth: 2,
+   maxstatements: 13, maxparams: 4, maxdepth: 2,
    maxerr: 50,       nomen: true,  regexp: true */
 
 'use strict';
@@ -62,23 +62,27 @@ exports.createApp = function (dbHost) {
   });
 
   app.post('/api/removeuser', function (req, res) {
+    var dbHost = req.body.dbHost;
     var decoded;
     var id;
 
     if (dbHost === 'newzxmongo') {
-      res.json({ success: 2 });
-    } else {
-      decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
-      id = decoded && decoded._id;
-
-      if (id) {
-        User.remove(id, function (results) {
-          res.json(results);
-        });
-      } else {
-        res.json({ success: 2 });
-      }
+      res.json({ success: 10 });
+      return;
     }
+
+    decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
+    id = decoded && decoded._id;
+
+    if (id) {
+      User.remove(id, function (results) {
+        res.json(results);
+      });
+
+      return;
+    }
+
+    res.json({ success: 20 });
   });
 
   return app;

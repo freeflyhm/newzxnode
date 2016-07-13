@@ -18,18 +18,40 @@ var assert = require('assert');
 
 var io = require('socket.io-client');
 
-describe('server', function () {
+describe('server test', function () {
   before(function () {
     boot(process.env.DB_HOST_TEST, PORT);
   });
 
-  describe('request', function () {
+  describe('GET /', function () {
     it('should respond to GET', function (done) {
       superagent.get(site)
         .end(function (err, res) {
           assert.strictEqual(err, null);
           assert.strictEqual(res.status, 200);
           assert.strictEqual(res.text, 'server look\'s good');
+          done();
+        });
+    });
+  });
+
+  describe('POST /api/removeuser error', function () {
+    it('dbHost=newzxmongo', function (done) {
+      superagent.post(site + '/api/removeuser')
+        .send({ dbHost: 'newzxmongo', token: 'token' })
+        .end(function (err, res) {
+          assert.strictEqual(err, null);
+          assert.strictEqual(res.body.success, 10);
+          done();
+        });
+    });
+
+    it('!id', function (done) {
+      superagent.post(site + '/api/removeuser')
+        .send({ dbHost: process.env.DB_HOST_TEST, token: 'token' })
+        .end(function (err, res) {
+          assert.strictEqual(err, null);
+          assert.strictEqual(res.body.success, 20);
           done();
         });
     });
@@ -82,7 +104,7 @@ describe('server', function () {
 
     after(function (done) {
       superagent.post(site + '/api/removeuser')
-        .send({ token: token })
+        .send({ dbHost: process.env.DB_HOST_TEST, token: token })
         .end(function (err, res) {
           assert.strictEqual(err, null);
           assert.strictEqual(res.body.success.ok, 1);
