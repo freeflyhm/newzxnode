@@ -12,9 +12,9 @@
 var assert = require('assert');
 
 describe('Ctrl.getCtrl', function () {
-  var host = process.env.DB_HOST_TEST;
+  var dbHost = process.env.DB_HOST_TEST;
   var getCtrl = require('../app/ctrl').getCtrl;
-  var User = getCtrl(host, 'user', 'test');
+  var User = getCtrl(dbHost, 'user', 'test');
 
   it('User should as an Object', function () {
 
@@ -22,7 +22,7 @@ describe('Ctrl.getCtrl', function () {
   });
 
   it('User should same as User2', function () {
-    var User2 = getCtrl(host, 'user', 'test');
+    var User2 = getCtrl(dbHost, 'user', 'test');
     assert.deepEqual(User, User2);
   });
 });

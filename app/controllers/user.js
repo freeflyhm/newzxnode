@@ -3,7 +3,7 @@
 */
 
 /* jshint            node:  true,  devel:  true,
-   maxstatements: 9, maxparams: 2, maxdepth: 2,
+   maxstatements: 10, maxparams: 2, maxdepth: 2,
    maxerr: 50,       nomen: true,  regexp: true */
 
 'use strict';
@@ -28,8 +28,7 @@ exports.createCtrl = function (host) {
       }
 
       if (user) {
-        callback({ success: 13 }); // 用户名已存在
-        return;
+        return callback({ success: 13 }); // 用户名已存在
       } else {
         // ***所有检验通过，进入正常保存流程***
         newUser = new User(userObj);
@@ -40,7 +39,6 @@ exports.createCtrl = function (host) {
 
           if (user) {
             callback({ success: 1, user: user }); // ok
-            return;
           }
         });
       }
@@ -55,14 +53,21 @@ exports.createCtrl = function (host) {
       }
 
       if (user) {
-        if (user.password === obj.password) {
-          callback({ success: 1, user: user });
-        }
+        // 检查密码
+        user.comparePassword(obj.password, function (err, isMatch) {
+          if (err) {
+            console.log(err);
+          }
+
+          if (isMatch) {
+            callback({ success: 1, user: user });
+          }
+        });
       }
     });
   };
 
-  // remove user
+  // remove user 测试专用
   remove = function (id, callback) {
     if (id) {
       User.remove({ _id: id }, function (err, user) {
