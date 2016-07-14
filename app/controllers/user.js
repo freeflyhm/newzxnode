@@ -34,7 +34,6 @@ exports.createCtrl = function (dbHost) {
   _comparePassword = function (user, obj, callback) {
     user.comparePassword(obj.password, function (err, isMatch) {
       if (err) {
-        console.log('-----------------------------------------------------------');
         console.log(err);
         return callback({ success: 97, errMsg: err });
       }
@@ -70,7 +69,7 @@ exports.createCtrl = function (dbHost) {
     User.findOneByUserName(obj.userName, function (err, user) {
       if (err) {
         console.log(err.message);
-        return callback({ success: 97, errMsg: err.message });
+        return callback({ success: 96, errMsg: err.message });
       }
 
       // 检查密码
@@ -83,7 +82,8 @@ exports.createCtrl = function (dbHost) {
     if (id) {
       User.remove({ _id: id }, function (err, user) {
         if (err) {
-          console.log(err);
+          console.log(err.message);
+          return callback({ success: 95, errMsg: err.message });
         }
 
         callback({ success: user }); // ok

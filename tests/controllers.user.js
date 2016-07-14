@@ -30,7 +30,7 @@ describe('controllers/user', function () {
     var obj = { password: {} };
 
     it('should err 97', function (done) {
-      User._newUserSave({ userName: 'test97777', password: '123456' },
+      User._newUserSave({ userName: 'test97', password: '123456' },
         function (results) {
           var resultsUser = results.user;
           User._comparePassword(resultsUser, obj, function (results) {
@@ -51,6 +51,28 @@ describe('controllers/user', function () {
     it('should err 98', function (done) {
       User.register(userObj, function (results) {
         assert.strictEqual(results.success, 98);
+        done();
+      });
+    });
+  });
+
+  describe('login', function () {
+    var userObj = { userName: {} };
+
+    it('should err 96', function (done) {
+      User.login(userObj, function (results) {
+        assert.strictEqual(results.success, 96);
+        done();
+      });
+    });
+  });
+
+  describe('_remove', function () {
+    var id = {};
+
+    it('should err 95', function (done) {
+      User._remove(id, function (results) {
+        assert.strictEqual(results.success, 95);
         done();
       });
     });
