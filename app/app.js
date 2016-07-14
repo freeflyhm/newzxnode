@@ -75,7 +75,7 @@ exports.createApp = function (dbHost) {
     id = decoded && decoded._id;
 
     if (id) {
-      User.remove(id, function (results) {
+      User._remove(id, function (results) {
         res.json(results);
       });
 

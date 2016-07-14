@@ -15,7 +15,7 @@ exports.createCtrl = function (dbHost) {
   var _comparePassword;
   var register;
   var login;
-  var remove;
+  var _remove;
 
   // 保存
   _newUserSave = function (userObj, callback) {
@@ -34,6 +34,7 @@ exports.createCtrl = function (dbHost) {
   _comparePassword = function (user, obj, callback) {
     user.comparePassword(obj.password, function (err, isMatch) {
       if (err) {
+        console.log('-----------------------------------------------------------');
         console.log(err);
         return callback({ success: 97, errMsg: err });
       }
@@ -77,8 +78,8 @@ exports.createCtrl = function (dbHost) {
     });
   };
 
-  // remove user 测试专用
-  remove = function (id, callback) {
+  // _remove user 用于测试
+  _remove = function (id, callback) {
     if (id) {
       User.remove({ _id: id }, function (err, user) {
         if (err) {
@@ -93,8 +94,8 @@ exports.createCtrl = function (dbHost) {
   return {
     _newUserSave: _newUserSave,         // 用于测试
     _comparePassword: _comparePassword, // 用于测试
+    _remove:  _remove,                  // 用于测试
     register: register,
     login: login,
-    remove:  remove,
   };
 };

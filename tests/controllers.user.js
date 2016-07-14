@@ -30,16 +30,18 @@ describe('controllers/user', function () {
     var obj = { password: {} };
 
     it('should err 97', function (done) {
-      var Model = require('../app/model');
-      var UserModel  = Model.getModel(process.env.DB_HOST_TEST, 'user', 'auth');
-      UserModel.findOne({}, function (err, user) {
-        console.log('-----------------UserModel.findOne');
-        console.log(user);
-        User._comparePassword(user, obj, function (results) {
-          assert.strictEqual(results.success, 97);
-          done();
-        });
-      });
+      User._newUserSave({ userName: 'test97777', password: '123456' },
+        function (results) {
+          var resultsUser = results.user;
+          User._comparePassword(resultsUser, obj, function (results) {
+            assert.strictEqual(results.success, 97);
+
+            User._remove(resultsUser._id, function () {
+              done();
+            });
+          });
+        }
+      );
     });
   });
 
