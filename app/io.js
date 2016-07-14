@@ -8,7 +8,7 @@
 'use strict';
 
 exports.listen = function (serv) {
-  var Ctrl  = require('./ctrl');
+  //var Ctrl  = require('./ctrl');
   var ioJwt = require('socketio-jwt');
   var io    = require('socket.io').listen(serv);
 
@@ -38,7 +38,7 @@ exports.listen = function (serv) {
     });
 
     socket.on('emit-kbsms', function (obj, callback) {
-      console.log(obj);
+      //console.log(obj);
 
       callback([1, 2]);
     });

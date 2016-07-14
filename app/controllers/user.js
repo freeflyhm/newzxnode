@@ -19,11 +19,13 @@ exports.createCtrl = function (dbHost) {
 
   // 保存
   _newUserSave = function (userObj, callback) {
+    console.log('--------------------------------------------_newUserSave');
+    console.log(userObj);
     var newUser = new User(userObj);
 
     newUser.save(function (err, user) {
       if (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return callback({ success: 99, errMsg: err.message });
       }
 
@@ -34,7 +36,7 @@ exports.createCtrl = function (dbHost) {
   _comparePassword = function (user, obj, callback) {
     user.comparePassword(obj.password, function (err, isMatch) {
       if (err) {
-        console.log(err);
+        //console.log(err);
         return callback({ success: 97, errMsg: err });
       }
 
@@ -51,7 +53,7 @@ exports.createCtrl = function (dbHost) {
     // 检验 用户 是否存在
     User.findOneByUserName(userObj.userName, function (err, user) {
       if (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return callback({ success: 98, errMsg: err.message });
       }
 
@@ -68,7 +70,7 @@ exports.createCtrl = function (dbHost) {
   login = function (obj, callback) {
     User.findOneByUserName(obj.userName, function (err, user) {
       if (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return callback({ success: 96, errMsg: err.message });
       }
 
@@ -82,7 +84,7 @@ exports.createCtrl = function (dbHost) {
     if (id) {
       User.remove({ _id: id }, function (err, user) {
         if (err) {
-          console.log(err.message);
+          //console.log(err.message);
           return callback({ success: 95, errMsg: err.message });
         }
 

@@ -2,7 +2,7 @@
  * user.js - Schema user
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 5, maxparams: 2,
+/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 4,
    maxerr: 50, nomen: true, regexp: true */
 
 'use strict';
@@ -12,6 +12,20 @@ var SALT_WORK_FACTOR = 10;
 var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+var _bcryptGenSalt = function (bcrypt, SALT_WORK_FACTOR, _this, next) {
+  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+    bcrypt.hash(_this.password, salt, null, function (err, hash) {
+      if (err) {
+        return next(err);
+      }
+
+      _this.password = hash;
+      next();
+    });
+  });
+};
+
 var UserSchema = new Schema({
   // 用户名
   userName: {
@@ -42,41 +56,45 @@ UserSchema.pre('save', function (next) {
 
   _this.meta.createAt = _this.meta.updateAt = Date.now();
 
-  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-    if (err) {
-      return next(err);
-    }
+  _bcryptGenSalt(bcrypt, SALT_WORK_FACTOR, _this, next);
 
-    bcrypt.hash(_this.password, salt, null, function (err, hash) {
-      if (err) {
-        return next(err);
-      }
+  // bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+  //   if (err) {
+  //     return next(err);
+  //   }
 
-      _this.password = hash;
-      next();
-    });
-  });
+  //   bcrypt.hash(_this.password, salt, null, function (err, hash) {
+  //     if (err) {
+  //       return next(err);
+  //     }
+
+  //     _this.password = hash;
+  //     next();
+  //   });
+  // });
 });
 
 // 实例方法
 UserSchema.methods = {
-  comparePassword: function (_password, cb) {
+  comparePassword: function (_password, next) {
     bcrypt.compare(_password, this.password, function (err, isMatch) {
       if (err) {
-        return cb(err);
+        return next(err);
       }
 
-      cb(null, isMatch);
+      next(null, isMatch);
     });
   },
 };
 
 // 静态方法
 UserSchema.statics = {
-  findOneByUserName: function (userName, cb) {
+  findOneByUserName: function (userName, next) {
     return this.findOne({ userName: userName })
-        .exec(cb);
+        .exec(next);
   },
+
+  _bcryptGenSalt: _bcryptGenSalt,
 };
 
 module.exports = UserSchema;

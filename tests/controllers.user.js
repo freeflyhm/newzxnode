@@ -2,10 +2,10 @@
  * controllers/user.js - Mocha controllers/user test
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 5, maxparams: 3,
+/* jshint      node:  true, devel:  true, maxstatements: 7, maxparams: 3,
    maxerr: 50, nomen: true, regexp: true */
 
-/* globals describe, it */
+/* globals describe, it, after */
 
 'use strict';
 
@@ -28,20 +28,26 @@ describe('controllers/user', function () {
 
   describe('_comparePassword', function () {
     var obj = { password: {} };
+    var resultsUser;
 
     it('should err 97', function (done) {
-      User._newUserSave({ userName: 'test97', password: '123456' },
+      User._newUserSave({ userName: 'test979799uu', password: '123456' },
         function (results) {
-          var resultsUser = results.user;
+          console.log(results);
+          resultsUser = results.user;
           User._comparePassword(resultsUser, obj, function (results) {
             assert.strictEqual(results.success, 97);
-
-            User._remove(resultsUser._id, function () {
-              done();
-            });
+            done();
           });
         }
       );
+    });
+
+    after(function (done) {
+      User._remove(resultsUser._id, function (results) {
+        assert.strictEqual(results.success.result.ok, 1);
+        done();
+      });
     });
   });
 
