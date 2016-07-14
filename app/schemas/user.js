@@ -34,11 +34,13 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function (next) {
   var _this = this;
 
-  if (_this.isNew) {
-    _this.meta.createAt = _this.meta.updateAt = Date.now();
-  } else {
-    _this.meta.updateAt = Date.now();
-  }
+  // if (_this.isNew) {
+  //   _this.meta.createAt = _this.meta.updateAt = Date.now();
+  // } else {
+  //   _this.meta.updateAt = Date.now();
+  // }
+
+  _this.meta.createAt = _this.meta.updateAt = Date.now();
 
   bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
     if (err) {

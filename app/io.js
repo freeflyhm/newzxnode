@@ -25,23 +25,22 @@ exports.listen = function (serv) {
   })).on('authenticated', function (socket) {
     //console.log(socket.decoded_token.userName, ' connected');
 
-    var host = process.env.DB_HOST;
+    //var host = process.env.DB_HOST;
 
     //var dbname = 'sz';
 
     // 初始化 Controllers
-    var User = Ctrl.getCtrl(host, 'user', 'auth');
+    //var User = Ctrl.getCtrl(host, 'user', 'auth');
 
     // echo 测试专用
     socket.on('emit-echo', function (msg, callback) {
       callback(msg);
     });
 
-    // 删除
-    // socket.on('emit-remove', function (obj, callback) {
-    //   User.remove(obj.id, function (results) {
-    //     callback(results);
-    //   });
-    // });
+    socket.on('emit-kbsms', function (obj, callback) {
+      console.log(obj);
+
+      callback([1, 2]);
+    });
   });
 };

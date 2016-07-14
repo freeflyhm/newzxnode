@@ -2,7 +2,7 @@
  * index.js - Mocha serv test
 */
 
-/* jshint      node:  true, devel:  true, maxstatements: 5, maxparams: 2,
+/* jshint      node:  true, devel:  true, maxstatements: 7, maxparams: 2,
    maxerr: 50, nomen: true, regexp: true */
 
 /* globals describe, before, it, after */
@@ -98,7 +98,39 @@ describe('server test', function () {
             client.disconnect();
             done();
           });
-        }).emit('authenticate', { token: token });
+        });
+
+        client.emit('authenticate', { token: token });
+      });
+    });
+
+    it('emit-kbsms', function (done) {
+      var client = io.connect('http://localhost:' + PORT, options);
+      client.once('connect', function () {
+        client.on('authenticated', function () {
+          client.emit('emit-kbsms',
+            { thisDate: '2016-07-13', city: 'sz' },
+            function (results) {
+              assert(results.length > 0);
+              done();
+            }
+          );
+        });
+      });
+
+      client.emit('authenticate', { token: token });
+    });
+
+    it('unauthorized', function (done) {
+      var client = io.connect('http://localhost:' + PORT, options);
+      client.once('connect', function () {
+        client.on('unauthorized', function (err) {
+          assert(err.data.type === 'UnauthorizedError' ||
+              err.data.code === 'invalid_token');
+          done();
+        });
+
+        client.emit('authenticate', { token: 'token' });
       });
     });
 
