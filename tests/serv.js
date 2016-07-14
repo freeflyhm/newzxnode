@@ -79,11 +79,18 @@ describe('server test', function () {
               assert.strictEqual(res.body.success, 13);
 
               superagent.post(site + '/api/login')
-                .send({ userName: 'test', password: '123456' })
+                .send({ userName: 'test', password: '1234567' })
                 .end(function (err, res) {
                   token = res.body.token;
                   assert.strictEqual(err, null);
-                  done();
+
+                  superagent.post(site + '/api/login')
+                    .send({ userName: 'test', password: '123456' })
+                    .end(function (err, res) {
+                      token = res.body.token;
+                      assert.strictEqual(err, null);
+                      done();
+                    });
                 });
             });
         });
@@ -139,7 +146,7 @@ describe('server test', function () {
         .send({ dbHost: process.env.DB_HOST_TEST, token: token })
         .end(function (err, res) {
           assert.strictEqual(err, null);
-          assert.strictEqual(res.body.success.ok, 1);
+          assert.strictEqual(res.body.success, 1);
           done();
         });
     });

@@ -3,7 +3,7 @@
 */
 
 /* jshint            node:  true,  devel:  true,
-   maxstatements: 13, maxparams: 4, maxdepth: 2,
+   maxstatements: 16, maxparams: 4, maxdepth: 2,
    maxerr: 50,       nomen: true,  regexp: true */
 
 'use strict';
@@ -11,6 +11,7 @@
 exports.createApp = function (dbHost) {
   /* 引入模块依赖 */
   var express    = require('express');
+  var path       = require('path');
   var bodyParser = require('body-parser');
   var jwt        = require('jsonwebtoken');
   var Ctrl       = require('./ctrl');
@@ -28,6 +29,7 @@ exports.createApp = function (dbHost) {
   /* 定义中间件 */
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
+  app.use(express.static(path.join(__dirname, 'coverage')));
   /* 定义路由 */
   app.get('/', function (req, res) {  // jshint ignore: line
     res.writeHead(200, { 'Content-Type': 'text/plain' });

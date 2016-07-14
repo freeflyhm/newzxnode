@@ -40,8 +40,10 @@ exports.createCtrl = function (dbHost) {
         return callback({ success: 97, errMsg: err });
       }
 
-      if (isMatch) {
+      if (isMatch) { // true
         callback({ success: 1, user: user });
+      } else {
+        callback({ success: 2, user: user });
       }
     });
   };
@@ -88,8 +90,10 @@ exports.createCtrl = function (dbHost) {
           return callback({ success: 95, errMsg: err.message });
         }
 
-        callback({ success: user }); // ok
+        callback({ success: user.result.ok }); // ok
       });
+    } else {
+      callback({ success: 2 });
     }
   };
 

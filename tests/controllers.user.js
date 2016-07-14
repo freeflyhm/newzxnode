@@ -45,7 +45,7 @@ describe('controllers/user', function () {
 
     after(function (done) {
       User._remove(resultsUser._id, function (results) {
-        assert.strictEqual(results.success.result.ok, 1);
+        assert.strictEqual(results.success, 1);
         done();
       });
     });
@@ -79,6 +79,13 @@ describe('controllers/user', function () {
     it('should err 95', function (done) {
       User._remove(id, function (results) {
         assert.strictEqual(results.success, 95);
+        done();
+      });
+    });
+
+    it('should err 2', function (done) {
+      User._remove(null, function (results) {
+        assert.strictEqual(results.success, 2);
         done();
       });
     });
