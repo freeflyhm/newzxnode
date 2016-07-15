@@ -22,7 +22,9 @@
     "mongoose": "^4.5.3",
     "jsonwebtoken": "^7.0.1",
     "socketio-jwt": "^4.5.0",
-    "bcrypt-nodejs": "^0.0.3"
+    "bcrypt-nodejs": "^0.0.3",
+    "validator": "^5.4.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^2.5.3",

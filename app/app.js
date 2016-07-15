@@ -11,7 +11,8 @@
 exports.createApp = function (dbHost) {
   /* 引入模块依赖 */
   var express    = require('express');
-  var path       = require('path');
+
+  //var path       = require('path');
   var bodyParser = require('body-parser');
   var jwt        = require('jsonwebtoken');
   var Ctrl       = require('./ctrl');
@@ -29,7 +30,9 @@ exports.createApp = function (dbHost) {
   /* 定义中间件 */
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
-  app.use(express.static(path.join(__dirname, 'coverage')));
+
+  //app.use(express.static(path.join(__dirname, 'coverage')));
+
   /* 定义路由 */
   app.get('/', function (req, res) {  // jshint ignore: line
     res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -45,28 +48,34 @@ exports.createApp = function (dbHost) {
   app.post('/api/login', function (req, res) {
     // TODO: validate the actual user user
     User.login(req.body, function (results) {
-      var user = results.user;
+      if (results.success === 1) {
+        var user = results.user;
 
-      var profile = {
-        _id: user._id,
-        userName: user.userName,
-      };
+        var profile = {
+          _id: user._id,
+          company: user.company,
+          userName: user.userName,
+        };
 
-      // we are sending the profile in the token
-      var token = jwt.sign(
-        profile,
-        process.env.JWT_TOKEN_SECRET,
-        { expiresIn: 60 * 60 * 24 }
-      );
+        // we are sending the profile in the token
+        var token = jwt.sign(
+          profile,
+          process.env.JWT_TOKEN_SECRET,
+          { expiresIn: 60 * 60 * 24 }
+        );
 
-      res.json({ token: token });
+        res.json({ success: 1, token: token });
+      } else {
+        res.json({ success: 2 });
+      }
     });
   });
 
   app.post('/api/removeuser', function (req, res) {
     var dbHost = req.body.dbHost;
     var decoded;
-    var id;
+    var cid;
+    var uid;
 
     if (dbHost === 'newzxmongo') {
       res.json({ success: 10 });
@@ -74,10 +83,11 @@ exports.createApp = function (dbHost) {
     }
 
     decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
-    id = decoded && decoded._id;
+    cid = decoded && decoded.company;
+    uid = decoded && decoded._id;
 
-    if (id) {
-      User._remove(id, function (results) {
+    if (cid && uid) {
+      User._remove(cid, uid, function (results) {
         res.json(results);
       });
 

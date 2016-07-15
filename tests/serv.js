@@ -67,29 +67,70 @@ describe('server test', function () {
     before(function (done) {
       // get token
       superagent.post(site + '/api/register')
-        .send({ userName: 'test', password: '123456' })
+        .send({
+          companyObj: {
+            name: 'testCompany',
+          },
+          userObj: {
+            userName: 'test',
+            password: '123456',
+            companyAbbr: 'tt',
+            name: '何苗',
+            phone: 11111111111,
+            city: '深圳',
+          },
+        })
         .end(function (err, res) {
           assert.strictEqual(err, null);
           assert.strictEqual(res.body.success, 1);
 
           superagent.post(site + '/api/register')
-            .send({ userName: 'test', password: '123456' })
+            .send({
+              companyObj: {
+                name: 'testCompany',
+              },
+              userObj: {
+                userName: 'test',
+                password: '123456',
+                companyAbbr: 'tt',
+                name: '何苗',
+                phone: 11111111111,
+              },
+            })
             .end(function (err, res) {
               assert.strictEqual(err, null);
-              assert.strictEqual(res.body.success, 13);
+              assert.strictEqual(res.body.success, 10004);
 
-              superagent.post(site + '/api/login')
-                .send({ userName: 'test', password: '1234567' })
+              superagent.post(site + '/api/register')
+                .send({
+                  companyObj: {
+                    name: 'testCompany1',
+                  },
+                  userObj: {
+                    userName: 'test',
+                    password: '123456',
+                    companyAbbr: 'tt',
+                    name: '何苗',
+                    phone: 11111111111,
+                  },
+                })
                 .end(function (err, res) {
-                  token = res.body.token;
                   assert.strictEqual(err, null);
+                  assert.strictEqual(res.body.success, 10006);
 
                   superagent.post(site + '/api/login')
-                    .send({ userName: 'test', password: '123456' })
+                    .send({ userName: 'test', password: '1234567' })
                     .end(function (err, res) {
-                      token = res.body.token;
                       assert.strictEqual(err, null);
-                      done();
+                      assert.strictEqual(res.body.success, 2);
+
+                      superagent.post(site + '/api/login').send({
+                        userName: 'test', password: '123456', city: '深圳',
+                      }).end(function (err, res) {
+                        token = res.body.token;
+                        assert.strictEqual(err, null);
+                        done();
+                      });
                     });
                 });
             });
