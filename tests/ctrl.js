@@ -11,18 +11,18 @@
 
 var assert = require('assert');
 
-describe('Ctrl.getCtrl', function () {
-  var dbHost = process.env.DB_HOST_TEST;
-  var getCtrl = require('../app/ctrl').getCtrl;
-  var User = getCtrl(dbHost, 'user', 'test');
+// describe('Ctrl.getCtrl', function () {
+//   var dbHost = process.env.DB_HOST_TEST;
+//   var getCtrl = require('../app/ctrl').getCtrl;
+//   var User = getCtrl(dbHost, 'auth', 'user');
 
-  it('User should as an Object', function () {
+//   it('User should as an Object', function () {
 
-    assert(typeof User === 'object');
-  });
+//     assert(typeof User === 'object');
+//   });
 
-  it('User should same as User2', function () {
-    var User2 = getCtrl(dbHost, 'user', 'test');
-    assert.deepEqual(User, User2);
-  });
-});
+//   it('User should same as User2', function () {
+//     var User2 = getCtrl(dbHost, 'auth', 'user');
+//     assert.deepEqual(User, User2);
+//   });
+// });

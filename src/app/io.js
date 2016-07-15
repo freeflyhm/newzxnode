@@ -30,7 +30,7 @@ exports.listen = function (serv) {
     //var dbname = 'sz';
 
     // 初始化 Controllers
-    //var User = Ctrl.getCtrl(host, 'user', 'auth');
+    //var User = Ctrl.getCtrl(host, 'auth', 'user');
 
     // echo 测试专用
     socket.on('emit-echo', function (msg, callback) {

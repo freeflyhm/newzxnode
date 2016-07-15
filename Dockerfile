@@ -9,4 +9,4 @@ COPY . /newzxnode
 RUN npm install -g forever && npm install
 
 EXPOSE 8081
-CMD  forever /newzxnode/server.js
+CMD  forever /newzxnode/src/server.js

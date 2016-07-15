@@ -11,21 +11,13 @@
 
 var assert = require('assert');
 
-describe('Conn.getConn', function () {
+describe('src/app/conn.js', function () {
   var dbHost = process.env.DB_HOST_TEST;
-  var getConn = require('../app/conn').getConn;
-  var conn = getConn(dbHost, 'test');
+  var getConn = require('../src/app/conn').getConn;
+  var conn1 = getConn(dbHost, 'auth');
+  var conn2 = getConn(dbHost, 'auth');
 
-  it('should be an function', function () {
-    assert(typeof getConn === 'function');
-  });
-
-  it('getConn(dbHost, db) should be an object', function () {
-    assert(typeof conn === 'object');
-  });
-
-  it('conn === conn2', function () {
-    var conn2 = getConn(dbHost, 'test');
-    assert.deepEqual(conn, conn2);
+  it('conn1 === conn2', function () {
+    assert.deepEqual(conn1, conn2);
   });
 });

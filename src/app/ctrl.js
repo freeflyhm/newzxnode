@@ -20,7 +20,7 @@
 
 var ctrls = {};
 
-exports.getCtrl = function (dbHost, ctrlName, dbName) {
+exports.getCtrl = function (dbHost, dbName, ctrlName) {
   var ctrl;
   var ctrlObj;
 

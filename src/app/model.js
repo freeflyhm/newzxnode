@@ -20,7 +20,7 @@
 
 var models = {};
 
-var _createModel = function (dbHost, schemaName, dbName) {
+var _createModel = function (dbHost, dbName, schemaName) {
   var schemaObj = require('./schemas/' + schemaName);
   var conn = require('./conn');
 
@@ -34,7 +34,7 @@ var _createModel = function (dbHost, schemaName, dbName) {
   return c.model(replaceFirstUpper(schemaName), schemaObj);
 };
 
-exports.getModel = function (dbHost, schemaName, dbName) {
+exports.getModel = function (dbHost, dbName, schemaName) {
   var md;
 
   if (models[schemaName]) {
@@ -42,13 +42,13 @@ exports.getModel = function (dbHost, schemaName, dbName) {
 
       return models[schemaName][dbName];
     } else {
-      md = _createModel(dbHost, schemaName, dbName);
+      md = _createModel(dbHost, dbName, schemaName);
       models[schemaName][dbName] = md;
 
       return md;
     }
   } else {
-    md = _createModel(dbHost, schemaName, dbName);
+    md = _createModel(dbHost, dbName, schemaName);
     models[schemaName] = {};
     models[schemaName][dbName] = md;
 

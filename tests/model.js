@@ -11,17 +11,17 @@
 
 var assert = require('assert');
 
-describe('Model.getModel', function () {
-  var dbHost = process.env.DB_HOST_TEST;
-  var getModel = require('../app/model').getModel;
-  var User = getModel(dbHost, 'user', 'test');
+// describe('Model.getModel', function () {
+//   var dbHost = process.env.DB_HOST_TEST;
+//   var getModel = require('../app/model').getModel;
+//   var User = getModel(dbHost, 'auth', 'user');
 
-  it('User should as an function', function () {
-    assert(typeof User === 'function');
-  });
+//   it('User should as an function', function () {
+//     assert(typeof User === 'function');
+//   });
 
-  it('User should same as User2', function () {
-    var User2 = getModel(dbHost, 'user', 'test');
-    assert.deepEqual(User, User2);
-  });
-});
+//   it('User should same as User2', function () {
+//     var User2 = getModel(dbHost, 'auth', 'user');
+//     assert.deepEqual(User, User2);
+//   });
+// });

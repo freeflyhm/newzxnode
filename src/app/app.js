@@ -16,7 +16,7 @@ exports.createApp = function (dbHost) {
   var bodyParser = require('body-parser');
   var jwt        = require('jsonwebtoken');
   var Ctrl       = require('./ctrl');
-  var User       = Ctrl.getCtrl(dbHost, 'user', 'auth');
+  var User       = Ctrl.getCtrl(dbHost, 'auth', 'user');
 
   /* 实例化 Express.js 对象 */
   var app = express();
@@ -64,10 +64,10 @@ exports.createApp = function (dbHost) {
           { expiresIn: 60 * 60 * 24 }
         );
 
-        res.json({ success: 1, token: token });
-      } else {
-        res.json({ success: 2 });
+        return res.json({ success: 1, token: token });
       }
+
+      return res.json(results);
     });
   });
 

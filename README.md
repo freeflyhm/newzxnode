@@ -19,5 +19,17 @@ newzxnode 是 full REST API 服务
 10004| 公司名已存在
 10005| User.findOneByUserName err
 10006| 用户名已存在
-
+10007| newCompany.save err
+10008| newUser.save err
+10009| user.comparePassword err
+10010| 公司名不合法
+10011| 用户名不合法
+10012| 密码不合法
+10013| 公司简称不合法
+10014| 姓名不合法
+10015| 手机号不合法
+10016| 密码错误
+10017| 用户名不合法
+10018| 密码不合法
+10019| User.findOne err
 
