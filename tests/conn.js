@@ -1,12 +1,11 @@
-/*
- * conn.js - Mocha conn test
-*/
-
-/* jshint      node:  true, devel:  true, maxstatements: 7,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint
+   node:  true, devel:  true, maxstatements: 7,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
 /* globals describe, it */
 
+/* conn.js - Mocha conn test */
 'use strict';
 
 var assert = require('assert');
