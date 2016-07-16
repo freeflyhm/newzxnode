@@ -50,9 +50,9 @@ describe('schemas/company.js', function () {
 
   describe('statics', function () {
     it('findOneById', function (done) {
-      Company.findOneById(cid, function (err, user) {
+      Company.findOneById(cid, function (err, company) {
         assert.strictEqual(err, null);
-        assert.strictEqual(user.tel, companyObj.tel);
+        assert.strictEqual(company.tel, companyObj.tel);
         done();
       });
     });

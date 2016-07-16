@@ -25,6 +25,7 @@ var FeesTempSchema = new Schema({
     unique: true,
     type: String,
   },
+
   t1:{
     // 机场内送机 散拼
     //smType1      : { type: Number, default: 1 },      类型1: 1 送   2 接
@@ -190,7 +191,11 @@ var FeesTempSchema = new Schema({
 });
 
 FeesTempSchema.pre('save', function (next) {
-  this.meta.createAt = this.meta.updateAt = Date.now();
+  if (this.isNew) {
+    this.meta.createAt = this.meta.updateAt = Date.now();
+  } else {
+    this.meta.updateAt = Date.now();
+  }
 
   next();
 });
