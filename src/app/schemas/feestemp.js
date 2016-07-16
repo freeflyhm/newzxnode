@@ -1,10 +1,12 @@
-/*
- * feestemp.js - Schema feestemp
-*/
+/* jshint
+   node:  true, devel:  true, maxstatements: 6, maxparams: 4,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 4,
-   maxerr: 50, nomen: true, regexp: true */
-
+/**
+ * feestemp Schema 模块
+ * @module app/schemas/feestemp
+ */
 'use strict';
 
 // 公司

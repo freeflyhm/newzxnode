@@ -1,12 +1,11 @@
-/*
- * index.js - Mocha serv test
-*/
-
-/* jshint      node:  true, devel:  true, maxstatements: 7, maxparams: 2,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint
+   node: true, devel: true, maxstatements: 7, maxparams: 2,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
 /* globals describe, before, it, after */
 
+/* index.js - Mocha serv test */
 'use strict';
 
 // var PORT = 3000;

@@ -1,10 +1,13 @@
-/*
- * company.js - Schema company
-*/
+/* jshint
+   node: true, devel: true, maxstatements: 6, maxparams: 4,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 4,
-   maxerr: 50, nomen: true, regexp: true */
 
+/**
+ * company Schema 模块
+ * @module app/schemas/company
+ */
 'use strict';
 
 // 公司

@@ -1,12 +1,11 @@
-/*
- * controllers/user.js - Mocha controllers/user test
-*/
-
-/* jshint      node:  true, devel:  true, maxstatements: 12, maxparams: 3,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint
+   node: true, devel: true, maxstatements: 12, maxparams: 3,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
 /* globals describe, it, after */
 
+/* controllers/user.js - Mocha controllers/user test */
 'use strict';
 
 var assert = require('assert');

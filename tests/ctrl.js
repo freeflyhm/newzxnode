@@ -1,28 +1,28 @@
-/*
- * ctrl.js - Mocha ctrl test
-*/
-
-/* jshint      node:  true, devel:  true, maxstatements: 5,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint
+   node: true, devel: true, maxstatements: 8,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
 /* globals describe, it */
 
+/* ctrl.js - Mocha ctrl test */
 'use strict';
 
 var assert = require('assert');
 
 // describe('Ctrl.getCtrl', function () {
 //   var dbHost = process.env.DB_HOST_TEST;
-//   var getCtrl = require('../app/ctrl').getCtrl;
-//   var User = getCtrl(dbHost, 'auth', 'user');
+//   var getCtrl = require('../src/app/ctrl').getCtrl;
+//   var ctrl1 = getCtrl(dbHost, 'auth', 'user');
+//   var ctrl2 = getCtrl(dbHost, 'auth', 'user');
+//   var ctrl3 = getCtrl(dbHost, 'auth', 'feestemp');
+//   var ctrl4 = getCtrl(dbHost, 'auth', 'feestemp');
 
-//   it('User should as an Object', function () {
-
-//     assert(typeof User === 'object');
+//   it('ctrl1 === ctrl2', function () {
+//     assert.deepEqual(ctrl1, ctrl2);
 //   });
 
-//   it('User should same as User2', function () {
-//     var User2 = getCtrl(dbHost, 'auth', 'user');
-//     assert.deepEqual(User, User2);
+//   it('ctrl3 === ctrl4', function () {
+//     assert.deepEqual(ctrl3, ctrl4);
 //   });
 // });

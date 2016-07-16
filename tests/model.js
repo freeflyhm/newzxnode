@@ -1,27 +1,28 @@
-/*
- * model.js - Mocha model test
-*/
-
-/* jshint      node:  true, devel:  true, maxstatements: 5,
-   maxerr: 50, nomen: true, regexp: true */
+/* jshint
+   node: true, devel: true, maxstatements: 8,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
 /* globals describe, it */
 
+/* model.js - Mocha model test */
 'use strict';
 
 var assert = require('assert');
 
-// describe('Model.getModel', function () {
+// describe('src/app/model.js', function () {
 //   var dbHost = process.env.DB_HOST_TEST;
-//   var getModel = require('../app/model').getModel;
-//   var User = getModel(dbHost, 'auth', 'user');
+//   var getModel = require('../src/app/model').getModel;
+//   var model1 = getModel(dbHost, 'auth', 'user');
+//   var model2 = getModel(dbHost, 'auth', 'user');
+//   var model3 = getModel(dbHost, 'auth', 'company');
+//   var model4 = getModel(dbHost, 'auth', 'company');
 
-//   it('User should as an function', function () {
-//     assert(typeof User === 'function');
+//   it('model1 === model2', function () {
+//     assert.deepEqual(model1, model2);
 //   });
 
-//   it('User should same as User2', function () {
-//     var User2 = getModel(dbHost, 'auth', 'user');
-//     assert.deepEqual(User, User2);
+//   it('model3 === model4', function () {
+//     assert.deepEqual(model3, model4);
 //   });
 // });

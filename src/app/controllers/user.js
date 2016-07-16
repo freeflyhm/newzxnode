@@ -1,11 +1,13 @@
-/*
- * user.js - Schema user
-*/
-
-/* jshint            node:  true,  devel:  true,
+/* jshint
+   node: true,        devel: true,
    maxstatements: 28, maxparams: 3, maxdepth: 2,
-   maxerr: 50,       nomen: true,  regexp: true */
+   maxerr: 50,        nomen: true,  regexp: true
+ */
 
+/**
+ * user controller 模块
+ * @module app/controllers/user
+ */
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {

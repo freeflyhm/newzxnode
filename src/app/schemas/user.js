@@ -1,10 +1,12 @@
-/*
- * user.js - Schema user
-*/
+/* jshint
+   node: true, devel: true, maxstatements: 8,   maxparams: 4,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 4,
-   maxerr: 50, nomen: true, regexp: true */
-
+/**
+ * user Schema 模块
+ * @module app/schemas/user
+ */
 'use strict';
 
 // 用户
@@ -87,30 +89,13 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function (next) {
   var _this = this;
 
-  // if (_this.isNew) {
-  //   _this.meta.createAt = _this.meta.updateAt = Date.now();
-  // } else {
-  //   _this.meta.updateAt = Date.now();
-  // }
-
-  _this.meta.createAt = _this.meta.updateAt = Date.now();
-
-  _bcryptGenSalt(bcrypt, SALT_WORK_FACTOR, _this, next);
-
-  // bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-  //   if (err) {
-  //     return next(err);
-  //   }
-
-  //   bcrypt.hash(_this.password, salt, null, function (err, hash) {
-  //     if (err) {
-  //       return next(err);
-  //     }
-
-  //     _this.password = hash;
-  //     next();
-  //   });
-  // });
+  if (_this.isNew) {
+    _this.meta.createAt = _this.meta.updateAt = Date.now();
+    _bcryptGenSalt(bcrypt, SALT_WORK_FACTOR, _this, next);
+  } else {
+    _this.meta.updateAt = Date.now();
+    next();
+  }
 });
 
 // 实例方法
@@ -128,22 +113,22 @@ UserSchema.methods = {
 
 // 静态方法
 UserSchema.statics = {
+  _bcryptGenSalt: _bcryptGenSalt,
+
   findOneById: function (id, cb) {
     return this.findOne({ _id: id })
       .exec(cb);
   },
 
-  findByCompany: function (companyId, cb) {
-    return this.find({ company: companyId })
-      .exec(cb);
-  },
+  // findByCompany: function (companyId, cb) {
+  //   return this.find({ company: companyId })
+  //     .exec(cb);
+  // },
 
   findOneByUserName: function (userName, cb) {
     return this.findOne({ userName: userName })
       .exec(cb);
   },
-
-  _bcryptGenSalt: _bcryptGenSalt,
 };
 
 module.exports = UserSchema;

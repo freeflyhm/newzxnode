@@ -1,10 +1,12 @@
-/*
- * io.js - socket.io
-*/
+/* jshint
+   node:  true, devel:  true, maxstatements: 6, maxparams: 2,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true, maxstatements: 6, maxparams: 2,
-   maxerr: 50, nomen: true, regexp: true */
-
+/**
+ * socket.io 模块
+ * @module app/io
+ */
 'use strict';
 
 exports.listen = function (serv) {

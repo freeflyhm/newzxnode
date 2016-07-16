@@ -1,10 +1,11 @@
-/*
- * server.js - node 入口文件
-*/
+/* jshint
+   node: true, devel: true,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true,
-   maxerr: 50, nomen: true, regexp: true */
-
+/**
+ * node server 入口文件
+ */
 'use strict';
 
 var serv = require('./app/serv');

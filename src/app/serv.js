@@ -1,10 +1,12 @@
-/*
- * serv.js - 服务器
-*/
+/* jshint
+   node:  true, devel:  true, maxstatements: 5, maxparams: 2,
+   maxerr: 50, nomen: true, regexp: true
+ */
 
-/* jshint      node:  true, devel:  true, maxstatements: 5, maxparams: 2,
-   maxerr: 50, nomen: true, regexp: true */
-
+/**
+ * serv 服务器模块
+ * @module app/serv
+ */
 'use strict';
 
 var serv;

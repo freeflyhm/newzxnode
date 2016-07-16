@@ -1,11 +1,13 @@
-/*
- * app.js - Express app
-*/
-
-/* jshint            node:  true,  devel:  true,
+/* jshint
+   node:  true,  devel:  true,
    maxstatements: 16, maxparams: 4, maxdepth: 2,
-   maxerr: 50,       nomen: true,  regexp: true */
+   maxerr: 50,       nomen: true,  regexp: true
+ */
 
+/**
+ * Express app 模块
+ * @module app/app
+ */
 'use strict';
 
 exports.createApp = function (dbHost) {
@@ -46,7 +48,7 @@ exports.createApp = function (dbHost) {
   });
 
   app.post('/api/login', function (req, res) {
-    // TODO: validate the actual user user
+
     User.login(req.body, function (results) {
       if (results.success === 1) {
         var user = results.user;

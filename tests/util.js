@@ -1,5 +1,5 @@
 /* jshint
-   node:  true, devel:  true, maxstatements: 7,
+   node: true, devel: true, maxstatements: 8,
    maxerr: 50, nomen: true, regexp: true
  */
 
@@ -8,9 +8,8 @@
 /* util.js - Mocha util test */
 'use strict';
 
-var assert = require('assert');
-
-describe('src/app/util.js', function () {
+describe('util.js', function () {
+  var assert = require('assert');
   var Util = require('../src/app/util');
 
   // 首字母大写
