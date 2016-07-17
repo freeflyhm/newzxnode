@@ -1,5 +1,5 @@
 /* jshint
-   node: true, devel: true, maxstatements: 12, maxparams: 3,
+   node: true, devel: true, maxstatements: 27, maxparams: 3,
    maxerr: 50, nomen: true, regexp: true
  */
 
@@ -8,372 +8,364 @@
 /* controllers/user.js - Mocha controllers/user test */
 'use strict';
 
-var assert = require('assert');
+describe('controllers/user.js', function () {
+  var assert = require('assert');
+  var UserCtrl = require('../src/app/controllers/user');
+  var User = UserCtrl.createCtrl(process.env.DB_HOST_TEST, 'auth');
 
-// describe('app/controllers/user.js', function () {
-//   var UserCtrl = require('../app/controllers/user');
-//   var User = UserCtrl.createCtrl(process.env.DB_HOST_TEST, 'auth');
+  var companyObj = {
+    name: 'testCompany',
+    city: '深圳',
+  };
+  var companyObj10006 = {
+    name: 'testCompany1',
+    city: '深圳',
+  };
+  var userObj = {
+    userName: 'test',
+    password: '123456',
+    companyAbbr: 'tt',
+    name: '何苗',
+    phone: 11111111111,
+  };
+  var cid;
+  var uid;
+  var _test;
+  var _tests;
 
-//   describe('_companyFindOneByName', function () {
-//     var companyObj = { name: {} };
-//     var userObj = {};
+  _test = function (test, func) {
+    it('success === ' + test.success, function (done) {
+      func(test.obj, function (results) {
+        assert.strictEqual(results.success, test.success);
+        done();
+      });
+    });
+  };
 
-//     it('should err 10003', function (done) {
-//       User._companyFindOneByName(companyObj, userObj, function (results) {
-//         assert.strictEqual(results.success, 10003);
-//         done();
-//       });
-//     });
-//   });
+  _tests = function (tests, func) {
+    tests.forEach(function (test) {
+      _test(test, func);
+    });
+  };
 
-//   describe('_userFindOneByUserName', function () {
-//     var userObj = { userName: {}, password: '123456' };
+  describe('_removeUser', function () {
+    var test = { obj: { uid: {}, ok: 1 }, success: 10000 };
 
-//     it('should err 10005', function (done) {
-//       User._userFindOneByUserName({}, userObj, function (results) {
-//         assert.strictEqual(results.success, 10005);
-//         done();
-//       });
-//     });
-//   });
+    _test(test, User._removeUser);
+  });
 
-//   describe('_newCompanySave', function () {
-//     var companyObj = { name: {} };
+  describe('_remove', function () {
+    var tests = [
+      { obj: { cid: null, uid: null }, success: 10002 },
+      { obj: { cid: {}, uid: 'ee' }, success: 10001 },
+    ];
 
-//     it('should err 10007', function (done) {
-//       User._newCompanySave(companyObj, {}, function (results) {
-//         assert.strictEqual(results.success, 10007);
-//         done();
-//       });
-//     });
-//   });
+    _tests(tests, User._remove);
+  });
 
-//   describe('_newUserSave', function () {
-//     var userObj = { userName: {}, password: '123456' };
+  describe('_companyFindOneByName', function () {
+    var test = {
+      obj: { companyObj: { name: {} }, userObj: {} },
+      success: 10003,
+    };
 
-//     it('should err 10008', function (done) {
-//       User._newUserSave(userObj, function (results) {
-//         assert.strictEqual(results.success, 10008);
-//         done();
-//       });
-//     });
-//   });
+    _test(test, User._companyFindOneByName);
+  });
 
-//   describe('_comparePassword', function () {
-//     var obj = { password: {} };
-//     var resultsUser;
+  describe('_userFindOneByUserName', function () {
+    var userObj = { userName: {}, password: '123456' };
+    var test = {
+      obj: { companyObj: {}, userObj: userObj },
+      success: 10005,
+    };
 
-//     it('should err 10009', function (done) {
-//       User._newUserSave({ userName: 'test10009', password: '123456' },
-//         function (results) {
-//           resultsUser = results.user;
-//           User._comparePassword(resultsUser, obj, function (results) {
-//             assert.strictEqual(results.success, 10009);
-//             done();
-//           });
-//         }
-//       );
-//     });
+    _test(test, User._userFindOneByUserName);
+  });
 
-//     after(function (done) {
-//       User._removeUser(resultsUser._id, 1, function (results) {
-//         assert.strictEqual(results.success, 1);
-//         done();
-//       });
-//     });
-//   });
+  describe('_newCompanySave', function () {
+    var obj = { companyObj: { name: {} }, userObj: {} };
+    var test = { obj: obj, success: 10007 };
 
-//   describe('_userFindOneInLogin', function () {
-//     var userObj10019 = { userName: {} };
-//     var userObj10023 = { userName: 'nobody' };
+    _test(test, User._userFindOneByUserName);
+  });
 
-//     it('should err 10019', function (done) {
-//       User._userFindOneInLogin(userObj10019, function (results) {
-//         assert.strictEqual(results.success, 10019);
-//         done();
-//       });
-//     });
+  describe('_newUserSave', function () {
+    var test = { obj: { userName: {}, password: '123456' }, success: 10008 };
 
-//     it('should err 10023', function (done) {
-//       User._userFindOneInLogin(userObj10023, function (results) {
-//         assert.strictEqual(results.success, 10023);
-//         done();
-//       });
-//     });
-//   });
+    _test(test, User._newUserSave);
+  });
 
-//   describe('register', function () {
-//     var tests10010 = [
-//       { companyObj: {} },
-//       { companyObj: { name: 't' } },
-//       { companyObj: { name: '1234567890123456' } },
-//       { companyObj: { name: {} } },
-//     ];
+  describe('_comparePassword', function () {
+    var obj = { password: {} };
+    var resultsUser;
 
-//     var tests10011 = [
-//       { companyObj: { name: 'tt' }, userObj: {} },
-//       { companyObj: { name: 'tt' }, userObj: { userName: 't' } },
-//       { companyObj: { name: 'tt' }, userObj: { userName: '1234567890123456' } },
-//       { companyObj: { name: 'tt' }, userObj: { userName: {} } },
-//     ];
+    it('success === 10009', function (done) {
+      User._newUserSave({ userName: 'test10009', password: '123456' },
+        function (results) {
+          resultsUser = results.user;
+          User._comparePassword({ user: resultsUser, obj: obj },
+            function (results) {
+              assert.strictEqual(results.success, 10009);
+              done();
+            }
+          );
+        }
+      );
+    });
 
-//     var tests10012 = [
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: { userName: 'tt' },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: { userName: 'tt', password: '12345' },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: { userName: '123456', password: '123456' },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: { userName: 'tt', password: '123456789012345678901' },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: { userName: 'tt', password: {} },
-//       },
-//     ];
+    after(function (done) {
+      User._removeUser({ uid: resultsUser._id, ok: 1 }, function (results) {
+        assert.strictEqual(results.success, 1);
+        done();
+      });
+    });
+  });
 
-//     var tests10013 = [
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: {},
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 't',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: '123456789',
-//         },
-//       },
-//     ];
+  describe('_userFindOneInLogin', function () {
+    var tests = [
+      { obj: { userName: {} }, success: 10019 },
+      { obj: { userName: 'nobody' }, success: 10023 },
+    ];
 
-//     var tests10014 = [
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: {},
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: 'tt',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和范德萨的',
-//         },
-//       },
-//     ];
+    _tests(tests, User._userFindOneInLogin);
+  });
 
-//     var tests10015 = [
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和没',
-//           phone: {},
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和没',
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和没',
-//           phone: 1234567890,
-//         },
-//       },
-//       {
-//         companyObj: { name: 'tt' },
-//         userObj: {
-//           userName: 'tt',
-//           password: '123456',
-//           companyAbbr: 'tt',
-//           name: '和没',
-//           phone: '12345678901',
-//         },
-//       },
-//     ];
+  describe('_feesTempFind', function () {
+    var test = { neObj: {} };
 
-//     tests10010.forEach(function (test) {
-//       it('should err 10010 companyObj.name = ' + test.companyObj.name,
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10010);
-//             done();
-//           });
-//         });
-//     });
+    it('should ok', function (done) {
+      User._feesTempFind(test, function (result) {
+        assert.strictEqual(JSON.stringify(result), '{}');
+        done();
+      });
+    });
+  });
 
-//     tests10011.forEach(function (test) {
-//       it('should err 10011 userObj.userName = ' + test.userObj.userName,
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10011);
-//             done();
-//           });
-//         });
-//     });
+  describe('_userUpdate', function () {
+    var test = { obj: { _id: {} }, success: 10035 };
 
-//     tests10012.forEach(function (test) {
-//       it('should err 10012 userObj.password = ' + test.userObj.password,
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10012);
-//             done();
-//           });
-//         });
-//     });
+    _test(test, User._userUpdate);
+  });
 
-//     tests10013.forEach(function (test) {
-//       it('should err 10013 userObj.companyAbbr = ' + test.userObj.companyAbbr,
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10013);
-//             done();
-//           });
-//         });
-//     });
+  describe('register', function () {
+    var tests = [
+      { obj: { companyObj: {} }, success: 10010 },
+      { obj: { companyObj: { name: 'company' }, userObj: {} }, success: 10011 },
+      {
+        obj: {
+          companyObj: { name: 'company' },
+          userObj: { userName: 'user' },
+        },
+        success: 10012,
+      },
+      {
+        obj: {
+          companyObj: { name: 'company' },
+          userObj: { userName: 'user', password: '123456' },
+        },
+        success: 10013,
+      },
+      {
+        obj: {
+          companyObj: { name: 'company' },
+          userObj: { userName: 'user', password: '123456', companyAbbr: 'cp' },
+        },
+        success: 10014,
+      },
+      {
+        obj: {
+          companyObj: { name: 'company' },
+          userObj: {
+            userName: 'user',
+            password: '123456',
+            companyAbbr: 'cp',
+            name: '何苗',
+          },
+        },
+        success: 10015,
+      },
+    ];
+    var tests2;
 
-//     tests10014.forEach(function (test) {
-//       it('should err 10014 userObj.name',
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10014);
-//             done();
-//           });
-//         });
-//     });
+    _tests(tests, User.register);
 
-//     tests10015.forEach(function (test) {
-//       it('should err 10015 userObj.phone = ' + test.userObj.phone,
-//         function (done) {
-//           User.register(test, function (results) {
-//             assert.strictEqual(results.success, 10015);
-//             done();
-//           });
-//         });
-//     });
+    it('success === 1', function (done) {
+      User.register({ companyObj: companyObj, userObj: userObj },
+        function (results) {
+          assert.strictEqual(results.success, 1);
+          cid = results.user.company;
+          uid = results.user._id;
+          done();
+        }
+      );
+    });
 
-//     // it('should err 98', function (done) {
-//     //   User.register(obj98, function (results) {
-//     //     assert.strictEqual(results.success, 98);
-//     //     done();
-//     //   });
-//     // });
-//   });
+    tests2 = [
+      { obj: { companyObj: companyObj, userObj: userObj }, success: 10004 },
+      {
+        obj: { companyObj: companyObj10006, userObj: userObj },
+        success: 10006,
+      },
+    ];
 
-//   describe('login', function () {
-//     var userObj10017 = { userName: {} };
-//     var userObj10018 = { userName: 'ee', password: {} };
+    _tests(tests2, User.register);
+  });
 
-//     it('should err 10017', function (done) {
-//       User.login(userObj10017, function (results) {
-//         assert.strictEqual(results.success, 10017);
-//         done();
-//       });
-//     });
+  describe('update', function () {
+    var tests = [
+      { obj: { role: 30, userrole: 20 }, success: 10029 },
+      { obj: { role: 20, userrole: 30 }, success: 10030 },
+      { obj: { role: 20, userrole: 30, name: '何苗' }, success: 10031 },
+      {
+        obj: { role: 20, userrole: 30, name: '何苗', phone: 11111111111 },
+        success: 10032,
+      },
+      {
+        obj: {
+          _id: {},
+          role: 20,
+          userrole: 30,
+          name: '何苗',
+          phone: 11111111111,
+          companyAbbr: 'tt',
+        },
+        success: 10033,
+      },
+      {
+        obj: {
+          role: 20,
+          userrole: 30,
+          name: '何苗',
+          phone: 11111111111,
+          companyAbbr: 'tt',
+        },
+        success: 10034,
+      },
+    ];
 
-//     it('should err 10018', function (done) {
-//       User.login(userObj10018, function (results) {
-//         assert.strictEqual(results.success, 10018);
-//         done();
-//       });
-//     });
-//   });
+    _tests(tests, User.update);
+  });
 
-//   describe('_removeUser', function () {
-//     var id = {};
+  describe('changeStatus', function () {
+    var tests = [
+      { obj: { _id: {} }, success: 10024 },
+      { obj: {}, success: 10025 },
+    ];
 
-//     it('should err 10000', function (done) {
-//       User._removeUser(id, 1, function (results) {
-//         assert.strictEqual(results.success, 10000);
-//         done();
-//       });
-//     });
-//   });
+    _tests(tests, User.changeStatus);
+  });
 
-//   describe('_remove', function () {
-//     it('should err 10002', function (done) {
-//       User._remove(null, null, function (results) {
-//         assert.strictEqual(results.success, 10002);
-//         done();
-//       });
-//     });
+  describe('login', function () {
+    var userObj10017 = { userName: {} };
+    var userObj10018 = { userName: 'ee', password: {} };
+    var userObj10016 = { userName: 'test', password: '1234567', city: '深圳' };
+    var userObj1 = { userName: 'test', password: '123456', city: '深圳' };
+    var userObj10021 = { userName: 'test', password: '123456', city: 'dd' };
 
-//     it('should err 10001', function (done) {
-//       User._remove({}, 'ee', function (results) {
-//         assert.strictEqual(results.success, 10001);
-//         done();
-//       });
-//     });
-//   });
-// });
+    var tests = [
+      { obj: userObj10017, success: 10017 },
+      { obj: userObj10018, success: 10018 },
+      { obj: userObj1, success: 10022 },
+    ];
+
+    _tests(tests, User.login);
+
+    it('success === 10016', function (done) {
+      User.changeStatus({ _id: uid, status: true }, function (results) {
+        assert.strictEqual(results.success, 1);
+        User.login(userObj10016, function (results) {
+          assert.strictEqual(results.success, 10016);
+          done();
+        });
+      });
+    });
+
+    _test({ obj: userObj1, success: 1 }, User.login);
+
+    it('success === 10021', function (done) {
+      User.companyUpdate(
+        { _id: cid, category: 30, name: 'testCompany', idcardfee: 1 },
+        function (results) {
+          assert.strictEqual(results.success, 1);
+          User.login(userObj10021, function (results) {
+            assert.strictEqual(results.success, 10021);
+            done();
+          });
+        }
+      );
+    });
+
+    it('success === 10020', function (done) {
+      User.update({
+          _id: uid,
+          role: 0,
+          userrole: 30,
+          name: '何苗',
+          phone: 11111111111,
+          companyAbbr: 'tt',
+        }, function (results) {
+          assert.strictEqual(results.success, 1);
+
+          User.login(userObj1, function (results) {
+            assert.strictEqual(results.success, 10020);
+            done();
+          });
+        }
+      );
+    });
+  });
+
+  describe('companyUpdate', function () {
+    var tests = [
+      { obj: {}, success: 10026 },
+      { obj: { category: 20, name: 't' }, success: 10027 },
+      { obj: { _id: {}, category: 20, name: 'tt' }, success: 10028 },
+    ];
+
+    _tests(tests, User.companyUpdate);
+  });
+
+  describe('changeFeesTemp', function () {
+    var tests = [
+      { obj: { id: {} }, success: 10036 },
+      { obj: { id: cid, feestemp: 'dd' }, success: 1 },
+    ];
+
+    _tests(tests, User.changeFeesTemp);
+  });
+
+  describe('companylist', function () {
+    var tests = [
+      {},
+      { category: 30 },
+      { category: 30, role: 10 },
+      { category: 30, role: 20, CITY: {} },
+    ];
+
+    var test = { category: 30, role: 20, CITY: '深圳' };
+
+    tests.forEach(function (item) {
+      it('should ok', function (done) {
+        User.companylist(item, function (result) {
+          assert.strictEqual(JSON.stringify(result), '{}');
+          done();
+        });
+      });
+    });
+
+    it('should ok', function (done) {
+        User.companylist(test, function (result) {
+          console.log(result);
+          assert(JSON.stringify(result) !== '{}');
+          done();
+        });
+      });
+  });
+
+  after(function (done) {
+    User._remove({ cid: cid, uid: uid }, function (results) {
+      assert.strictEqual(results.success, 1);
+      done();
+    });
+  });
+});

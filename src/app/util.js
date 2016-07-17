@@ -23,6 +23,17 @@ var _validatorAlNum =
     return /^[a-zA-Z0-9]*$/.test(str);
   };
 
+var _validatorChineseCharacter =
+  /**
+   * 必须是中文字符
+   *
+   * @param {String} str - 字符串
+   * @returns {Boolean}
+   */
+  exports.validatorChineseCharacter = function (str) {
+    return /^[\u4E00-\uFA29]*$/.test(str);
+  };
+
 /**
  * 首字母大写
  *
@@ -36,23 +47,15 @@ exports.validatorReplaceFirstUpper = function (str) {
 };
 
 /**
- * 必须是中文字符
- *
- * @param {String} str - 字符串
- * @returns {Boolean}
- */
-exports.validatorChineseCharacter = function (str) {
-  return /^[\u4E00-\uFA29]*$/.test(str);
-};
-
-/**
  * 请输入正确的11位手机号
  *
  * @param {Number} num - 数字
  * @returns {Boolean}
  */
-exports.validatorPhoneNumber = function (num) {
-  return /^1\d{10}$/.test(num);
+exports.validatorPhoneNumber = function (phone) {
+  return !!(phone &&
+      typeof phone === 'number' &&
+      /^1\d{10}$/.test(phone));
 };
 
 /**
@@ -69,6 +72,19 @@ exports.validatorUserName = function (userName) {
 };
 
 /**
+ * 姓名不合法: 检验 userObj.name 姓名 isNull、chineseCharacter 自定义验证、isLength
+ *
+ * @param {String} name - 姓名
+ * @returns {Boolean}
+ */
+exports.validatorName = function (name) {
+  return !!(name &&
+      typeof name === 'string' &&
+      _validatorChineseCharacter(name) &&
+      validator.isLength(name, 2, 4));
+};
+
+/**
  * 密码不合法: 检验 userObj.password 密码 isNull、isLength、用户名与密码相同
  *
  * @param {String} password - 密码
@@ -80,4 +96,28 @@ exports.validatorPassword = function (password, userName) {
       typeof password === 'string' &&
       validator.isLength(password, 6, 20) &&
       userName !== password);
+};
+
+/**
+ * 公司名不合法: 检验 companyObj.name 公司名称 isNull、isLength
+ *
+ * @param {String} companyName - 公司名
+ * @returns {Boolean}
+ */
+exports.validatorCompanyName = function (companyName) {
+  return !!(companyName &&
+        typeof companyName === 'string' &&
+        validator.isLength(companyName, 2, 15));
+};
+
+/**
+ * 公司简称不合法: 检验 userObj.companyAbbr 公司简称 isNull、isLength
+ *
+ * @param {String} companyAbbr - 公司简称
+ * @returns {Boolean}
+ */
+exports.validatorCompanyAbbr = function (companyAbbr) {
+  return !!(companyAbbr &&
+        typeof companyAbbr === 'string' &&
+        validator.isLength(companyAbbr, 2, 8));
 };
