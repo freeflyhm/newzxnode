@@ -43,33 +43,43 @@ exports.createApp = function (dbHost) {
 
   app.post('/api/register', function (req, res) {
     User.register(req.body, function (results) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.json(results);
     });
   });
 
   app.post('/api/login', function (req, res) {
+    var obj = req.body;
 
-    User.login(req.body, function (results) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    User.login(obj, function (results) {
       if (results.success === 1) {
         var user = results.user;
 
         var profile = {
-          _id: user._id,
           company: user.company,
-          userName: user.userName,
+          user: {
+            _id: user._id,
+            userName: user.userName,
+            name: user.name,
+            role: user.role,
+          },
+          city: obj.city,
         };
 
         // we are sending the profile in the token
+        // 有效时间 7day 60 * 60 * 24 * 7 = 604800
         var token = jwt.sign(
           profile,
           process.env.JWT_TOKEN_SECRET,
-          { expiresIn: 60 * 60 * 24 }
+          { expiresIn: 604800 }
         );
 
         return res.json({ success: 1, token: token });
       }
 
-      return res.json(results);
+      res.json(results);
     });
   });
 
@@ -80,8 +90,7 @@ exports.createApp = function (dbHost) {
     var uid;
 
     if (dbHost === 'newzxmongo') {
-      res.json({ success: 10 });
-      return;
+      return res.json({ success: 10 });
     }
 
     decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);

@@ -8,58 +8,60 @@
 /* schemas/feestemp.js - Mocha schemas/feestemp test */
 'use strict';
 
-describe('schemas/feestemp.js', function () {
-  var assert = require('assert');
-  var SchemaFeestemp = require('../src/app/schemas/feestemp');
+if (require('./testconf').schemasFeestemp) {
+  describe('schemas/feestemp.js', function () {
+    var assert = require('assert');
+    var SchemaFeestemp = require('../src/app/schemas/feestemp');
 
-  var dbHost = process.env.DB_HOST_TEST;
-  var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
-  var Feestemp = Conn.model('Feestemp', SchemaFeestemp);
+    var dbHost = process.env.DB_HOST_TEST;
+    var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
+    var Feestemp = Conn.model('Feestemp', SchemaFeestemp);
 
-  var feestempObj = {
-    name: 'testFesstemp',
-    t1: {},
-  };
-  var fid;
+    var feestempObj = {
+      name: 'testFeestemp',
+      t1: {},
+    };
+    var fid;
 
-  describe('pre save', function () {
-    it('isNew createAt === updateAt', function (done) {
-      var newFeestemp = new Feestemp(feestempObj);
-      newFeestemp.save(function (err, feestemp) {
-        assert.strictEqual(err, null);
-        assert.strictEqual(feestemp.meta.createAt.valueOf(),
-            feestemp.meta.updateAt.valueOf());
-        fid = feestemp._id;
-        done();
+    describe('pre save', function () {
+      it('isNew createAt === updateAt', function (done) {
+        var newFeestemp = new Feestemp(feestempObj);
+        newFeestemp.save(function (err, feestemp) {
+          assert.strictEqual(err, null);
+          assert.strictEqual(feestemp.meta.createAt.valueOf(),
+              feestemp.meta.updateAt.valueOf());
+          fid = feestemp._id;
+          done();
+        });
+      });
+
+      it('!isNew createAt < updateAt', function (done) {
+        Feestemp.findOne({ _id: fid }, function (err, feestemp) {
+          assert.strictEqual(err, null);
+          feestemp.save(function (err, feestemp) {
+            assert.strictEqual(err, null);
+            assert(feestemp.meta.createAt.valueOf() <
+                feestemp.meta.updateAt.valueOf());
+            done();
+          });
+        });
       });
     });
 
-    it('!isNew createAt < updateAt', function (done) {
-      Feestemp.findOne({ _id: fid }, function (err, feestemp) {
-        assert.strictEqual(err, null);
-        feestemp.save(function (err, feestemp) {
+    describe('statics', function () {
+      it('findOneById', function (done) {
+        Feestemp.findOneById(fid, function (err, feestemp) {
           assert.strictEqual(err, null);
-          assert(feestemp.meta.createAt.valueOf() <
-              feestemp.meta.updateAt.valueOf());
+          assert.strictEqual(feestemp.name, feestempObj.name);
           done();
         });
       });
     });
-  });
 
-  describe('statics', function () {
-    it('findOneById', function (done) {
-      Feestemp.findOneById(fid, function (err, feestemp) {
-        assert.strictEqual(err, null);
-        assert.strictEqual(feestemp.name, feestempObj.name);
+    after(function (done) {
+      Feestemp.remove({ _id: fid }, function () {
         done();
       });
     });
   });
-
-  after(function (done) {
-    Feestemp.remove({ _id: fid }, function () {
-      done();
-    });
-  });
-});
+}

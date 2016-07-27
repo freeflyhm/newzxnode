@@ -10,4 +10,4 @@
 
 var serv = require('./app/serv');
 
-serv.boot(process.env.DB_HOST, 8081);
+serv.boot(process.env.DB_HOST, process.env.S_PORT);

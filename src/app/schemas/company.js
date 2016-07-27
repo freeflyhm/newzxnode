@@ -3,7 +3,6 @@
    maxerr: 50, nomen: true, regexp: true
  */
 
-
 /**
  * company Schema 模块
  * @module app/schemas/company
@@ -31,6 +30,7 @@ var CompanySchema = new Schema({
   fax: String,         // 传真
   province: String,    // 省
   city: String,        // 市
+  town: String,        // 区 * 已弃用
   address: String,     // 地址
   bankCard: String,    // 银行账户
   isidcard: Boolean,   // 是否需要自动验证身份证

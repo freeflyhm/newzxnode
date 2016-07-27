@@ -1,0 +1,15 @@
+{
+  "conn": true,
+  "controllersServerman": true,
+  "controllersSetplace": true,
+  "controllersUser": true,
+  "ctrl": true,
+  "model": true,
+  "schemasCompany": true,
+  "schemasFeestemp": true,
+  "schemasServerman": true,
+  "schemasSetplace": true,
+  "schemasUser": true,
+  "serv": true,
+  "util": true
+}

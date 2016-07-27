@@ -9,7 +9,7 @@
  */
 'use strict';
 
-// 公司
+// 服务费基础模板
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var FeesTempSchema = new Schema({

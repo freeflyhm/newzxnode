@@ -12,7 +12,7 @@ newzxnode 是 full REST API 服务
 
 编码 10| message - file: ~/app/controllers/user.js
 -------|---------------------------------------------------------
-10000  | _removeUser - User.remove err 
+10000  | _removeUser - User.remove err
 10001  | _remove - Company.remove err
 10002  | _remove - checked cid && uid, joe
 10003  | _companyFindOneByName - Company.findOneByName err
@@ -49,3 +49,7 @@ newzxnode 是 full REST API 服务
 10034  | update - 用户名不存在
 10035  | update - User.update err
 10036  | changeFeesTemp - Company.update err
+
+编码 11| message - file: ~/app/controllers/serverman.js
+-------|---------------------------------------------------------
+11000  | add - newServerman.save err

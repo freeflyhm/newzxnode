@@ -35,6 +35,12 @@ var UserSchema = new Schema({
     ref: 'Company',
   },
 
+  // 微信发送方账号（一个OpenID）
+  FromUserName: {
+    type: String,
+    default: '',
+  },
+
   // 用户名
   userName: {
     unique: true,
@@ -44,6 +50,7 @@ var UserSchema = new Schema({
   name: String,                   // 可写 姓名
   phone: Number,                  // 可写 手机
   qq: Number,                     // QQ
+
   // 用户权限：
   //  0：禁止登录,
   // 10：操作员（15及以上指定）,

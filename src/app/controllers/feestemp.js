@@ -8,10 +8,11 @@
  * feestemp controller 模块
  * @module app/controllers/feestemp
  */
-
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {
   var Model     = require('../model');
   var FeesTemp  = Model.getModel(dbHost, dbName, 'feestemp');
+
+  var Company   = Model.getModel(dbHost, 'auth', 'company');
 };

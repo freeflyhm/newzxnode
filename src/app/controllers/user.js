@@ -11,12 +11,12 @@
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {
+  var Model     = require('../model');
+  var User      = Model.getModel(dbHost, 'auth', 'user');
 
   //var _         = require('underscore');
 
-  var Model     = require('../model');
   var util      = require('../util');
-  var User      = Model.getModel(dbHost, 'auth', 'user');
   var Company   = Model.getModel(dbHost, 'auth', 'company');
   var FeesTemp  = Model.getModel(dbHost, dbName, 'feestemp');
   var _removeUser;
@@ -114,6 +114,15 @@ exports.createCtrl = function (dbHost, dbName) {
     var userObj = obj.userObj;
     var newCompany = new Company(companyObj);
 
+    // newCompany.save().then(function (company) {
+    //   // 添加公司 总负责人，用户权限：30
+    //   userObj.role = 30;
+    //   userObj.status = false; // false：审核中（主账户注册后需要管理员审核）
+    //   userObj.company = company._id;
+
+    //   _newUserSave(userObj, callback);
+    // });
+
     newCompany.save(function (err, company) {
       if (err) {
         return callback({ success: 10007, errMsg: err.message });
@@ -132,6 +141,10 @@ exports.createCtrl = function (dbHost, dbName) {
   _newUserSave = function (userObj, callback) {
     var newUser = new User(userObj);
 
+    // newUser.save().then(function (user) {
+    //   callback({ success: 1, user: user }); // ok
+    // });
+
     newUser.save(function (err, user) {
       if (err) {
         return callback({ success: 10008, errMsg: err.message });
@@ -144,6 +157,14 @@ exports.createCtrl = function (dbHost, dbName) {
   _comparePassword = function (o, callback) {
     var user = o.user;
     var obj = o.obj;
+
+    // user.comparePassword(obj.password).then(function (isMatch) {
+    //   if (isMatch) { // true
+    //     callback({ success: 1, user: user });
+    //   } else {
+    //     callback({ success: 10016, errMsg: '密码错误' });
+    //   }
+    // });
 
     user.comparePassword(obj.password, function (err, isMatch) {
       if (err) {
@@ -398,19 +419,6 @@ exports.createCtrl = function (dbHost, dbName) {
 
         _feesTempFind({ neObj: neObj,  companys: companys, obj: obj },
             callback);
-
-        // FeesTemp.find({ name: neObj }, { name: 1 })
-        //     .exec(function (err, fees) {
-
-        //       if (err) { return callback({}); }
-
-        //       callback({
-        //         companys: companys,
-        //         fees: fees,
-        //         obj: obj,
-        //       });
-        //     }
-        // );
       });
     } else {
       callback({});
