@@ -61,10 +61,11 @@ newzxnode 是 full REST API 服务
 
 编码 12| message - file: ~/app/controllers/dengjipai.js
 -------|---------------------------------------------------------
-12000  | _newSave - newObj.save err
-12001  | update - Dengjipai.findByIdAndUpdate err
-12002  | remove - Dengjipai.remove err
-12003  | add - Dengjipai.findOne err
+12999  | _newSave - newObj.save err
+12998  | list - Dengjipai.find err
+12996  | update - Dengjipai.findByIdAndUpdate err
+12995  | remove - Dengjipai.remove err
+12997  | add - Dengjipai.findOne err
 12004  | add - 用户 - 已存在！
 
 编码 13| message - file: ~/app/controllers/flag.js

@@ -11,7 +11,8 @@
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {
-  var Serverman = require('../model').getModel(dbHost, dbName, 'serverman');
+  var ctrlName = 'serverman';
+  var Serverman = require('../model').getModel(dbHost, dbName, ctrlName);
   var writeLog = require('../util').writeLog;
   var errCode;
 
@@ -30,7 +31,7 @@ exports.createCtrl = function (dbHost, dbName) {
     newObj.save(function (err, res) {
       if (err) {
         errCode = 11999;
-        writeLog('serverman', errCode, err, obj);
+        writeLog(ctrlName, errCode, err, obj);
         return callback({ success: errCode, errMsg: err.message });
       }
 
@@ -41,7 +42,7 @@ exports.createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     Serverman.find(obj, function (err, results) {
       if (err) {
-        writeLog('serverman', '11998', err, obj);
+        writeLog(ctrlName, '11998', err, obj);
         return callback([]);
       }
 
@@ -53,7 +54,7 @@ exports.createCtrl = function (dbHost, dbName) {
     Serverman.findOne(obj, function (err, res) {
       if (err) {
         errCode = 11997;
-        writeLog('serverman', errCode, err, obj);
+        writeLog(ctrlName, errCode, err, obj);
         return callback({ success: errCode, errMsg: err.message });
       }
 
@@ -74,7 +75,7 @@ exports.createCtrl = function (dbHost, dbName) {
       function (err, res) {
         if (err) {
           errCode = 11996;
-          writeLog('serverman', errCode, err, obj);
+          writeLog(ctrlName, errCode, err, obj);
           return callback({ success: errCode, errMsg: err.message });
         }
 
@@ -89,7 +90,7 @@ exports.createCtrl = function (dbHost, dbName) {
     Serverman.remove(obj, function (err, isOk) {
       if (err) {
         errCode = 11995;
-        writeLog('serverman', errCode, err, obj);
+        writeLog(ctrlName, errCode, err, obj);
         return callback({ success: errCode, errMsg: err.message });
       }
 

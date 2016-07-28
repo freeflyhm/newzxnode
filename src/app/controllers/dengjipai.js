@@ -11,8 +11,10 @@
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {
-  var Model = require('../model');
-  var Dengjipai = Model.getModel(dbHost, dbName, 'dengjipai');
+  var ctrlName = 'dengjipai';
+  var Dengjipai = require('../model').getModel(dbHost, dbName, ctrlName);
+  var writeLog = require('../util').writeLog;
+  var errCode;
 
   // private methods
   var _newSave;
@@ -28,7 +30,9 @@ exports.createCtrl = function (dbHost, dbName) {
 
     newObj.save(function (err, res) {
       if (err) {
-        return callback({ success: 12000, errMsg: err.message });
+        errCode = 12999;
+        writeLog(ctrlName, errCode, err, obj);
+        return callback({ success: errCode, errMsg: err.message });
       }
 
       callback({ success: 1, res: res }); // ok
@@ -38,6 +42,7 @@ exports.createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     Dengjipai.find(obj, function (err, results) {
       if (err) {
+        writeLog(ctrlName, '12998', err, obj);
         return callback([]);
       }
 
@@ -48,7 +53,9 @@ exports.createCtrl = function (dbHost, dbName) {
   add = function (obj, callback) {
     Dengjipai.findOne(obj, function (err, res) {
       if (err) {
-        return callback({ success: 12003, errMsg: err.message });
+        errCode = 12997;
+        writeLog(ctrlName, errCode, err, obj);
+        return callback({ success: errCode, errMsg: err.message });
       }
 
       if (res) {
@@ -67,7 +74,9 @@ exports.createCtrl = function (dbHost, dbName) {
       { new: true },
       function (err, res) {
         if (err) {
-          return callback({ success: 12001, errMsg: err.message });
+          errCode = 12996;
+          writeLog(ctrlName, errCode, err, obj);
+          return callback({ success: errCode, errMsg: err.message });
         }
 
         callback({ success: 1, res: res });
@@ -76,9 +85,13 @@ exports.createCtrl = function (dbHost, dbName) {
   };
 
   remove = function (id, callback) {
-    Dengjipai.remove({ _id: id }, function (err, isOk) {
+    var obj = { _id: id };
+
+    Dengjipai.remove(obj, function (err, isOk) {
       if (err) {
-        return callback({ success: 12002, errMsg: err.message });
+        errCode = 12995;
+        writeLog(ctrlName, errCode, err, obj);
+        return callback({ success: errCode, errMsg: err.message });
       }
 
       callback({ success: isOk.result.ok, _id: id });

@@ -5,11 +5,11 @@
 
 /* globals describe, it, after */
 
-/* schemas/serverman.js - Mocha schemas/serverman test */
+/* schemas/dengjipai.js - Mocha schemas/dengjipai test */
 'use strict';
 
-if (require('./testconf').schemasServerman) {
-  var file = 'serverman';
+if (require('./testconf').schemasDengjipai) {
+  var file = 'dengjipai';
   describe('schemas/' + file + '.js', function () {
     var assert = require('assert');
     var TestSchema = require('../src/app/schemas/' + file);

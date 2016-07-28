@@ -5,11 +5,11 @@
 
 /* globals describe, it, after */
 
-/* controllers/serverman.js - Mocha controllers/serverman test */
+/* controllers/dengjipai.js - Mocha controllers/dengjipai test */
 'use strict';
 
-if (require('./testconf').controllersServerman) {
-  var file = 'serverman';
+if (require('./testconf').controllersDengjipai) {
+  var file = 'dengjipai';
   describe('controllers/' + file + '.js', function () {
     var assert = require('assert');
 
@@ -42,7 +42,7 @@ if (require('./testconf').controllersServerman) {
     var sid;
 
     describe('_newSave', function () {
-      var test = { obj: { company: {}, name: {} }, success: 11999 };
+      var test = { obj: { name: {} }, success: 12999 };
 
       _test(test, TestCr._newSave);
     });
@@ -64,26 +64,23 @@ if (require('./testconf').controllersServerman) {
     });
 
     describe('add', function () {
-      var mongoose = require('mongoose');
-      var companyId = new mongoose.Types.ObjectId();
-
-      var obj11997 = { company: {}, name: {} };
-      var obj1 = { company: companyId, name: 'hemiao' };
+      var obj12997 = { name: {} };
+      var obj1 = { name: 'hemiao' };
       var tests = [
-        { obj: obj11997, success: 11997 },
+        { obj: obj12997, success: 12997 },
         { obj: obj1, success: 1 },
-        { obj: obj1, success: 11004 },
+        { obj: obj1, success: 12004 },
       ];
 
       _tests(tests, TestCr.add);
     });
 
     describe('update', function () {
-      it('success === 11996', function (done) {
+      it('success === 12996', function (done) {
         TestCr.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, 11996);
+            assert.strictEqual(results.success, 12996);
             done();
           }
         );
@@ -128,9 +125,9 @@ if (require('./testconf').controllersServerman) {
         });
       });
 
-      it('success === 11995', function (done) {
+      it('success === 12995', function (done) {
         TestCr.remove({}, function (results) {
-          assert(results.success, 11995);
+          assert(results.success, 12995);
           done();
         });
       });

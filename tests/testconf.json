@@ -2,6 +2,7 @@
   "conn": true,
   "controllersServerman": true,
   "controllersSetplace": true,
+  "controllersDengjipai": true,
   "controllersUser": true,
   "ctrl": true,
   "model": true,
@@ -9,6 +10,7 @@
   "schemasFeestemp": true,
   "schemasServerman": true,
   "schemasSetplace": true,
+  "schemasDengjipai": true,
   "schemasUser": true,
   "serv": true,
   "util": true
