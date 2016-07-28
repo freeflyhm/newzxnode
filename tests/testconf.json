@@ -1,15 +1,15 @@
 {
-  "conn": true,
-  "controllersServerman": true,
-  "controllersSetplace": true,
-  "controllersUser": true,
-  "ctrl": true,
-  "model": true,
-  "schemasCompany": true,
-  "schemasFeestemp": true,
-  "schemasServerman": true,
-  "schemasSetplace": true,
-  "schemasUser": true,
-  "serv": true,
-  "util": true
+  "conn": false,
+  "controllersServerman": false,
+  "controllersSetplace": false,
+  "controllersUser": false,
+  "ctrl": false,
+  "model": false,
+  "schemasCompany": false,
+  "schemasFeestemp": false,
+  "schemasServerman": false,
+  "schemasSetplace": false,
+  "schemasUser": false,
+  "serv": false,
+  "util": false
 }

@@ -5,15 +5,14 @@
  */
 
 /**
- * serverman controller 模块
- * @module app/controllers/serverman
+ * guide controller 模块
+ * @module app/controllers/guide
  */
 'use strict';
 
 exports.createCtrl = function (dbHost, dbName) {
-  var Serverman = require('../model').getModel(dbHost, dbName, 'serverman');
-  var writeLog = require('../util').writeLog;
-  var errCode;
+  var Model = require('../model');
+  var Guide = Model.getModel(dbHost, dbName, 'guide');
 
   // private methods
   var _newSave;
@@ -25,13 +24,11 @@ exports.createCtrl = function (dbHost, dbName) {
   var remove;
 
   _newSave = function (obj, callback) {
-    var newObj = new Serverman(obj);
+    var newObj = new Guide(obj);
 
     newObj.save(function (err, res) {
       if (err) {
-        errCode = 11999;
-        writeLog('serverman', errCode, err, obj);
-        return callback({ success: errCode, errMsg: err.message });
+        return callback({ success: 15000, errMsg: err.message });
       }
 
       callback({ success: 1, res: res }); // ok
@@ -39,9 +36,8 @@ exports.createCtrl = function (dbHost, dbName) {
   };
 
   list = function (obj, callback) {
-    Serverman.find(obj, function (err, results) {
+    Guide.find(obj, function (err, results) {
       if (err) {
-        writeLog('serverman', '11998', err, obj);
         return callback([]);
       }
 
@@ -50,15 +46,13 @@ exports.createCtrl = function (dbHost, dbName) {
   };
 
   add = function (obj, callback) {
-    Serverman.findOne(obj, function (err, res) {
+    Guide.findOne(obj, function (err, res) {
       if (err) {
-        errCode = 11997;
-        writeLog('serverman', errCode, err, obj);
-        return callback({ success: errCode, errMsg: err.message });
+        return callback({ success: 15003, errMsg: err.message });
       }
 
       if (res) {
-        return callback({ success: 11004, errMsg: '姓名 - 已存在！' });
+        return callback({ success: 15004, errMsg: '地接人员 - 已存在！' });
       } else {
         // 检验通过，保存
         _newSave(obj, callback);
@@ -67,15 +61,13 @@ exports.createCtrl = function (dbHost, dbName) {
   };
 
   update = function (obj, callback) {
-    Serverman.findByIdAndUpdate(
+    Guide.findByIdAndUpdate(
       obj._id,
       { $set: { name: obj.name, 'meta.updateAt': Date.now() } },
       { new: true },
       function (err, res) {
         if (err) {
-          errCode = 11996;
-          writeLog('serverman', errCode, err, obj);
-          return callback({ success: errCode, errMsg: err.message });
+          return callback({ success: 15001, errMsg: err.message });
         }
 
         callback({ success: 1, res: res });
@@ -84,13 +76,9 @@ exports.createCtrl = function (dbHost, dbName) {
   };
 
   remove = function (id, callback) {
-    var obj = { _id: id };
-
-    Serverman.remove(obj, function (err, isOk) {
+    Guide.remove({ _id: id }, function (err, isOk) {
       if (err) {
-        errCode = 11995;
-        writeLog('serverman', errCode, err, obj);
-        return callback({ success: errCode, errMsg: err.message });
+        return callback({ success: 15002, errMsg: err.message });
       }
 
       callback({ success: isOk.result.ok, _id: id });

@@ -38,6 +38,12 @@ if (require('./testconf').controllersServerman) {
 
     var sid;
 
+    describe('_newSave', function () {
+      var test = { obj: { company: {}, name: {} }, success: 11999 };
+
+      _test(test, Serverman._newSave);
+    });
+
     describe('list', function () {
       it('should ok', function (done) {
         Serverman.list({}, function (result) {
@@ -55,22 +61,26 @@ if (require('./testconf').controllersServerman) {
     });
 
     describe('add', function () {
-      var obj11000 = { company: {}, name: {} };
-      var obj1 = { name: 'hemiao' };
+      var mongoose = require('mongoose');
+      var companyId = new mongoose.Types.ObjectId();
+
+      var obj11997 = { company: {}, name: {} };
+      var obj1 = { company: companyId, name: 'hemiao' };
       var tests = [
-        { obj: obj11000, success: 11000 },
+        { obj: obj11997, success: 11997 },
         { obj: obj1, success: 1 },
+        { obj: obj1, success: 11004 },
       ];
 
       _tests(tests, Serverman.add);
     });
 
     describe('update', function () {
-      it('success === 11001', function (done) {
+      it('success === 11996', function (done) {
         Serverman.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, 11001);
+            assert.strictEqual(results.success, 11996);
             done();
           }
         );
@@ -80,20 +90,20 @@ if (require('./testconf').controllersServerman) {
         ServermanModel.count({}, function (err, count) {
           var beforeCount = count;
           assert.strictEqual(err, null);
-          ServermanModel.findOne({ name: 'hemiao' }, function (err, serverman) {
-            var beforeTime = serverman.meta.updateAt.valueOf();
-            sid  = serverman._id;
+          ServermanModel.findOne({ name: 'hemiao' }, function (err, res) {
+            var beforeTime = res.meta.updateAt.valueOf();
+            sid  = res._id;
 
             assert.strictEqual(err, null);
 
             Serverman.update(
-              { _id: serverman._id, name: 'heb' },
+              { _id: res._id, name: 'heb' },
               function (results) {
                 assert.strictEqual(results.success, 1);
 
-                assert.strictEqual(results.serverman.name, 'heb');
+                assert.strictEqual(results.res.name, 'heb');
                 assert(beforeTime <
-                    results.serverman.meta.updateAt.valueOf());
+                    results.res.meta.updateAt.valueOf());
 
                 ServermanModel.count({}, function (err, count) {
                   assert.strictEqual(err, null);
@@ -115,9 +125,9 @@ if (require('./testconf').controllersServerman) {
         });
       });
 
-      it('success === 11002', function (done) {
+      it('success === 11995', function (done) {
         Serverman.remove({}, function (results) {
-          assert(results.success, 11002);
+          assert(results.success, 11995);
           done();
         });
       });

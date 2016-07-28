@@ -12,6 +12,7 @@
 
 exports.createCtrl = function (dbHost, dbName) {
   var SetPlace = require('../model').getModel(dbHost, dbName, 'setplace');
+  var writeLog = require('../util').writeLog;
 
   // public method
   var list;
@@ -19,6 +20,7 @@ exports.createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     SetPlace.find(obj, function (err, results) {
       if (err) {
+        writeLog('setplace', '18999', err, obj);
         return callback([]);
       }
 

@@ -52,4 +52,57 @@ newzxnode 是 full REST API 服务
 
 编码 11| message - file: ~/app/controllers/serverman.js
 -------|---------------------------------------------------------
-11000  | add - newServerman.save err
+11999  | _newSave - newObj.save err
+11998  | list - Serverman.find err
+11996  | update - Serverman.findByIdAndUpdate err
+11995  | remove - Serverman.remove err
+11997  | add - Serverman.findOne err
+11004  | add - 姓名 - 已存在！
+
+编码 12| message - file: ~/app/controllers/dengjipai.js
+-------|---------------------------------------------------------
+12000  | _newSave - newObj.save err
+12001  | update - Dengjipai.findByIdAndUpdate err
+12002  | remove - Dengjipai.remove err
+12003  | add - Dengjipai.findOne err
+12004  | add - 用户 - 已存在！
+
+编码 13| message - file: ~/app/controllers/flag.js
+-------|---------------------------------------------------------
+13000  | _newSave - newObj.save err
+13001  | update - Flag.findByIdAndUpdate err
+13002  | remove - Flag.remove err
+13003  | add - Flag.findOne err
+13004  | add - 旗子 - 已存在！
+
+编码 14| message - file: ~/app/controllers/guest.js
+-------|---------------------------------------------------------
+14000  | _newSave - newObj.save err
+14001  | update - Guest.findByIdAndUpdate err
+14002  | remove - Guest.remove err
+14003  | add - Guest.findOne err
+14004  | add - 收客单位 - 已存在！
+
+编码 15| message - file: ~/app/controllers/guide.js
+-------|---------------------------------------------------------
+15000  | _newSave - newObj.save err
+15001  | update - Guide.findByIdAndUpdate err
+15002  | remove - Guide.remove err
+15003  | add - Guide.findOne err
+15004  | add - 地接人员 - 已存在！
+
+编码 16| message - file: ~/app/controllers/idcardsm.js
+-------|---------------------------------------------------------
+16999  | add - newObj.save err
+
+编码 17| message - file: ~/app/controllers/operator.js
+-------|---------------------------------------------------------
+17000  | _newSave - newObj.save err
+17001  | update - Operator.findByIdAndUpdate err
+17002  | remove - Operator.remove err
+17003  | add - Operator.findOne err
+17004  | add - 团队操作人 - 已存在！
+
+编码 18| message - file: ~/app/controllers/setplace.js
+-------|---------------------------------------------------------
+18999  | list - SetPlace.find err

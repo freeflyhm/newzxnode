@@ -17,7 +17,6 @@ if (require('./testconf').controllersSetplace) {
     describe('list', function () {
       it('should ok', function (done) {
         Setplace.list({}, function (result) {
-          console.log(result);
           assert.strictEqual(JSON.stringify(result), '[]');
           done();
         });
@@ -25,7 +24,6 @@ if (require('./testconf').controllersSetplace) {
 
       it('should ok', function (done) {
         Setplace.list({ _id: {} }, function (result) {
-          console.log(result);
           assert.strictEqual(JSON.stringify(result), '[]');
           done();
         });

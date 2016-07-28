@@ -16,7 +16,7 @@ var ObjectId = Schema.Types.ObjectId;
 
 var ServermanSchema = new Schema({
   company: ObjectId,
-  name: String,         // 姓名
+  name: String,      // 姓名 同一个company姓名不能重复
   meta: {
     createAt: {
       type: Date,

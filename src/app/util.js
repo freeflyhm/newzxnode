@@ -1,5 +1,5 @@
 /* jshint
-   node:  true, devel:  true, maxparams: 2,
+   node:  true, devel:  true, maxparams: 4, maxstatements: 3,
    maxerr: 50, nomen: true, regexp: true
  */
 
@@ -8,8 +8,9 @@
  * @module app/util
  */
 'use strict';
-
 var validator = require('validator');
+var fs = require('fs');
+var _logPath = process.cwd() + '/src/log/';
 
 var _validatorAlNum =
   /**
@@ -120,4 +121,15 @@ exports.validatorCompanyAbbr = function (companyAbbr) {
   return !!(companyAbbr &&
         typeof companyAbbr === 'string' &&
         validator.isLength(companyAbbr, 2, 8));
+};
+
+exports.writeLog = function (ctrlName, errCode, err, obj) {
+  var errorLogfile =
+      fs.createWriteStream(_logPath + ctrlName + '.log', { flags: 'a' });
+  var meta = '---------------------------------\n' +
+      '[' + new Date() + '] write db error ' + errCode + ':\n';
+
+  errorLogfile.write(meta +
+      JSON.stringify(err) +
+      '\nobj:' + JSON.stringify(obj) + '\n\n');
 };

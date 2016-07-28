@@ -1,5 +1,5 @@
 /* jshint
-   node:  true, devel:  true, maxstatements: 40, maxparams: 3,
+   node:  true, devel:  true, maxstatements: 60, maxparams: 3,
    maxerr: 50, nomen: true, regexp: true, maxdepth: 3
  */
 
@@ -42,6 +42,7 @@ exports.listen = function (serv) {
     var checkCus10 = false;
     var cookieUser;
     var Setplace;
+    var Serverman;
 
     // 初始化房间
     if (!cookieUsers[dbName]) {
@@ -57,6 +58,7 @@ exports.listen = function (serv) {
       // 正常通过
       cookieUser = {
         _id: uid,
+        companyId: decoded.company._id,
         socketId: socket.id,
         category: decoded.company.category,
         role: decoded.user.role,
@@ -97,24 +99,72 @@ exports.listen = function (serv) {
 
       // 初始化 controllers
       Setplace = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'setplace');
+      Serverman = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'serverman');
 
       // echo 测试专用
       socket.on('emit-echo', function (msg, callback) {
         callback(msg);
       });
 
-      socket.on('emit-getlist', function (obj, callback) {
+      socket.on('emit-setplacelist', function (obj, callback) {
         if (checkSys30) {
-          Setplace.list(obj, function (results) {
+          Setplace.list({}, function (results) {
             callback(results);
           });
         } else {
           callback([]);
         }
       });
+
+      socket.on('emit-servermanlist', function (obj, callback) {
+        if (checkSys20) {
+          Serverman.list({ company: cookieUser.companyId }, function (results) {
+            callback(results);
+          });
+        } else {
+          callback([]);
+        }
+      });
+
+      socket.on('emit-servermanadd', function (name, callback) {
+        if (checkSys20) {
+          Serverman.add(
+            { company: cookieUser.companyId, name: name },
+            function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 11999, errMsg: '权限不够' });
+        }
+      });
+
+      socket.on('emit-servermanupdate', function (obj, callback) {
+        if (checkSys20) {
+          Serverman.update(
+            { _id: obj.id, name: obj.name },
+            function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 11999, errMsg: '权限不够' });
+        }
+      });
+
+      socket.on('emit-servermanremove', function (id, callback) {
+        if (checkSys20) {
+          Serverman.remove(id, function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 11998, errMsg: '权限不够' });
+        }
+      });
     }
 
-    // 刷新、关闭网页、退出浏览器
+    // 断开连接
     socket.on('disconnect', function () {
       delete cookieUsers[dbName][uid];
     });
