@@ -32,7 +32,7 @@ var FeesTempSchema = new Schema({
     //smType2      : { type: Number, default: 1 },      类型2: 1 内   2 外
     //teamType     : { type: String, default: '散拼' }, 类型 包团 / 散拼
     // 基本服务费 : 基本起步价格basStepPrice 最高价格basMaxPrice
-    basStepPrice: { type: Number, default: 1000, },
+    basStepPrice: { type: Number, default: 1000 },
     basMaxPrice:  { type: Number, default: 3000 },
 
     // 加班费     : 开始时间addStartTime 截止时间addEndTime 收费addPrice
@@ -200,11 +200,11 @@ FeesTempSchema.pre('save', function (next) {
   next();
 });
 
-FeesTempSchema.statics = {
-  findOneById: function (id, cb) {
-    return this.findOne({ _id: id })
-      .exec(cb);
-  },
-};
+// FeesTempSchema.statics = {
+//   findOneById: function (id, cb) {
+//     return this.findOne({ _id: id })
+//       .exec(cb);
+//   },
+// };
 
 module.exports = FeesTempSchema;

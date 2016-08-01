@@ -5,11 +5,11 @@
 
 /* globals describe, it, after */
 
-/* controllers/serverman.js - Mocha controllers/serverman test */
+/* controllers/feestemp.js - Mocha controllers/feestemp test */
 'use strict';
 
-if (require('./testconf').controllersServerman) {
-  var file = 'serverman';
+if (require('./testconf').controllersFeestemp) {
+  var file = 'feestemp';
   describe('controllers/' + file + '.js', function () {
     var assert = require('assert');
 
@@ -41,41 +41,13 @@ if (require('./testconf').controllersServerman) {
 
     var sid;
 
-    // describe('_addSave', function () {
-    //   var test = { obj: { company: {}, name: {} }, success: 11999 };
-
-    //   _test(test, TestCr._addSave);
-    // });
-
     describe('_objSave', function () {
-      it('should === 11999', function (done) {
-        var newObj = new TestModel({ name: 'hehe' });
+      it('should === 19999', function (done) {
+        var newObj = new TestModel({});
         newObj._id = {};
 
         TestCr._objSave(newObj, function (results) {
-          assert.strictEqual(results.success, 11999);
-          done();
-        });
-      });
-    });
-
-    describe('_updateSave', function () {
-      it('should === 11996', function (done) {
-        var obj = { _id: {} };
-
-        TestCr._updateSave(obj, function (results) {
-          assert.strictEqual(results.success, 11996);
-          done();
-        });
-      });
-    });
-
-    describe('_findOne', function () {
-      it('should === 11997', function (done) {
-        var obj = { name: {} };
-
-        TestCr._findOne(obj, null, function (results) {
-          assert.strictEqual(results.success, 11997);
+          assert.strictEqual(results.success, 19999);
           done();
         });
       });
@@ -98,26 +70,20 @@ if (require('./testconf').controllersServerman) {
     });
 
     describe('add', function () {
-      var mongoose = require('mongoose');
-      var companyId = new mongoose.Types.ObjectId();
-
-      var obj11014 = { company: {}, name: {} };
-      var obj1 = { company: companyId, name: '回调' };
+      var obj1 = { name: '回调' };
       var tests = [
-        { obj: obj11014, success: 11014 },
         { obj: obj1, success: 1 },
-        { obj: obj1, success: 11004 },
       ];
 
       _tests(tests, TestCr.add);
     });
 
     describe('update', function () {
-      it('success === 11014', function (done) {
+      it('success === 19996', function (done) {
         TestCr.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, 11014);
+            assert.strictEqual(results.success, 19996);
             done();
           }
         );
@@ -150,22 +116,6 @@ if (require('./testconf').controllersServerman) {
               }
             );
           });
-        });
-      });
-    });
-
-    describe('remove', function () {
-      it('should ok', function (done) {
-        TestCr.remove(sid, function (results) {
-          assert(results.success, 1);
-          done();
-        });
-      });
-
-      it('success === 11995', function (done) {
-        TestCr.remove({}, function (results) {
-          assert(results.success, 11995);
-          done();
         });
       });
     });

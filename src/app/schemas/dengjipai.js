@@ -13,7 +13,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var DengjipaiSchema = new Schema({
-  name: String,     // 用户
+  name: {
+    unique: true,
+    type: String,
+  },     // 用户
   password: String, // 口令
   meta: {
     createAt: {

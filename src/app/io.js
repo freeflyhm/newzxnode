@@ -42,6 +42,8 @@ exports.listen = function (serv) {
     var checkCus10 = false;
     var cookieUser;
     var Setplace;
+    var Feestemp;
+    var Dengjipai;
     var Serverman;
 
     // 初始化房间
@@ -99,6 +101,8 @@ exports.listen = function (serv) {
 
       // 初始化 controllers
       Setplace = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'setplace');
+      Feestemp = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'feestemp');
+      Dengjipai = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'dengjipai');
       Serverman = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'serverman');
 
       // echo 测试专用
@@ -106,6 +110,7 @@ exports.listen = function (serv) {
         callback(msg);
       });
 
+      // 集合地点 30
       socket.on('emit-setplacelist', function (obj, callback) {
         if (checkSys30) {
           Setplace.list({}, function (results) {
@@ -116,6 +121,79 @@ exports.listen = function (serv) {
         }
       });
 
+      // 服务费模板 30
+      socket.on('emit-feestemplist', function (obj, callback) {
+        if (checkSys30) {
+          Feestemp.list({}, function (results) {
+            callback(results);
+          });
+        } else {
+          callback([]);
+        }
+      });
+
+      socket.on('emit-feestempupdate', function (obj, callback) {
+        if (checkSys30) {
+          Feestemp.update(
+            obj,
+            function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 19998, errMsg: '权限不够' });
+        }
+      });
+
+      // 登机牌用户 30
+      socket.on('emit-dengjipailist', function (obj, callback) {
+        if (checkSys30) {
+          Dengjipai.list({}, function (results) {
+            callback(results);
+          });
+        } else {
+          callback([]);
+        }
+      });
+
+      socket.on('emit-dengjipaiadd', function (obj, callback) {
+        if (checkSys30) {
+          Dengjipai.add(
+            { name: obj.name, password: obj.password },
+            function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 12999, errMsg: '权限不够' });
+        }
+      });
+
+      socket.on('emit-dengjipaiupdate', function (obj, callback) {
+        if (checkSys30) {
+          Dengjipai.update(
+            { _id: obj.id, name: obj.name, password: obj.password },
+            function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 12998, errMsg: '权限不够' });
+        }
+      });
+
+      socket.on('emit-dengjipairemove', function (obj, callback) {
+        if (checkSys30) {
+          Dengjipai.remove(obj.id, function (results) {
+              callback(results);
+            }
+          );
+        } else {
+          callback({ success: 12997, errMsg: '权限不够' });
+        }
+      });
+
+      // 现场责任人 20
       socket.on('emit-servermanlist', function (obj, callback) {
         if (checkSys20) {
           Serverman.list({ company: cookieUser.companyId }, function (results) {
@@ -126,10 +204,10 @@ exports.listen = function (serv) {
         }
       });
 
-      socket.on('emit-servermanadd', function (name, callback) {
+      socket.on('emit-servermanadd', function (obj, callback) {
         if (checkSys20) {
           Serverman.add(
-            { company: cookieUser.companyId, name: name },
+            { company: cookieUser.companyId, name: obj.name },
             function (results) {
               callback(results);
             }
@@ -142,24 +220,24 @@ exports.listen = function (serv) {
       socket.on('emit-servermanupdate', function (obj, callback) {
         if (checkSys20) {
           Serverman.update(
-            { _id: obj.id, name: obj.name },
+            { _id: obj.id, company: cookieUser.companyId, name: obj.name },
             function (results) {
               callback(results);
             }
           );
         } else {
-          callback({ success: 11999, errMsg: '权限不够' });
+          callback({ success: 11998, errMsg: '权限不够' });
         }
       });
 
-      socket.on('emit-servermanremove', function (id, callback) {
+      socket.on('emit-servermanremove', function (obj, callback) {
         if (checkSys20) {
-          Serverman.remove(id, function (results) {
+          Serverman.remove(obj.id, function (results) {
               callback(results);
             }
           );
         } else {
-          callback({ success: 11998, errMsg: '权限不够' });
+          callback({ success: 11997, errMsg: '权限不够' });
         }
       });
     }

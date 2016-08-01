@@ -48,15 +48,15 @@ if (require('./testconf').schemasFeestemp) {
       });
     });
 
-    describe('statics', function () {
-      it('findOneById', function (done) {
-        Feestemp.findOneById(fid, function (err, feestemp) {
-          assert.strictEqual(err, null);
-          assert.strictEqual(feestemp.name, feestempObj.name);
-          done();
-        });
-      });
-    });
+    // describe('statics', function () {
+    //   it('findOneById', function (done) {
+    //     Feestemp.findOneById(fid, function (err, feestemp) {
+    //       assert.strictEqual(err, null);
+    //       assert.strictEqual(feestemp.name, feestempObj.name);
+    //       done();
+    //     });
+    //   });
+    // });
 
     after(function (done) {
       Feestemp.remove({ _id: fid }, function () {

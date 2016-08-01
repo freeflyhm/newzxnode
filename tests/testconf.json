@@ -3,6 +3,7 @@
   "controllersServerman": true,
   "controllersSetplace": true,
   "controllersDengjipai": true,
+  "controllersFeestemp": true,
   "controllersUser": true,
   "ctrl": true,
   "model": true,

@@ -41,22 +41,50 @@ if (require('./testconf').controllersDengjipai) {
 
     var sid;
 
-    describe('_newSave', function () {
-      var test = { obj: { name: {} }, success: 12999 };
+    describe('_objSave', function () {
+      it('should === 12999', function (done) {
+        var newObj = new TestModel({ name: 'hehe' });
+        newObj._id = {};
 
-      _test(test, TestCr._newSave);
+        TestCr._objSave(newObj, function (results) {
+          assert.strictEqual(results.success, 12999);
+          done();
+        });
+      });
+    });
+
+    describe('_findOneById', function () {
+      it('should === 12996', function (done) {
+        var obj = { _id: {} };
+
+        TestCr._findOneById(obj, function (results) {
+          assert.strictEqual(results.success, 12996);
+          done();
+        });
+      });
+    });
+
+    describe('_findOneByName', function () {
+      it('should === 12997', function (done) {
+        var obj = { name: {} };
+
+        TestCr._findOneByName(obj, null, function (results) {
+          assert.strictEqual(results.success, 12997);
+          done();
+        });
+      });
     });
 
     describe('list', function () {
-      it('should ok', function (done) {
-        TestCr.list({}, function (result) {
+      it('should err 12998', function (done) {
+        TestCr.list({ _id: {} }, function (result) {
           assert.strictEqual(JSON.stringify(result), '[]');
           done();
         });
       });
 
       it('should ok', function (done) {
-        TestCr.list({ _id: {} }, function (result) {
+        TestCr.list({}, function (result) {
           assert.strictEqual(JSON.stringify(result), '[]');
           done();
         });
@@ -64,10 +92,10 @@ if (require('./testconf').controllersDengjipai) {
     });
 
     describe('add', function () {
-      var obj12997 = { name: {} };
-      var obj1 = { name: 'hemiao' };
+      var obj12014 = { name: {} };
+      var obj1 = { name: '何必', password: '123456' };
       var tests = [
-        { obj: obj12997, success: 12997 },
+        { obj: obj12014, success: 12014 },
         { obj: obj1, success: 1 },
         { obj: obj1, success: 12004 },
       ];
@@ -76,39 +104,46 @@ if (require('./testconf').controllersDengjipai) {
     });
 
     describe('update', function () {
-      it('success === 12996', function (done) {
-        TestCr.update(
-          { _id: {}, name: 'dd' },
-          function (results) {
-            assert.strictEqual(results.success, 12996);
-            done();
-          }
-        );
-      });
+      var obj12015 = { name: '何必' };
+      var test = { obj: obj12015, success: 12015 };
+
+      _test(test, TestCr.update);
 
       it('should ok', function (done) {
         TestModel.count({}, function (err, count) {
           var beforeCount = count;
           assert.strictEqual(err, null);
-          TestModel.findOne({ name: 'hemiao' }, function (err, res) {
+          TestModel.findOne({ name: '何必' }, function (err, res) {
             var beforeTime = res.meta.updateAt.valueOf();
             sid  = res._id;
 
             assert.strictEqual(err, null);
 
             TestCr.update(
-              { _id: res._id, name: 'heb' },
+              { _id: res._id, name: '回调', password: '123456' },
               function (results) {
                 assert.strictEqual(results.success, 1);
 
-                assert.strictEqual(results.res.name, 'heb');
+                assert.strictEqual(results.res.name, '回调');
                 assert(beforeTime <
                     results.res.meta.updateAt.valueOf());
 
                 TestModel.count({}, function (err, count) {
                   assert.strictEqual(err, null);
                   assert.strictEqual(beforeCount, count);
-                  done();
+                  TestCr.update(
+                    { _id: res._id, name: '回调', password: '1234567' },
+                    function (results) {
+                      assert.strictEqual(results.success, 1);
+                      TestCr.update(
+                        { _id: '', name: '回调', password: '1234567' },
+                        function (results) {
+                          assert.strictEqual(results.success, 12005);
+                          done();
+                        }
+                      );
+                    }
+                  );
                 });
               }
             );

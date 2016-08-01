@@ -1,5 +1,5 @@
 /* jshint
-   node:  true, devel:  true, maxparams: 4, maxstatements: 3,
+   node:  true, devel:  true, maxparams: 5, maxstatements: 6,
    maxerr: 50, nomen: true, regexp: true
  */
 
@@ -10,7 +10,13 @@
 'use strict';
 var validator = require('validator');
 var fs = require('fs');
-var _logPath = process.cwd() + '/src/log/';
+console.log('process.cwd()-----------------------------------------');
+console.log(process.cwd());
+console.log(process.cwd() === '/');
+var _logPath = (process.cwd() === '/') ?
+    '/node/src/log/' :
+    (process.cwd() + '/src/log/');
+console.log(_logPath);
 
 var _validatorAlNum =
   /**

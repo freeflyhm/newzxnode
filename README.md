@@ -57,7 +57,10 @@ newzxnode 是 full REST API 服务
 11996  | update - Serverman.findByIdAndUpdate err
 11995  | remove - Serverman.remove err
 11997  | add - Serverman.findOne err
+11998  | update - Serverman.findOne err
 11004  | add - 姓名 - 已存在！
+11005  | update - 姓名 - 已存在！
+11014  | add - 姓名 - 不合法！
 
 编码 12| message - file: ~/app/controllers/dengjipai.js
 -------|---------------------------------------------------------
@@ -107,3 +110,7 @@ newzxnode 是 full REST API 服务
 编码 18| message - file: ~/app/controllers/setplace.js
 -------|---------------------------------------------------------
 18999  | list - SetPlace.find err
+
+编码 19| message - file: ~/app/controllers/feestemp.js
+-------|---------------------------------------------------------
+19999  | list - FeesTemp.find err
