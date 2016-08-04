@@ -7,6 +7,7 @@
 /**
  * mongoose model 模块
  * @module app/model
+ * require me: schemas/*, conn, util
  */
 'use strict';
 

@@ -18,7 +18,7 @@ if (require('./testconf').logpath) {
       assert.strictEqual(typeof getLogpath, 'function');
     });
 
-    it('logpath === 1', function () {
+    it('getLogpath() should return string', function () {
       assert.strictEqual(typeof getLogpath(), 'string');
     });
   });

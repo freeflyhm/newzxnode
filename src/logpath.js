@@ -5,7 +5,8 @@
  */
 
 /**
- * logpath
+ * @module logpath
+ * requre me: null
  */
 'use strict';
 

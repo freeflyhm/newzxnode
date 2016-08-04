@@ -7,6 +7,7 @@
 /**
  * mongoose ctrl 模块
  * @module app/ctrl
+ * require me: controllers/*
  */
 'use strict';
 

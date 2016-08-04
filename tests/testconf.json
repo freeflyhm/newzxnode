@@ -1,5 +1,5 @@
 {
-  "app": true,
+  "app": false,
   "conn": true,
   "controllersServerman": true,
   "controllersSetplace": true,
@@ -7,7 +7,7 @@
   "controllersFeestemp": true,
   "controllersUser": true,
   "ctrl": true,
-  "io": true,
+  "io": false,
   "logpath": true,
   "model": true,
   "schemasCompany": true,

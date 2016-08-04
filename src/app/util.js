@@ -6,6 +6,7 @@
 /**
  * 公共函数模块
  * @module app/util
+ * require me: logpath
  */
 'use strict';
 var validator = require('validator');
@@ -88,8 +89,8 @@ exports.validatorUserName = function (userName) {
 exports.validatorName = function (name) {
   return !!(name &&
       typeof name === 'string' &&
-      _validatorChineseCharacter(name) &&
-      validator.isLength(name, 2, 4));
+      validator.isLength(name, 2, 4) &&
+      _validatorChineseCharacter(name));
 };
 
 /**

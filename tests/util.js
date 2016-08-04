@@ -20,6 +20,14 @@ if (require('./testconf').util) {
       });
     };
 
+    var _tests2 = function (tests, func) {
+      tests.forEach(function (item) {
+        it('test: ' + item.test + ' should return ' + item.expect, function () {
+          assert.strictEqual(func(item.test.password, item.test.userName), item.expect);
+        });
+      });
+    };
+
     // 首字母大写
     describe('validatorReplaceFirstUpper', function () {
       it('should as Should', function () {
@@ -85,7 +93,7 @@ if (require('./testconf').util) {
         { test: {}, expect: false },
         { test: '_', expect: false },
         { test: 1, expect: false },
-        { test: 'tttttt', expect: false },
+        { test: 'rew', expect: false },
         { test: 's', expect: false },
       ];
 
@@ -95,14 +103,14 @@ if (require('./testconf').util) {
     // 密码不合法
     describe('validatorPassword', function () {
       var tests = [
-        { userName: '123456', password: {}, expect: false },
-        { userName: '123456', password: '_', expect: false },
-        { userName: '123456', password: 1, expect: false },
-        { userName: '123456', password: '1a', expect: false },
-        { userName: '123456', password: '123456', expect: false },
+        { test: { userName: '123456', password: {} }, expect: false },
+        { test: { userName: '123456', password: '_' }, expect: false },
+        { test: { userName: '123456', password: 1 }, expect: false },
+        { test: { userName: '123456', password: '1a' }, expect: false },
+        { test: { userName: '123456', password: '123456' }, expect: false },
       ];
 
-      _tests(tests, Util.validatorPassword);
+      _tests2(tests, Util.validatorPassword);
     });
 
     // 公司名不合法
@@ -129,6 +137,12 @@ if (require('./testconf').util) {
       ];
 
       _tests(tests, Util.validatorCompanyAbbr);
+    });
+
+    describe('writeLog', function () {
+      it('should can write', function () {
+        Util.writeLog('test', 'test', {}, {});
+      });
     });
   });
 }
