@@ -17,8 +17,8 @@ exports.createApp = function (dbHost) {
   //var path       = require('path');
   var bodyParser = require('body-parser');
   var jwt        = require('jsonwebtoken');
-  var Ctrl       = require('./ctrl');
-  var User       = Ctrl.getCtrl(dbHost, 'auth', 'user');
+  var getCtrl    = require('./ctrl');
+  var User       = getCtrl(dbHost, 'auth', 'user');
 
   /* 实例化 Express.js 对象 */
   var app = express();

@@ -42,11 +42,11 @@ var models = {};
  */
 var _createModel = function (dbHost, dbName, schemaName) {
   var Schema = require('./schemas/' + schemaName);
-  var conn = require('./conn');
+  var getConn = require('./conn');
 
   // 首字母大写
   var validatorReplaceFirstUpper = require('./util').validatorReplaceFirstUpper;
-  var c = conn.getConn(dbHost, dbName);
+  var c = getConn(dbHost, dbName);
 
   return c.model(validatorReplaceFirstUpper(schemaName), Schema);
 };
@@ -59,7 +59,7 @@ var _createModel = function (dbHost, dbName, schemaName) {
  * @param   {String} schemaName - schema
  * @returns {Model}  model      - mongoose model
  */
-exports.getModel = function (dbHost, dbName, schemaName) {
+var getModel = function (dbHost, dbName, schemaName) {
   var md;
 
   if (models[dbName]) {
@@ -80,3 +80,5 @@ exports.getModel = function (dbHost, dbName, schemaName) {
     return md;
   }
 };
+
+module.exports = getModel;

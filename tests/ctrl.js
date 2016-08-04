@@ -12,7 +12,7 @@ if (require('./testconf').ctrl) {
   describe('Ctrl.getCtrl', function () {
     var assert = require('assert');
     var dbHost = process.env.DB_HOST_TEST;
-    var getCtrl = require('../src/app/ctrl').getCtrl;
+    var getCtrl = require('../src/app/ctrl');
     var ctrl1 = getCtrl(dbHost, 'sz', 'feestemp');
     var ctrl2 = getCtrl(dbHost, 'sz', 'feestemp');
     var ctrl3 = getCtrl(dbHost, 'sz', 'setplace');

@@ -11,8 +11,8 @@
 if (require('./testconf').controllersSetplace) {
   describe('controllers/setplace.js', function () {
     var assert = require('assert');
-    var SetplaceCtrl = require('../src/app/controllers/setplace');
-    var Setplace = SetplaceCtrl.createCtrl(process.env.DB_HOST_TEST, 'sz');
+    var createCtrl = require('../src/app/controllers/setplace');
+    var Setplace = createCtrl(process.env.DB_HOST_TEST, 'sz');
 
     describe('list', function () {
       it('should ok', function (done) {

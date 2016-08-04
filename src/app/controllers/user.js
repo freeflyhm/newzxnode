@@ -10,15 +10,15 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
-  var Model     = require('../model');
-  var User      = Model.getModel(dbHost, 'auth', 'user');
+var createCtrl = function (dbHost, dbName) {
+  var getModel  = require('../model');
+  var User      = getModel(dbHost, 'auth', 'user');
 
   //var _         = require('underscore');
 
   var util      = require('../util');
-  var Company   = Model.getModel(dbHost, 'auth', 'company');
-  var FeesTemp  = Model.getModel(dbHost, dbName, 'feestemp');
+  var Company   = getModel(dbHost, 'auth', 'company');
+  var FeesTemp  = getModel(dbHost, dbName, 'feestemp');
   var _removeUser;
   var _remove;
   var _companyFindOneByName;
@@ -445,3 +445,5 @@ exports.createCtrl = function (dbHost, dbName) {
     companylist:            companylist,
   };
 };
+
+module.exports = createCtrl;

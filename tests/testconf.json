@@ -1,4 +1,5 @@
 {
+  "app": true,
   "conn": true,
   "controllersServerman": true,
   "controllersSetplace": true,
@@ -6,6 +7,8 @@
   "controllersFeestemp": true,
   "controllersUser": true,
   "ctrl": true,
+  "io": true,
+  "logpath": true,
   "model": true,
   "schemasCompany": true,
   "schemasFeestemp": true,
@@ -13,6 +16,6 @@
   "schemasSetplace": true,
   "schemasDengjipai": true,
   "schemasUser": true,
-  "serv": true,
+  "serv": false,
   "util": true
 }

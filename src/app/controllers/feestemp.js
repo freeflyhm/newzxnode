@@ -10,10 +10,10 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
+var createCtrl = function (dbHost, dbName) {
   var ctrlName = 'feestemp';
-  var Model = require('../model');
-  var FeesTemp = Model.getModel(dbHost, dbName, ctrlName);
+  var getModel = require('../model');
+  var FeesTemp = getModel(dbHost, dbName, ctrlName);
   var util = require('../util');
   var _ = require('underscore');
   var errCode;
@@ -83,3 +83,5 @@ exports.createCtrl = function (dbHost, dbName) {
     update: update,
   };
 };
+
+module.exports = createCtrl;

@@ -10,36 +10,37 @@
 'use strict';
 var validator = require('validator');
 var fs = require('fs');
-console.log('process.cwd()-----------------------------------------');
-console.log(process.cwd());
-console.log(process.cwd() === '/');
-var _logPath = (process.cwd() === '/') ?
-    '/node/src/log/' :
-    (process.cwd() + '/src/log/');
-console.log(_logPath);
 
-var _validatorAlNum =
-  /**
-   * 字母或数字组合
-   *
-   * @alias module:app/util.validatorAlNum
-   * @param {String} str - 字符串
-   * @returns {Boolean}
-   */
-  exports.validatorAlNum = function (str) {
-    return /^[a-zA-Z0-9]*$/.test(str);
-  };
+// var _logPath = (process.cwd() === '/') ?
+//     '/node/src/log/' :
+//     (process.cwd() + '/src/log/');
 
-var _validatorChineseCharacter =
-  /**
-   * 必须是中文字符
-   *
-   * @param {String} str - 字符串
-   * @returns {Boolean}
-   */
-  exports.validatorChineseCharacter = function (str) {
-    return /^[\u4E00-\uFA29]*$/.test(str);
-  };
+var _logPath = require('../logpath')() + '/log/';
+
+/**
+ * 字母或数字组合
+ *
+ * @alias module:app/util.validatorAlNum
+ * @param {String} str - 字符串
+ * @returns {Boolean}
+ */
+var _validatorAlNum = function (str) {
+  return /^[a-zA-Z0-9]*$/.test(str);
+};
+
+/**
+ * 必须是中文字符
+ *
+ * @param {String} str - 字符串
+ * @returns {Boolean}
+ */
+var _validatorChineseCharacter = function (str) {
+  return /^[\u4E00-\uFA29]*$/.test(str);
+};
+
+exports.validatorAlNum = _validatorAlNum;
+
+exports.validatorChineseCharacter = _validatorChineseCharacter;
 
 /**
  * 首字母大写

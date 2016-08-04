@@ -14,7 +14,7 @@ if (require('./testconf').schemasFeestemp) {
     var SchemaFeestemp = require('../src/app/schemas/feestemp');
 
     var dbHost = process.env.DB_HOST_TEST;
-    var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
+    var Conn = require('../src/app/conn')(dbHost, 'sz');
     var Feestemp = Conn.model('Feestemp', SchemaFeestemp);
 
     var feestempObj = {

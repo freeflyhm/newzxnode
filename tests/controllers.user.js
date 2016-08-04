@@ -11,8 +11,8 @@
 if (require('./testconf').controllersUser) {
   describe('controllers/user.js', function () {
     var assert = require('assert');
-    var UserCtrl = require('../src/app/controllers/user');
-    var User = UserCtrl.createCtrl(process.env.DB_HOST_TEST, 'auth');
+    var createCtrl = require('../src/app/controllers/user');
+    var User = createCtrl(process.env.DB_HOST_TEST, 'auth');
 
     var companyObj = {
       name: 'testCompany',

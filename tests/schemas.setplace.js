@@ -8,13 +8,13 @@
 /* schemas/setplace.js - Mocha schemas/setplace test */
 'use strict';
 
-if (require('./testconf').schemasSetplace) {  
+if (require('./testconf').schemasSetplace) {
   describe('schemas/setplace.js', function () {
     var assert = require('assert');
     var SchemaSetplace = require('../src/app/schemas/setplace');
 
     var dbHost = process.env.DB_HOST_TEST;
-    var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
+    var Conn = require('../src/app/conn')(dbHost, 'sz');
     var Setplace = Conn.model('Setplace', SchemaSetplace);
 
     var setplaceObj = {

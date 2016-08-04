@@ -14,7 +14,7 @@ if (require('./testconf').schemasUser) {
     var SchemaUser = require('../src/app/schemas/user');
 
     var dbHost = process.env.DB_HOST_TEST;
-    var Conn = require('../src/app/conn').getConn(dbHost, 'auth');
+    var Conn = require('../src/app/conn')(dbHost, 'auth');
     var User = Conn.model('User', SchemaUser);
     var bcrypt = require('bcrypt-nodejs');
 

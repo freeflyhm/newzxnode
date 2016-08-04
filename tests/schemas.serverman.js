@@ -15,7 +15,7 @@ if (require('./testconf').schemasServerman) {
     var TestSchema = require('../src/app/schemas/' + file);
 
     var dbHost = process.env.DB_HOST_TEST;
-    var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
+    var Conn = require('../src/app/conn')(dbHost, 'sz');
     var util = require('../src/app/util');
     var TestModel =
         Conn.model(util.validatorReplaceFirstUpper(file), TestSchema);

@@ -15,11 +15,11 @@ if (require('./testconf').controllersDengjipai) {
 
     var dbHost = process.env.DB_HOST_TEST;
 
-    var TestCtrl = require('../src/app/controllers/' + file);
-    var TestCr = TestCtrl.createCtrl(dbHost, 'sz');
+    var createCtrl = require('../src/app/controllers/' + file);
+    var TestCr = createCtrl(dbHost, 'sz');
 
     var TestSchema = require('../src/app/schemas/' + file);
-    var Conn = require('../src/app/conn').getConn(dbHost, 'sz');
+    var Conn = require('../src/app/conn')(dbHost, 'sz');
     var util = require('../src/app/util');
     var TestModel =
         Conn.model(util.validatorReplaceFirstUpper(file), TestSchema);

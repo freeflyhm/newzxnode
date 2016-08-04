@@ -49,7 +49,7 @@ var _createConn = function (dbHost, dbName) {
  * @param   {String}     dbName - 数据库名称
  * @returns {Connection} conn   - 数据库连接
  */
-exports.getConn = function (dbHost, dbName) {
+var getConn = function (dbHost, dbName) {
   var conn;
 
   if (conns[dbName]) {
@@ -60,3 +60,5 @@ exports.getConn = function (dbHost, dbName) {
   conns[dbName] = conn;
   return conn;
 };
+
+module.exports = getConn;

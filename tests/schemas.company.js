@@ -14,7 +14,7 @@ if (require('./testconf').schemasCompany) {
     var SchemaCompany = require('../src/app/schemas/company');
 
     var dbHost = process.env.DB_HOST_TEST;
-    var Conn = require('../src/app/conn').getConn(dbHost, 'auth');
+    var Conn = require('../src/app/conn')(dbHost, 'auth');
     var Company = Conn.model('Company', SchemaCompany);
 
     var companyObj = {

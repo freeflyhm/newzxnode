@@ -41,8 +41,8 @@ var ctrls = {};
  * @private
  */
 var _createCtrl = function (dbHost, dbName, ctrlName) {
-  var ctrlObj = require('./controllers/' + ctrlName);
-  return ctrlObj.createCtrl(dbHost, dbName);
+  var createCtrl = require('./controllers/' + ctrlName);
+  return createCtrl(dbHost, dbName);
 };
 
 /**
@@ -53,7 +53,7 @@ var _createCtrl = function (dbHost, dbName, ctrlName) {
  * @param   {String}     ctrlName   - ctrl
  * @returns {Controller} ctrl       - mongoose ctrl
  */
-exports.getCtrl = function (dbHost, dbName, ctrlName) {
+var getCtrl = function (dbHost, dbName, ctrlName) {
   var ctrl;
 
   if (ctrls[dbName]) {
@@ -74,3 +74,5 @@ exports.getCtrl = function (dbHost, dbName, ctrlName) {
     return ctrl;
   }
 };
+
+module.exports = getCtrl;

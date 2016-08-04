@@ -10,8 +10,8 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
-  var SetPlace = require('../model').getModel(dbHost, dbName, 'setplace');
+var createCtrl = function (dbHost, dbName) {
+  var SetPlace = require('../model')(dbHost, dbName, 'setplace');
   var writeLog = require('../util').writeLog;
 
   // public method
@@ -32,3 +32,5 @@ exports.createCtrl = function (dbHost, dbName) {
     list: list,
   };
 };
+
+module.exports = createCtrl;

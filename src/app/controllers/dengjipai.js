@@ -10,9 +10,9 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
+var createCtrl = function (dbHost, dbName) {
   var ctrlName = 'dengjipai';
-  var Dengjipai = require('../model').getModel(dbHost, dbName, ctrlName);
+  var Dengjipai = require('../model')(dbHost, dbName, ctrlName);
   var util = require('../util');
   var errCode;
 
@@ -188,3 +188,5 @@ exports.createCtrl = function (dbHost, dbName) {
     remove: remove,
   };
 };
+
+module.exports = createCtrl;
