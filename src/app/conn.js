@@ -6,7 +6,7 @@
 /**
  * 数据库连接模块
  * @module app/conn
- * require me: null
+ * require: null
  */
 'use strict';
 

@@ -15,13 +15,13 @@ var serv;
 var boot = function (dbHost, port) {
   /* 引入模块依赖 */
   var http = require('http');
-  var app = require('./app').createApp(dbHost);
+  var app = require('./app')(dbHost);
 
   /* 定义服务 */
   serv = http.createServer(app);
 
   /* socket.io */
-  require('./io').listen(serv);
+  require('./io')(serv);
   /* 在多核系统上启动 cluster 多核处理模块(可选，待实现) */
 
   /* 启动服务 */

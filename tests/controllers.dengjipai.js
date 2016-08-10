@@ -5,7 +5,9 @@
 
 /* globals describe, it, after */
 
-/* controllers/dengjipai.js - Mocha controllers/dengjipai test */
+/**
+ * controllers/dengjipai.js - Mocha controllers/dengjipai test
+ */
 'use strict';
 
 if (require('./testconf').controllersDengjipai) {

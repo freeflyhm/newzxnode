@@ -10,7 +10,7 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
+var createCtrl = function (dbHost, dbName) {
   var Model = require('../model');
   var Idcardsm = Model.getModel(dbHost, dbName, 'idcardsm');
 
@@ -40,3 +40,5 @@ exports.createCtrl = function (dbHost, dbName) {
     add: add,
   };
 };
+
+module.exports = createCtrl;

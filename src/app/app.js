@@ -10,7 +10,7 @@
  */
 'use strict';
 
-exports.createApp = function (dbHost) {
+var createApp = function (dbHost) {
   /* 引入模块依赖 */
   var express    = require('express');
 
@@ -24,6 +24,12 @@ exports.createApp = function (dbHost) {
   var app = express();
 
   /* 相关配置 */
+
+  // var DB_NAMES = {
+  //   '深圳': 'sz',
+  //   '广州': 'gz',
+  //   '杭州': 'hz',
+  // };
 
   //app.set('port', process.env.PORT || 3000);
   //app.set('dbHost', dbHost);
@@ -49,64 +55,74 @@ exports.createApp = function (dbHost) {
   });
 
   app.post('/api/login', function (req, res) {
-    var obj = req.body;
+    // 限制客户端输入数据
+    var obj = {
+      userName:  req.body.userName,
+      password: req.body.password,
+    };
 
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     User.login(obj, function (results) {
       if (results.success === 1) {
-        var user = results.user;
+        // var user = results.user;
 
-        var profile = {
-          company: user.company,
-          user: {
-            _id: user._id,
-            userName: user.userName,
-            name: user.name,
-            role: user.role,
-          },
-          city: obj.city,
-        };
+        // var profile = {
+        //   company: {
+        //     _id: user.company._id,
+        //     category: user.company.category,
+        //   },
+        //   user: {
+        //     _id: user._id,
+        //     role: user.role,
+        //   },
+        // };
 
         // we are sending the profile in the token
-        // 有效时间 7day 60 * 60 * 24 * 7 = 604800
+        // 有效时间 7days 60 * 60 * 24 * 7 = 604800
         var token = jwt.sign(
-          profile,
+          results.profile,
           process.env.JWT_TOKEN_SECRET,
           { expiresIn: 604800 }
         );
 
-        return res.json({ success: 1, token: token });
+        return res.json({
+          success: 1,
+          token: token,
+          dbName: results.dbName,
+        });
       }
 
       res.json(results);
     });
   });
 
-  app.post('/api/removeuser', function (req, res) {
-    var dbHost = req.body.dbHost;
-    var decoded;
-    var cid;
-    var uid;
+  // app.post('/api/removeuser', function (req, res) {
+  //   var dbHost = req.body.dbHost;
+  //   var decoded;
+  //   var cid;
+  //   var uid;
 
-    if (dbHost === 'newzxmongo') {
-      return res.json({ success: 10 });
-    }
+  //   if (dbHost === 'newzxmongo') {
+  //     return res.json({ success: 10 });
+  //   }
 
-    decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
-    cid = decoded && decoded.company;
-    uid = decoded && decoded._id;
+  //   decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
+  //   cid = decoded && decoded.company;
+  //   uid = decoded && decoded._id;
 
-    if (cid && uid) {
-      User._remove(cid, uid, function (results) {
-        res.json(results);
-      });
+  //   if (cid && uid) {
+  //     User._remove(cid, uid, function (results) {
+  //       res.json(results);
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    res.json({ success: 20 });
-  });
+  //   res.json({ success: 20 });
+  // });
 
   return app;
 };
+
+module.exports = createApp;

@@ -5,7 +5,10 @@
 
 /* globals describe, it */
 
-/* logpath.js - Mocha logpath test */
+/**
+ * logpath.js - Mocha logpath test
+ * require: logpath
+ */
 'use strict';
 
 if (require('./testconf').logpath) {

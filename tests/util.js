@@ -1,11 +1,14 @@
 /* jshint
-   node: true, devel: true, maxstatements: 12, maxparams: 2,
+   node: true, devel: true, maxstatements: 14, maxparams: 2,
    maxerr: 50, nomen: true, regexp: true
  */
 
 /* globals describe, it */
 
-/* util.js - Mocha util test */
+/**
+ * util.js - Mocha util test
+ * require: app/util
+ */
 'use strict';
 
 if (require('./testconf').util) {
@@ -23,7 +26,10 @@ if (require('./testconf').util) {
     var _tests2 = function (tests, func) {
       tests.forEach(function (item) {
         it('test: ' + item.test + ' should return ' + item.expect, function () {
-          assert.strictEqual(func(item.test.password, item.test.userName), item.expect);
+          assert.strictEqual(
+            func(item.test.password, item.test.userName),
+            item.expect
+          );
         });
       });
     };

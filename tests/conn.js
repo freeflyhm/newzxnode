@@ -5,12 +5,16 @@
 
 /* globals describe, it */
 
-/* conn.js - Mocha conn test */
+/**
+ * conn.js - Mocha conn test
+ * require: app/conn
+ */
 'use strict';
 
 if (require('./testconf').conn) {
   describe('conn.js', function () {
     var assert = require('assert');
+
     var getConn = require('../src/app/conn');
 
     it('getConn should be a function', function () {

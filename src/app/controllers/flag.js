@@ -10,7 +10,7 @@
  */
 'use strict';
 
-exports.createCtrl = function (dbHost, dbName) {
+var createCtrl = function (dbHost, dbName) {
   var Model = require('../model');
   var Flag = Model.getModel(dbHost, dbName, 'flag');
 
@@ -93,3 +93,5 @@ exports.createCtrl = function (dbHost, dbName) {
     remove: remove,
   };
 };
+
+module.exports = createCtrl;

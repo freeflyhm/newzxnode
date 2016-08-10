@@ -6,7 +6,7 @@
 /**
  * 公共函数模块
  * @module app/util
- * require me: logpath
+ * require: logpath
  */
 'use strict';
 var validator = require('validator');

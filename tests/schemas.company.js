@@ -5,7 +5,10 @@
 
 /* globals describe, it, after */
 
-/* schemas/company.js - Mocha schemas/company test */
+/**
+ * schemas/company.js - Mocha schemas/company test
+ * require: app/schemas/company, app/conn
+ */
 'use strict';
 
 if (require('./testconf').schemasCompany) {

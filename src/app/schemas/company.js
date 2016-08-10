@@ -6,6 +6,7 @@
 /**
  * company Schema 模块
  * @module app/schemas/company
+ * require: null
  */
 'use strict';
 

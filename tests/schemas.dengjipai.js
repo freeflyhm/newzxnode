@@ -5,7 +5,10 @@
 
 /* globals describe, it, after */
 
-/* schemas/dengjipai.js - Mocha schemas/dengjipai test */
+/**
+ * schemas/dengjipai.js - Mocha schemas/dengjipai test
+ * require: app/schemas/dengjipai, app/conn, app/util
+ */
 'use strict';
 
 if (require('./testconf').schemasDengjipai) {

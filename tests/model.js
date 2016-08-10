@@ -5,7 +5,10 @@
 
 /* globals describe, it */
 
-/* model.js - Mocha model test */
+/**
+ * model.js - Mocha model test
+ * require: app/model
+ */
 'use strict';
 
 if (require('./testconf').model) {
