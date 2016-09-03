@@ -111,14 +111,14 @@ if (require('./testconf').app) {
       });
     });
 
-    describe('GET /api/code/:id', function () {
-      it('should ok', function (done) {
-        superagent.get(site + '/api/code/1').end(function (err) {
-          assert.strictEqual(err, null);
-          done();
-        });
-      });
-    });
+    // describe('GET /api/code/:id', function () {
+    //   it('should ok', function (done) {
+    //     superagent.get(site + '/api/code/1').end(function (err) {
+    //       assert.strictEqual(err, null);
+    //       done();
+    //     });
+    //   });
+    // });
 
     after(function (done) {
       var SchemaCompany = require('../src/app/schemas/company');
