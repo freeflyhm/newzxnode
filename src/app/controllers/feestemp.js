@@ -14,8 +14,8 @@ var createCtrl = function (dbHost, dbName) {
   var ctrlName = 'feestemp';
   var getModel = require('../model');
   var FeesTemp = getModel(dbHost, dbName, ctrlName);
-  var util = require('../util');
-  var _ = require('underscore');
+  var zxutil   = require('../zxutil');
+  var _        = require('underscore');
   var errCode;
 
   // private methods
@@ -29,23 +29,28 @@ var createCtrl = function (dbHost, dbName) {
   _objSave = function (obj, callback) {
     obj.save(function (err, res) {
       if (err) {
-        errCode = 19999;
-        util.writeLog(ctrlName, errCode, err, obj);
+        errCode = '19999';
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
-          field: 'name',
-          errMsg: err.message,
         });
       }
 
+      // res 是 save 成功后的 feestemp 对象
       callback({ success: 1, res: res }); // ok
     });
   };
 
+  /**
+   * 获取 集合地点列表
+   *
+   * @param   {}
+   * @returns {Array} - all field
+   */
   list = function (obj, callback) {
     FeesTemp.find(obj, function (err, results) {
       if (err) {
-        util.writeLog(ctrlName, '19998', err, obj);
+        zxutil.writeLog(ctrlName, '19998', err, obj);
         return callback([]);
       }
 
@@ -61,12 +66,10 @@ var createCtrl = function (dbHost, dbName) {
   update = function (obj, callback) {
     FeesTemp.findOne({ _id: obj._id }, function (err, res) {
       if (err) {
-        errCode = 19996;
-        util.writeLog(ctrlName, errCode, err, obj);
+        errCode = '19997';
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
-          field: 'name',
-          errMsg: err.message,
         });
       }
 
@@ -78,9 +81,9 @@ var createCtrl = function (dbHost, dbName) {
 
   return {
     _objSave: _objSave,
-    list: list,
-    add: add,
-    update: update,
+    list:     list,
+    add:      add,
+    update:   update,
   };
 };
 

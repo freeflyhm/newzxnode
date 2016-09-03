@@ -13,7 +13,7 @@
 var createCtrl = function (dbHost, dbName) {
   var ctrlName = 'dengjipai';
   var Dengjipai = require('../model')(dbHost, dbName, ctrlName);
-  var util = require('../util');
+  var zxutil = require('../zxutil');
   var errCode;
 
   // private methods
@@ -34,7 +34,7 @@ var createCtrl = function (dbHost, dbName) {
     obj.save(function (err, res) {
       if (err) {
         errCode = 12999;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
           field: 'name',
@@ -66,7 +66,7 @@ var createCtrl = function (dbHost, dbName) {
     Dengjipai.findOne({ _id: obj._id }, function (err, res) {
       if (err) {
         errCode = 12996;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
           field: 'name',
@@ -103,7 +103,7 @@ var createCtrl = function (dbHost, dbName) {
     Dengjipai.findOne({ name: obj.name }, function (err, res) {
       if (err) {
         errCode = 12997;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
           field: 'name',
@@ -117,12 +117,12 @@ var createCtrl = function (dbHost, dbName) {
 
   _validator = function (obj) {
     // 检验 obj.name 用户 isNull、chineseCharacter 自定义验证、isLength
-    if (!util.validatorName(obj.name)) {
+    if (!zxutil.validatorName(obj.name)) {
       return { success: 12014, field: 'name', errMsg: '用户 - 不合法！' };
     }
 
-    // 检验 obj.password 密码 isNull、isLength、用户名与密码相同
-    if (!util.validatorPassword(obj.password)) {
+    // 检验 obj.password 密码 isNull、isLength
+    if (!zxutil.validatorPassword(obj.password)) {
       return {
         success: 12015,
         field: 'password',
@@ -136,7 +136,7 @@ var createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     Dengjipai.find(obj, function (err, results) {
       if (err) {
-        util.writeLog(ctrlName, '12998', err, obj);
+        zxutil.writeLog(ctrlName, '12998', err, obj);
         return callback([]);
       }
 
@@ -170,7 +170,7 @@ var createCtrl = function (dbHost, dbName) {
     Dengjipai.remove(obj, function (err, isOk) {
       if (err) {
         errCode = 12995;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({ success: errCode, errMsg: err.message });
       }
 

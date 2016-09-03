@@ -1,6 +1,6 @@
 /* jshint
-   node:  true, devel:  true, maxstatements: 60, maxparams: 4,
-   maxerr: 50, nomen: true, regexp: true, maxdepth: 3
+   node:  true, devel:  true, maxstatements: 60, maxparams: 6,
+   maxerr: 50, nomen: true, regexp: true, maxdepth: 5
  */
 
 /**
@@ -9,105 +9,67 @@
  */
 'use strict';
 
-// var Ctrl  = require('./ctrl');
+// static variable
+var DB_CITY = require('./zxutil').DB_CITY;
+var ROOMS = Object.keys(DB_CITY); // Array
 
-// { 'sz': { '$uid': {'$sid' : true} } }
 // 记录想要登录的客户端
+// { '$uid': {'$sid' : true} }
 var wantOnlineObj = {};
+
+// 记录在房间的用户
+// { uid: userObj }
+var onlineObj = {};
 
 // private methods
 var _getWantOnlineObj;
 var _setWantOnlineObj;
 var _delWantOnlineObj;
-var _somebodyIsOnlined;
 
-var _joinRoom;
-var _leaveRoom;
+var _getOnlineObj;
+var _setOnlineObj;
+var _delOnlineObj;
 
-_getWantOnlineObj = function (dbName, uid) {
-  return wantOnlineObj[dbName][uid];
+// module.exports
+var listen;
+
+_getWantOnlineObj = function (uid) {
+  return wantOnlineObj[uid];
 };
 
-_setWantOnlineObj = function (dbName, uid, sid) {
-  if (!wantOnlineObj[dbName]) {
-    wantOnlineObj[dbName] = {};
-    wantOnlineObj[dbName][uid] = {};
-  } else if (!wantOnlineObj[dbName][uid]) {
-    wantOnlineObj[dbName][uid] = {};
+_setWantOnlineObj = function (uid, sid) {
+  if (!wantOnlineObj[uid]) {
+    wantOnlineObj[uid] = {};
   }
 
-  wantOnlineObj[dbName][uid][sid] = true;
+  wantOnlineObj[uid][sid] = true;
 };
 
-_delWantOnlineObj = function (dbName, uid) {
-  delete wantOnlineObj[dbName][uid];
+_delWantOnlineObj = function (uid) {
+  delete wantOnlineObj[uid];
 };
 
-_somebodyIsOnlined = function (nspzx, socket, dbName) {
-  var canJoin = true;
-  var roomObj = nspzx.adapter.rooms[dbName];
-  var socketIdArr;
+_getOnlineObj = function () {
+  return onlineObj;
+};
 
-  if (roomObj) {
-    socketIdArr = Object.keys(roomObj.sockets);
+_setOnlineObj = function (userObj) {
+  onlineObj[userObj._id] = userObj;
+};
 
-    socketIdArr.forEach(function (socketId) {
-      var socketAnother = nspzx.connected[socketId];
-
-      if (socketAnother.decoded_token.uid ===
-          socket.decoded_token.uid) {
-        if (canJoin) {
-          // 服务器通知自己有人已经使用此账号进入房间了
-          // 是否要踢人, 由用户决定
-          socket.emit('semit-somebodyIsOnlined');
-          canJoin = false;
-        } else {
-          // 其他人直接踢出房间
-          _leaveRoom(socketAnother, dbName);
-        }
-      }
-    });
-  }
-
-  if (canJoin) {
-    _joinRoom(nspzx, socket, dbName);
+_delOnlineObj = function (uid) {
+  if (onlineObj[uid]) {
+    delete onlineObj[uid];
   }
 };
 
-_joinRoom = function (nspzx, socket, dbName) {
-  var roomObj = nspzx.adapter.rooms[dbName];
-  var socketIdArr;
-
-  if (roomObj) {
-    socketIdArr = Object.keys(roomObj.sockets);
-
-    socketIdArr.forEach(function (socketId) {
-      var socketAnother = nspzx.connected[socketId];
-
-      // 清场！！！
-      if (socketAnother.decoded_token.uid ===
-          socket.decoded_token.uid) {
-        // 直接踢出房间
-        _leaveRoom(socketAnother, dbName);
-      }
-    });
-  }
-
-  socket.join(dbName);
-};
-
-_leaveRoom = function (socket, dbName) {
-  socket.leave(dbName);
-};
-
-var listen = function (serv) {
+listen = function (serv) {
   var io = require('socket.io').listen(serv);
   var ioJwt = require('socketio-jwt');
 
   var nspzx = io.of('/nspzx');
 
   var getCtrl = require('./ctrl');
-  var User = getCtrl(process.env.DB_HOST, 'auth', 'user');
 
   // One roundtrip
   nspzx.use(ioJwt.authorize({
@@ -116,443 +78,588 @@ var listen = function (serv) {
   }));
 
   nspzx.on('connection', function (socket) {
-    var dbName;
+    // 记录当前用户
+    // { _id: 57b5cbf30ab1983e0002eb9e,
+    //   company: { _id: 57b5cbf30ab1983e0002eb9d, city: '', category: 30 },
+    //   status: true,
+    //   role: 30 }
+    var userObj = {};
 
-    // var user;
+    var uid = socket.decoded_token.uid;
+    var dbName = socket.handshake.query.dbName;
+
+    // 权限
+    var checkSys99 = false;
+    var checkSys30 = false;
+    var checkSys20 = false;
+    var checkSys10 = false;
+    var checkCus30 = false;
+    var checkCus20 = false;
+    var checkCus10 = false;
+
+    // Ctrl
+    var User;
+    var Setplace;
+    var Feestemp;
+    var Dengjipai;
+    var Serverman;
+    var Bp;
+    var Team;
 
     // private methods
-    // var _somebodyIsOnlined;
-    var _somebodyWantOnline;
-    var _cancelSomebodyOnline;
+    var _initUser;
+    var _checkUidInRoom;
+    var _joinRoom;
 
-    // var _joinRoom;
-    // var _leaveRoom;
+    _initUser = function (nspzx, socket, uid, dbName) {
+      User = getCtrl(process.env.DB_HOST, dbName, 'user');
+      User.initUser({
+        uid: uid,
+        dbName: dbName,
+      }, function (results) {
+        var ret;
 
-    _somebodyWantOnline = function (nspzx, socket, _dbName) {
-      var canJoin = true;
-      var roomObj = nspzx.adapter.rooms[_dbName];
-      var socketIdArr;
+        if (results.success === 1) {
+          userObj = results.user;
 
-      if (roomObj) {
-        socketIdArr = Object.keys(roomObj.sockets);
-
-        socketIdArr.forEach(function (socketId) {
-          var socketAnother = nspzx.connected[socketId];
-
-          if (socketAnother.decoded_token.uid ===
-              socket.decoded_token.uid) {
-            if (canJoin) {
-              // 服务器通知此账号自己想要登录
-              // 是否拒绝, 由用户决定
-              _setWantOnlineObj(_dbName, socket.decoded_token.uid, socket.id);
-              socket.broadcast.to(socketId)
-                .emit('semit-somebodyWantOnline');
-              canJoin = false;
-            } else {
-              // 其他人直接踢出房间
-              _leaveRoom(socketAnother, _dbName);
-            }
+          ret = _checkUidInRoom(nspzx, socket, uid);
+          if (ret.somebodyInRoom) {
+            // -A 服务器通知甲, 乙已经使用此账号进入房间了
+            // 是否要踢乙, 由甲决定
+            socket.emit('semit-somebodyIsOnlined');
+          } else {
+            // 加入房间
+            _joinRoom(User, nspzx, socket, uid, dbName, userObj);
           }
-        });
-      }
-
-      if (canJoin) {
-        _joinRoom(nspzx, socket, _dbName);
-      }
-    };
-
-    _cancelSomebodyOnline = function (nspzx, socket, _dbName, iscancel) {
-      var uidArrs =
-          Object.keys(_getWantOnlineObj(_dbName, socket.decoded_token.uid));
-
-      uidArrs.forEach(function (socketId) {
-        if (nspzx.connected[socketId]) {
-          socket.broadcast.to(socketId)
-              .emit('semit-cancelSomebodyOnline', iscancel);
-
-          if (!iscancel) {
-            iscancel = true;
-          }
+        } else {
+          socket.emit('semit-joinRoomFail', results);
         }
       });
     };
 
-    /*_joinRoom = function (nspzx, socket, _dbName) {
-      var roomObj = nspzx.adapter.rooms[_dbName];
+    _checkUidInRoom = function (nspzx, socket, uid) {
+      var leni = ROOMS.length;
+      var i;
+      var roomObj;
       var socketIdArr;
+      var lenj;
+      var j;
+      var socketAnother;
 
-      if (roomObj) {
-        socketIdArr = Object.keys(roomObj.sockets);
+      for (i = 0; i < leni; i += 1) {
+        roomObj = socket.adapter.rooms[ROOMS[i]];
+        if (roomObj) {
+          socketIdArr = Object.keys(roomObj.sockets);
+          lenj = socketIdArr.length;
+          for (j = 0; j < lenj; j += 1) {
+            socketAnother = nspzx.connected[socketIdArr[j]];
+            if (socketAnother.id !== socket.id &&
+                socketAnother.decoded_token.uid === uid) {
 
-        socketIdArr.forEach(function (socketId) {
-          var socketAnother = nspzx.connected[socketId];
-
-          // 清场！！！
-          if (socketAnother.decoded_token.uid ===
-              socket.decoded_token.uid) {
-            // 直接踢出房间
-            _leaveRoom(socketAnother, _dbName);
+              return {
+                somebodyInRoom: true,
+                id: socketAnother.id,
+              };
+            }
           }
-        });
+        }
       }
 
-      dbName = _dbName;
-      socket.join(_dbName);
+      return {
+        somebodyInRoom: false,
+      };
     };
 
-    _leaveRoom = function (socket, _dbName) {
-      socket.leave(_dbName);
-    };*/
+    _joinRoom = function (User, nspzx, socket, uid, dbName, userObj) {
+      // 加入房间前清场
+      ROOMS.forEach(function (roomName) {
+        var roomObj = socket.adapter.rooms[roomName];
+        var socketIdArr;
+        if (roomObj) {
+          socketIdArr = Object.keys(roomObj.sockets);
+          socketIdArr.forEach(function (socketId) {
+            var socketAnother = nspzx.connected[socketId];
+            if (socketAnother.decoded_token.uid === uid) {
+              if (socketAnother.id === socket.id) {
+                socketAnother.leave(roomName);
+              } else {
+                // 通知对方下线
+                socket.broadcast.to(socketId)
+                    .emit('semit-cancelSomebodyOnline');
+              }
+            }
+          });
+        }
+      });
+
+      socket.join(dbName);
+
+      _setOnlineObj({
+        dbName: dbName,
+        _id: userObj._id,
+        userName: userObj.userName,
+        name: userObj.name,
+        status: userObj.status,
+        role: userObj.role,
+        companyId: userObj.company._id,
+        companyCity: userObj.company.city,
+        companyCategory: userObj.company.category,
+        socketId: socket.id,
+      });
+
+      // 服务器通知自己被加入房间
+      socket.emit('semit-somebodyIsJoinRoom', userObj);
+
+      // 业务逻辑
+      // 统一计算权限
+      // 权限
+      checkSys99 = false;
+      checkSys30 = false;
+      checkSys20 = false;
+      checkSys10 = false;
+      checkCus30 = false;
+      checkCus20 = false;
+      checkCus10 = false;
+
+      if (userObj.role === 99) {
+        checkSys99 = true;
+      } else if (userObj.company.category === 30) {
+        if (userObj.role === 30) {
+          checkSys30 = true;
+          checkSys20 = true;
+          checkSys10 = true;
+        } else if (userObj.role === 20) {
+          checkSys20 = true;
+          checkSys10 = true;
+        } else if (userObj.role === 10) {
+          checkSys10 = true;
+        }
+      } else {
+        if (userObj.role === 30) {
+          checkCus30 = true;
+          checkCus20 = true;
+          checkCus10 = true;
+        } else if (userObj.role === 20) {
+          checkCus20 = true;
+          checkCus10 = true;
+        } else if (userObj.role === 10) {
+          checkCus10 = true;
+        }
+      }
+
+      // 初始化 controllers
+      Setplace  = getCtrl(process.env.DB_HOST, dbName, 'setplace');
+      Feestemp  = getCtrl(process.env.DB_HOST, dbName, 'feestemp');
+      Dengjipai = getCtrl(process.env.DB_HOST, dbName, 'dengjipai');
+      Serverman = getCtrl(process.env.DB_HOST, dbName, 'serverman');
+      Bp        = getCtrl(process.env.DB_HOST, dbName, 'bp');
+
+      Team      = require('./model')(process.env.DB_HOST, dbName, 'team');
+    };
 
     // first
     // 检测用户相应权限
-    User.initUser({
-      uid: socket.decoded_token.uid,
-      dbName: socket.handshake.query.dbName,
-    }, function (results) {
-      if (results.success === 1) {
-        // user = results.user;
+    _initUser(nspzx, socket, uid, dbName);
 
-        // 通知客户端并返回客户端城市对应数据库
-        // 通过客户端回调，无需用户干预
-        // socket.emit('semit-user', user, function (_dbName) {
-        //   dbName = _dbName;
+    // -D 服务器收到来自甲的通知，甲想要登录房间
+    socket.on('cemit-somebodyWantOnline', function () {
+      var ret = _checkUidInRoom(nspzx, socket, uid);
 
-        //   // 检查房间是否可以进入, 循环房间内所有账号
-        //   // 如果循环第一次找到 userId
-        //   // 服务器通知自己有人已经使用此账号进入房间了
-        //   // 继续循环，将重复的 userId 踢出房间
-        //   // 返回是否可以进入房间 canJoin，
-        //   // if canJoin === true, 进入房间
-        //   _somebodyIsOnlined(nspzx, socket, dbName);
-        // });
+      if (ret.somebodyInRoom) {
+        // 记录
+        _setWantOnlineObj(uid, socket.id);
 
-        // dbName = results.dbName;
-        _somebodyIsOnlined(nspzx, socket, results.dbName);
+        // 服务器广播通乙，甲想要登录
+        // 是否拒绝甲, 由乙决定
+        socket.broadcast.to(ret.id)
+            .emit('sbroadcast-somebodyWantOnline', socket.id);
       }
     });
 
-    // 通知服务器自己想要登录房间
-    socket.on('cemit-somebodyWantOnline', function () {
-      // 检查房间是否可以进入, 循环房间内所有账号
-      // 如果循环第一次找到 userId
-      // 服务器通知此账号自己想要登录
-      // 继续循环，将重复的 userId 踢出房间
-      // 返回是否可以进入房间 canJoin，
-      // if canJoin === true, 进入房间
-      _somebodyWantOnline(nspzx, socket, dbName);
+    // 通知服务器自己进入房间
+    socket.on('cemit-somebodyJoinRoom', function () {
+      // 加入房间
+      _joinRoom(User, nspzx, socket, uid, dbName, userObj);
     });
 
     // 通知服务器是否拒绝其他人进入房间
-    socket.on('cemit-cancelSomebodyOnline', function (iscancel, callback) {
-      console.log('-----------BEGIN socket.on cemit-cancelSomebodyOnline');
-      console.log(socket.id);
-      _cancelSomebodyOnline(nspzx, socket, dbName, iscancel);
+    socket.on('cemit-cancelSomebodyOnline', function (iscancel) {
+      // console.log('-----------BEGIN socket.on cemit-cancelSomebodyOnline');
+      var wantOnlineSocketIdArrs = [];
+      var wantOnlineUidObj = _getWantOnlineObj(uid);
 
-      _delWantOnlineObj(dbName, socket.decoded_token.uid);
-      callback();
-      console.log('-----------END socket.on cemit-cancelSomebodyOnline');
+      if (wantOnlineUidObj) {
+        wantOnlineSocketIdArrs = Object.keys(wantOnlineUidObj);
+        _delWantOnlineObj(uid);
+      }
+
+      wantOnlineSocketIdArrs.forEach(function (socketId) {
+        if (nspzx.connected[socketId]) {
+
+          if (!iscancel) {
+            // 通知自己下线
+            socket.emit('semit-cancelSomebodyOnline');
+
+            // 则有且仅有一个 iscancel = false
+            iscancel = true;
+          } else {
+            // 通知对方下线
+            socket.broadcast.to(socketId).emit('semit-cancelSomebodyOnline');
+          }
+        }
+      });
+
+      // console.log('-----------END socket.on cemit-cancelSomebodyOnline');
+    });
+
+    // 切换城市 checkCus10
+    socket.on('cemit-changeRoom', function (dbname) {
+      dbName = dbname;
+
+      _initUser(nspzx, socket, uid, dbName);
+    });
+
+    // 修改密码 checkSys10 or checkCus10
+    socket.on('cemit-changePassword', function (obj, callback) {
+      if (checkSys10 || checkCus10) {
+        User.changePassword(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({ success: 30 }); // 权限不够
+      }
+    });
+
+    // 排班表 checkSys10
+
+    // 保险卡 checkSys10
+
+    // 登机牌 checkSys10
+
+    // 现场责任人 checkSys20
+    socket.on('cemit-servermanlist', function (obj, callback) {
+      if (checkSys20) {
+        Serverman.list(
+            { company: userObj.company._id }, function (results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    });
+
+    socket.on('cemit-servermanadd', function (obj, callback) {
+      if (checkSys20) {
+        Serverman.add(
+          { company: userObj.company._id, name: obj.name },
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 11999, errMsg: '权限不够' });
+      }
+    });
+
+    socket.on('cemit-servermanupdate', function (obj, callback) {
+      if (checkSys20) {
+        Serverman.update(
+          { _id: obj.id, company: userObj.company._id, name: obj.name },
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 11998, errMsg: '权限不够' });
+      }
+    });
+
+    socket.on('cemit-servermanremove', function (obj, callback) {
+      if (checkSys20) {
+        Serverman.remove(obj.id, function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 11997, errMsg: '权限不够' });
+      }
+    });
+
+    // 排班表管理 checkSys20
+    // 往来账管理 checkSys20
+    socket.on('cemit-getbplist', function (obj, callback) {
+      if (checkSys20) {
+        Bp.list(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({});
+      }
+    });
+
+    // 应收款 checkSys20
+    socket.on('cemit-getbillsnow', function (obj, callback) {
+      if (checkSys20) {
+        Bp.getbillsnow(function (result) {
+          callback(result);
+        });
+      } else {
+        callback({
+          companys: [],
+          statements: [],
+          sms: [],
+          bps: [],
+        });
+      }
+    });
+
+    // 月账单列表 checkSys20
+    socket.on('cemit-getbillsitemisedlist', function (obj, callback) {
+      if (checkSys20) {
+        Bp.billsitemisedlist(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({
+          companys: [],
+          statements: [],
+        });
+      }
+    });
+
+    // -- 月账单明细
+    socket.on('cemit-getbillsitemised', function (obj, callback) {
+      if (checkSys20) {
+        Bp.getbillsitemised(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({
+          sms: [],
+          bps: [],
+          companys: [],
+          hasStatement: false,
+          lastMonthBalance: 0,
+          isLock: false,
+        });
+      }
+    });
+
+    // -- 对账单
+    socket.on('cemit-getstatement', function (obj, callback) {
+      if (checkSys20) {
+        Bp.getstatement(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({
+          statement: null,
+          company: null,
+        });
+      }
+    });
+
+    // -- 新建对账单
+    socket.on('cemit-statementadd', function (obj, callback) {
+      if (checkSys20) {
+        Bp.statementadd(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({ success: 0 });
+      }
+    });
+
+    // -- 删除对账单
+    socket.on('cemit-statementremove', function (obj, callback) {
+      if (checkSys20) {
+        Bp.statementremove(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({ success: 0 });
+      }
+    });
+
+    // -- 确认对账单
+    socket.on('cemit-statementlock', function (obj, callback) {
+      Bp.statementlock(obj, function (result) {
+        callback(result);
+      });
+    });
+
+    // 月账单汇总报表 checkSys20
+    socket.on('cemit-getbillstotal', function (obj, callback) {
+      if (checkSys20) {
+        Bp.getbillstotal(obj, function (result) {
+          callback(result);
+        });
+      } else {
+        callback({
+          sms: [],
+        });
+      }
+    });
+
+    // 集合地点管理 checkSys30
+    socket.on('cemit-setplacelist', function (obj, callback) {
+      if (checkSys30) {
+        Setplace.list({}, function (results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    });
+
+    // 服务费模板管理 checkSys30
+    socket.on('cemit-feestemplist', function (obj, callback) {
+      if (checkSys30) {
+        Feestemp.list({}, function (results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    });
+
+    socket.on('cemit-feestempadd', function (obj, callback) {
+      if (checkSys30) {
+        Feestemp.add(
+          obj,
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 19998, errMsg: '权限不够' });
+      }
+    });
+
+    socket.on('cemit-feestempupdate', function (obj, callback) {
+      if (checkSys30) {
+        Feestemp.update(
+          obj,
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 19998, errMsg: '权限不够' });
+      }
+    });
+
+    // 登机牌用户管理 checkSys30
+    socket.on('cemit-dengjipailist', function (obj, callback) {
+      if (checkSys30) {
+        Dengjipai.list({}, function (results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    });
+
+    socket.on('cemit-dengjipaiadd', function (obj, callback) {
+      if (checkSys30) {
+        Dengjipai.add(
+          { name: obj.name, password: obj.password },
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 12999, errMsg: '权限不够' });
+      }
+    });
+
+    socket.on('cemit-dengjipaiupdate', function (obj, callback) {
+      if (checkSys30) {
+        Dengjipai.update(
+          { _id: obj.id, name: obj.name, password: obj.password },
+          function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 12998, errMsg: '权限不够' });
+      }
+    });
+
+    socket.on('cemit-dengjipairemove', function (obj, callback) {
+      if (checkSys30) {
+        Dengjipai.remove(obj.id, function (results) {
+            callback(results);
+          }
+        );
+      } else {
+        callback({ success: 12997, errMsg: '权限不够' });
+      }
+    });
+
+    // 公司列表 checkSys30 checkSys99
+    socket.on('cemit-companylist', function (obj, callback) {
+      if (checkSys30 || checkSys99) {
+        User.companylist({ CITY: DB_CITY[dbName] }, function (results) {
+          callback(results);
+        });
+      } else {
+        callback({});
+      }
+    });
+
+    // 用户列表 checkCus10 checkSys10 checkSys99
+    socket.on('cemit-userlist', function (obj, callback) {
+      var seach;
+
+      if (checkSys30 || checkSys99) {
+        seach = { company: ((obj && obj.cid) || userObj.company._id) };
+      } else if (checkSys10 || checkCus10) {
+        seach = { company: userObj.company._id, status: true };
+      }
+
+      if (checkCus10 || checkSys10 || checkSys99) {
+        User.list(seach, function (results) {
+          callback(results);
+        });
+      } else {
+        callback([]);
+      }
+    });
+
+    // 在线用户 checkSys99
+    socket.on('cemit-getusers', function (obj, callback) {
+      var len; // = Object.keys(io.sockets.connected);
+
+      if (checkSys99) {
+        len = Object.keys(nspzx.connected).length;
+        callback({ cookieUsers: _getOnlineObj(), clientsLength: len });
+      } else {
+        callback({ cookieUsers: {}, clientsLength: 0 });
+      }
     });
 
     // 断开连接
     socket.on('disconnect', function () {
-      console.log('-------------------socket.on disconnect');
+      _delOnlineObj(uid);
     });
   });
+
+  // var testzx = io.of('/testzx');
+  // var nextNum = 0;
+  // testzx.on('connection', function (socket) {
+  //   var id = nextNum;
+  //   nextNum += 1;
+
+  //   socket.on('getId', function (callback) {
+  //     callback(id);
+  //   });
+
+  //   // 断开连接
+  //   socket.on('disconnect', function () {
+  //     console.log('-------------------socket.on disconnect');
+  //   });
+  // });
 };
 
 module.exports = listen;
-
-// var initConnect = function (socket, decoded, dbName, uid) {
-//   // var cookieUser = {
-//   //   _id: uid,
-//   //   companyId: decoded.company._id,
-//   //   socketId: socket.id,
-//   //   category: decoded.company.category,
-//   //   role: decoded.user.role,
-//   // };
-
-//   var checkSys99 = false;
-//   var checkSys30 = false;
-//   var checkSys20 = false;
-//   var checkSys10 = false;
-//   var checkCus30 = false;
-//   var checkCus20 = false;
-//   var checkCus10 = false;
-//   var Setplace;
-//   var Feestemp;
-//   var Dengjipai;
-//   var Serverman;
-
-//   // // 保险起见, 强制踢人
-//   // if (cookieUsers[dbName][uid]) {
-//   //   console.log(cookieUsers[dbName][uid]);
-//   //   console.log('---------------------强制下线 initConnect');
-
-//   //   // 强制下线
-//   //   io.to(cookieUsers[dbName][uid].socketId).emit('on-kickUser');
-//   // }
-
-//   // // add to cookieUsers
-//   // cookieUsers[dbName][uid] = cookieUser;
-
-//   // 发送到客户端
-//   // socket.emit('connect_decoded', decoded);
-
-//   // 拒绝对方上线请求
-//   socket.on('emit-cancelSomebodyOnline', function (sids) {
-//     var i;
-//     var len = sids.length;
-
-//     for (i = 0; i < len; i += 1) {
-//       io.to(sids[i]).emit('on-cancelSomebodyOnline');
-//     }
-//   });
-
-//   // 统一计算权限
-//   if (cookieUser.role === 99) {
-//     checkSys99 = true;
-//   } else if (cookieUser.category === 30) {
-//     if (cookieUser.role === 30) {
-//       checkSys30 = true;
-//       checkSys20 = true;
-//       checkSys10 = true;
-//     } else if (cookieUser.role === 20) {
-//       checkSys20 = true;
-//       checkSys10 = true;
-//     } else if (cookieUser.role === 10) {
-//       checkSys10 = true;
-//     }
-//   } else {
-//     if (cookieUser.role === 30) {
-//       checkCus30 = true;
-//       checkCus20 = true;
-//       checkCus10 = true;
-//     } else if (cookieUser.role === 20) {
-//       checkCus20 = true;
-//       checkCus10 = true;
-//     } else if (cookieUser.role === 10) {
-//       checkCus10 = true;
-//     }
-//   }
-
-//   // 初始化 controllers
-//   Setplace = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'setplace');
-//   Feestemp = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'feestemp');
-//   Dengjipai = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'dengjipai');
-//   Serverman = Ctrl.getCtrl(process.env.DB_HOST, dbName, 'serverman');
-
-//   // // echo 测试专用
-//   // socket.on('emit-echo', function (msg, callback) {
-//   //   callback(msg);
-//   // });
-
-//   // 现场责任人 20
-//   socket.on('emit-servermanlist', function (obj, callback) {
-//     if (checkSys20) {
-//       Serverman.list(
-//           { company: cookieUser.companyId }, function (results) {
-//         callback(results);
-//       });
-//     } else {
-//       callback([]);
-//     }
-//   });
-
-//   socket.on('emit-servermanadd', function (obj, callback) {
-//     if (checkSys20) {
-//       Serverman.add(
-//         { company: cookieUser.companyId, name: obj.name },
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 11999, errMsg: '权限不够' });
-//     }
-//   });
-
-//   socket.on('emit-servermanupdate', function (obj, callback) {
-//     if (checkSys20) {
-//       Serverman.update(
-//         { _id: obj.id, company: cookieUser.companyId, name: obj.name },
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 11998, errMsg: '权限不够' });
-//     }
-//   });
-
-//   socket.on('emit-servermanremove', function (obj, callback) {
-//     if (checkSys20) {
-//       Serverman.remove(obj.id, function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 11997, errMsg: '权限不够' });
-//     }
-//   });
-
-//   // 集合地点 30
-//   socket.on('emit-setplacelist', function (obj, callback) {
-//     if (checkSys30) {
-//       Setplace.list({}, function (results) {
-//         callback(results);
-//       });
-//     } else {
-//       callback([]);
-//     }
-//   });
-
-//   // 服务费模板 30
-//   socket.on('emit-feestemplist', function (obj, callback) {
-//     if (checkSys30) {
-//       Feestemp.list({}, function (results) {
-//         callback(results);
-//       });
-//     } else {
-//       callback([]);
-//     }
-//   });
-
-//   socket.on('emit-feestempadd', function (obj, callback) {
-//     if (checkSys30) {
-//       Feestemp.add(
-//         obj,
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 19998, errMsg: '权限不够' });
-//     }
-//   });
-
-//   socket.on('emit-feestempupdate', function (obj, callback) {
-//     if (checkSys30) {
-//       Feestemp.update(
-//         obj,
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 19998, errMsg: '权限不够' });
-//     }
-//   });
-
-//   // 登机牌用户 30
-//   socket.on('emit-dengjipailist', function (obj, callback) {
-//     if (checkSys30) {
-//       Dengjipai.list({}, function (results) {
-//         callback(results);
-//       });
-//     } else {
-//       callback([]);
-//     }
-//   });
-
-//   socket.on('emit-dengjipaiadd', function (obj, callback) {
-//     if (checkSys30) {
-//       Dengjipai.add(
-//         { name: obj.name, password: obj.password },
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 12999, errMsg: '权限不够' });
-//     }
-//   });
-
-//   socket.on('emit-dengjipaiupdate', function (obj, callback) {
-//     if (checkSys30) {
-//       Dengjipai.update(
-//         { _id: obj.id, name: obj.name, password: obj.password },
-//         function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 12998, errMsg: '权限不够' });
-//     }
-//   });
-
-//   socket.on('emit-dengjipairemove', function (obj, callback) {
-//     if (checkSys30) {
-//       Dengjipai.remove(obj.id, function (results) {
-//           callback(results);
-//         }
-//       );
-//     } else {
-//       callback({ success: 12997, errMsg: '权限不够' });
-//     }
-//   });
-
-//   // 在线用户 99
-//   socket.on('emit-getusers', function (obj, callback) {
-//     var len; // = Object.keys(io.sockets.connected);
-
-//     if (checkSys99) {
-//       len = Object.keys(io.sockets.connected).length;
-//       callback({ cookieUsers: cookieUsers, clientsLength: len });
-//     } else {
-//       callback({ cookieUsers: {}, clientsLength: 0 });
-//     }
-//   });
-
-//   // 断开连接
-//   socket.on('disconnect', function () {
-//     delete cookieUsers[dbName][uid];
-//   });
-// };
-
-// One roundtrip
-// io.use(ioJwt.authorize({
-//   secret: process.env.JWT_TOKEN_SECRET,
-//   handshake: true,
-// }));
-
-// io.on('connection', function (socket) {
-//   var decoded = socket.decoded_token;
-//   var dbName = dbNames[decoded.city];
-//   var uid = decoded.user._id;
-//   // var socketId; // 对方 - 已登陆用户
-
-//   // // 初始化房间
-//   // if (!cookieUsers[dbName]) {
-//   //   cookieUsers[dbName] = {};
-//   // }
-
-//   // 检测是否已经登录
-//   // 同一个账号同一城市只能同时登陆一个
-//   // if (cookieUsers[dbName][uid]) {
-//     // console.log(cookieUsers[dbName][uid]);
-//     // console.log('---------------------同一个账号同一城市只能同时登陆一个 connection');
-
-//     // 强制下线
-//     // io.to(cookieUsers[dbName][uid].socketId).emit('on-kickUser');
-
-//     // socketId = cookieUsers[dbName][uid].socketId;
-
-//     // 通知自己有人已经使用此账号登录了
-//     socket.emit('on-somebodyIsOnlined');
-
-//     // 踢人下线, 自己上线
-//     socket.on('emit-somebodyWantOnline', function () {
-//       // 通知对方自己想要登录
-//       io.to(socketId).emit('on-somebodyWantOnline', socket.id);
-//     });
-
-//     // 初始化
-//     socket.on('emit-initConnect', function () {
-//       initConnect(socket, decoded, dbName, uid);
-//     });
-//   } else {
-//     // 初始化
-//     initConnect(socket, decoded, dbName, uid);
-//   }
-// });

@@ -1,6 +1,6 @@
 /* jshint
-   node:  true, devel:  true, maxparams: 5, maxstatements: 6,
-   maxerr: 50, nomen: true, regexp: true
+   node:  true, devel:  true, maxparams: 5, maxstatements: 11,
+   maxerr: 50, nomen: true, regexp: true, maxdepth: 4
  */
 
 /**
@@ -12,11 +12,59 @@
 var validator = require('validator');
 var fs = require('fs');
 
-// var _logPath = (process.cwd() === '/') ?
-//     '/node/src/log/' :
-//     (process.cwd() + '/src/log/');
-
 var _logPath = require('../logpath')() + '/log/';
+
+var _provinceCity = {
+  '广东': {
+    '深圳': 'sz',
+    '广州': 'gz',
+  },
+  '浙江': {
+    '杭州': 'hz',
+  },
+};
+
+// {
+//   '深圳': 'sz',
+//   ...
+// }
+var _cityDb = (function (_provinceCity) {
+  var obj = {};
+  var key1;
+  var cityObj;
+  var key2;
+
+  for (key1 in _provinceCity) {
+    if (_provinceCity.hasOwnProperty(key1)) {
+      cityObj = _provinceCity[key1];
+
+      for (key2 in cityObj) {
+        if (cityObj.hasOwnProperty(key2)) {
+          obj[key2] = cityObj[key2];
+        }
+      }
+    }
+  }
+
+  return obj;
+})(_provinceCity);
+
+// {
+//   'sz': '深圳',
+//   ...
+// }
+var _dbCity = (function (_cityDb) {
+  var obj = {};
+  var key;
+
+  for (key in _cityDb) {
+    if (_cityDb.hasOwnProperty(key)) {
+      obj[_cityDb[key]] = key;
+    }
+  }
+
+  return obj;
+})(_cityDb);
 
 /**
  * 字母或数字组合
@@ -94,17 +142,15 @@ exports.validatorName = function (name) {
 };
 
 /**
- * 密码不合法: 检验 userObj.password 密码 isNull、isLength、用户名与密码相同
+ * 密码不合法: 检验 userObj.password 密码 isLength
  *
  * @param {String} password - 密码
- * @param {String} userName - 用户名
  * @returns {Boolean}
  */
-exports.validatorPassword = function (password, userName) {
+exports.validatorPassword = function (password) {
   return !!(password &&
       typeof password === 'string' &&
-      validator.isLength(password, 6, 20) &&
-      userName !== password);
+      validator.isLength(password, 6, 20));
 };
 
 /**
@@ -141,3 +187,7 @@ exports.writeLog = function (ctrlName, errCode, err, obj) {
       JSON.stringify(err) +
       '\nobj:' + JSON.stringify(obj) + '\n\n');
 };
+
+exports.PROVINCE_CITY = _provinceCity;
+exports.CITY_DB = _cityDb;
+exports.DB_CITY = _dbCity;

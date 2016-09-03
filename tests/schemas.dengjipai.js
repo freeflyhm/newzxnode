@@ -7,7 +7,7 @@
 
 /**
  * schemas/dengjipai.js - Mocha schemas/dengjipai test
- * require: app/schemas/dengjipai, app/conn, app/util
+ * require: app/schemas/dengjipai, app/conn, app/zxutil
  */
 'use strict';
 
@@ -19,9 +19,9 @@ if (require('./testconf').schemasDengjipai) {
 
     var dbHost = process.env.DB_HOST_TEST;
     var Conn = require('../src/app/conn')(dbHost, 'sz');
-    var util = require('../src/app/util');
+    var zxutil = require('../src/app/zxutil');
     var TestModel =
-        Conn.model(util.validatorReplaceFirstUpper(file), TestSchema);
+        Conn.model(zxutil.validatorReplaceFirstUpper(file), TestSchema);
 
     var testObj = {
       name: 'test',

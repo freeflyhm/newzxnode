@@ -7,7 +7,7 @@
 /**
  * mongoose model 模块
  * @module app/model
- * require me: schemas/*, conn, util
+ * require me: schemas/*, conn, zxutil
  */
 'use strict';
 
@@ -46,7 +46,8 @@ var _createModel = function (dbHost, dbName, schemaName) {
   var getConn = require('./conn');
 
   // 首字母大写
-  var validatorReplaceFirstUpper = require('./util').validatorReplaceFirstUpper;
+  var validatorReplaceFirstUpper =
+      require('./zxutil').validatorReplaceFirstUpper;
   var c = getConn(dbHost, dbName);
 
   return c.model(validatorReplaceFirstUpper(schemaName), Schema);

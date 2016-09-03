@@ -20,9 +20,9 @@ if (require('./testconf').controllersFeestemp) {
 
     var TestSchema = require('../src/app/schemas/' + file);
     var Conn = require('../src/app/conn')(dbHost, 'sz');
-    var util = require('../src/app/util');
+    var zxutil = require('../src/app/zxutil');
     var TestModel =
-        Conn.model(util.validatorReplaceFirstUpper(file), TestSchema);
+        Conn.model(zxutil.validatorReplaceFirstUpper(file), TestSchema);
 
     var _test = function (test, func) {
       it('success === ' + test.success, function (done) {
@@ -47,7 +47,7 @@ if (require('./testconf').controllersFeestemp) {
         newObj._id = {};
 
         TestCr._objSave(newObj, function (results) {
-          assert.strictEqual(results.success, 19999);
+          assert.strictEqual(results.success, '19999');
           done();
         });
       });
@@ -79,11 +79,11 @@ if (require('./testconf').controllersFeestemp) {
     });
 
     describe('update', function () {
-      it('success === 19996', function (done) {
+      it('success === 19997', function (done) {
         TestCr.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, 19996);
+            assert.strictEqual(results.success, '19997');
             done();
           }
         );

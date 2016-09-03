@@ -22,9 +22,9 @@ if (require('./testconf').controllersDengjipai) {
 
     var TestSchema = require('../src/app/schemas/' + file);
     var Conn = require('../src/app/conn')(dbHost, 'sz');
-    var util = require('../src/app/util');
+    var zxutil = require('../src/app/zxutil');
     var TestModel =
-        Conn.model(util.validatorReplaceFirstUpper(file), TestSchema);
+        Conn.model(zxutil.validatorReplaceFirstUpper(file), TestSchema);
 
     var _test = function (test, func) {
       it('success === ' + test.success, function (done) {

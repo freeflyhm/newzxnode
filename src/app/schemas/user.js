@@ -98,11 +98,11 @@ UserSchema.pre('save', function (next) {
 
   if (_this.isNew) {
     _this.meta.createAt = _this.meta.updateAt = Date.now();
-    _bcryptGenSalt(bcrypt, SALT_WORK_FACTOR, _this, next);
   } else {
     _this.meta.updateAt = Date.now();
-    next();
   }
+
+  _bcryptGenSalt(bcrypt, SALT_WORK_FACTOR, _this, next);
 });
 
 // 实例方法

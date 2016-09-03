@@ -13,7 +13,7 @@ if (require('./testconf').controllersUser) {
     var assert = require('assert');
     var dbHost = process.env.DB_HOST_TEST;
     var createCtrl = require('../src/app/controllers/user');
-    var User = createCtrl(dbHost, 'auth');
+    var User = createCtrl(dbHost, 'sz');
 
     var companyObj = {
       name: 'testCompany',
@@ -49,21 +49,6 @@ if (require('./testconf').controllersUser) {
         _test(test, func);
       });
     };
-
-    // describe('_removeUser', function () {
-    //   var test = { obj: { uid: {}, ok: 1 }, success: 10000 };
-
-    //   _test(test, User._removeUser);
-    // });
-
-    // describe('_remove', function () {
-    //   var tests = [
-    //     { obj: { cid: null, uid: null }, success: 10002 },
-    //     { obj: { cid: {}, uid: 'ee' }, success: 10001 },
-    //   ];
-
-    //   _tests(tests, User._remove);
-    // });
 
     describe('_companyFindOneByName', function () {
       var test = {
@@ -114,14 +99,6 @@ if (require('./testconf').controllersUser) {
           }
         );
       });
-
-      // after(function (done) {
-      //   User._removeUser({
-      //     uid: resultsUser._id, ok: 1 }, function (results) {
-      //     assert.strictEqual(results.success, 1);
-      //     done();
-      //   });
-      // });
     });
 
     describe('_userFindOneBySearch', function () {
@@ -133,16 +110,16 @@ if (require('./testconf').controllersUser) {
       _tests(tests, User._userFindOneBySearch);
     });
 
-    describe('_feesTempFind', function () {
-      var test = { neObj: {} };
+    // describe('_feesTempFind', function () {
+    //   var test = { neObj: {} };
 
-      it('should ok', function (done) {
-        User._feesTempFind(test, function (result) {
-          assert.strictEqual(JSON.stringify(result), '{}');
-          done();
-        });
-      });
-    });
+    //   it('should ok', function (done) {
+    //     User._feesTempFind(test, function (result) {
+    //       assert.strictEqual(JSON.stringify(result), '{}');
+    //       done();
+    //     });
+    //   });
+    // });
 
     describe('_userUpdate', function () {
       var test = { obj: { _id: {} }, success: 10035 };
@@ -273,7 +250,6 @@ if (require('./testconf').controllersUser) {
       var userObj10018 = { userName: 'ee', password: {} };
       var userObj10016 = { userName: 'test', password: '1234567', city: '深圳' };
       var userObj1 = { userName: 'test', password: '123456', city: '深圳' };
-      // var userObj10021 = { userName: 'test', password: '123456', city: 'dd' };
 
       var tests = [
         { obj: userObj10017, success: 10017 },
@@ -294,19 +270,6 @@ if (require('./testconf').controllersUser) {
       });
 
       _test({ obj: userObj1, success: 1 }, User.login);
-
-      // it('success === 10021', function (done) {
-      //   User.companyUpdate(
-      //     { _id: cid, category: 30, name: 'testCompany', idcardfee: 1 },
-      //     function (results) {
-      //       assert.strictEqual(results.success, 1);
-      //       User.login(userObj10021, function (results) {
-      //         assert.strictEqual(results.success, 10021);
-      //         done();
-      //       });
-      //     }
-      //   );
-      // });
 
       it('success === 10020', function (done) {
         User.update({
@@ -338,38 +301,81 @@ if (require('./testconf').controllersUser) {
       _tests(tests, User.companyUpdate);
     });
 
-    describe('changeFeesTemp', function () {
-      var tests = [
-        { obj: { id: {} }, success: 10036 },
-        { obj: { id: cid, feestemp: 'dd' }, success: 1 },
-      ];
+    // describe('changeFeesTemp', function () {
+    //   var tests = [
+    //     { obj: { id: {} }, success: 10036 },
+    //     { obj: { id: cid, feestemp: 'dd' }, success: 1 },
+    //   ];
 
-      _tests(tests, User.changeFeesTemp);
-    });
+    //   _tests(tests, User.changeFeesTemp);
+    // });
 
     describe('companylist', function () {
-      var tests = [
-        {},
-        { category: 30 },
-        { category: 30, role: 10 },
-        { category: 30, role: 20, CITY: {} },
-      ];
+      it('should err', function (done) {
+        User.companylist({ CITY: {} }, function (result) {
+          assert(JSON.stringify(result) === '{}');
+          done();
+        });
+      });
 
-      var test = { category: 30, role: 20, CITY: '深圳' };
+      it('should ok', function (done) {
+        User.companylist({ CITY: '深圳' }, function (result) {
+          assert.strictEqual(typeof result, 'object');
+          done();
+        });
+      });
+    });
 
-      tests.forEach(function (item) {
-        it('should ok', function (done) {
-          User.companylist(item, function (result) {
-            assert.strictEqual(JSON.stringify(result), '{}');
+    describe('initUser', function () {
+      it('should === 10021', function (done) {
+        var testObj = {
+          uid: uid,
+          dbName: 'gfz',
+        };
+        User.update({
+          _id: uid,
+          role: 20,
+          name: '何苗',
+          phone: 11111111111,
+          companyAbbr: 'tt',
+        }, function (results) {
+          assert.strictEqual(results.success, 1);
+
+          User.initUser(testObj, function (results) {
+            assert.strictEqual(results.success, 10021);
             done();
           });
         });
       });
 
       it('should ok', function (done) {
-        User.companylist(test, function (result) {
-          assert(JSON.stringify(result) !== '{}');
-          done();
+        var testObj = {
+          uid: uid,
+          dbName: 'gz',
+        };
+        User.update({
+          _id: uid,
+          role: 20,
+          name: '何苗',
+          phone: 11111111111,
+          companyAbbr: 'tt',
+        }, function (results) {
+          assert.strictEqual(results.success, 1);
+
+          User.initUser(testObj, function (results) {
+            // { success: 1,
+            // user:
+            //  { _id: 57b6fb534ca9fb6a0087b8bb,
+            //    name: '',
+            //    company: {
+            //      _id: 57b6fb534ca9fb6a0087b8ba,
+            //      city: '',
+            //      category: 20 },
+            //    status: true,
+            //    role: 20 } }
+            assert.strictEqual(results.success, 1);
+            done();
+          });
         });
       });
     });

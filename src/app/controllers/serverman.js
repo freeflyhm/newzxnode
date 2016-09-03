@@ -13,7 +13,7 @@
 var createCtrl = function (dbHost, dbName) {
   var ctrlName = 'serverman';
   var Serverman = require('../model')(dbHost, dbName, ctrlName);
-  var util = require('../util');
+  var zxutil = require('../zxutil');
   var errCode;
 
   // private methods
@@ -33,7 +33,7 @@ var createCtrl = function (dbHost, dbName) {
     obj.save(function (err, res) {
       if (err) {
         errCode = 11999;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
           field: 'name',
@@ -54,7 +54,7 @@ var createCtrl = function (dbHost, dbName) {
     Serverman.findOne({ _id: obj._id }, function (err, res) {
       if (err) {
         errCode = 11996;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({
           success: errCode,
           field: 'name',
@@ -74,7 +74,7 @@ var createCtrl = function (dbHost, dbName) {
       function (err, res) {
         if (err) {
           errCode = 11997;
-          util.writeLog(ctrlName, errCode, err, obj);
+          zxutil.writeLog(ctrlName, errCode, err, obj);
           return callback({
             success: errCode,
             field: 'name',
@@ -98,7 +98,7 @@ var createCtrl = function (dbHost, dbName) {
 
   _validator = function (obj) {
     // 检验 obj.name 姓名 isNull、chineseCharacter 自定义验证、isLength
-    if (!util.validatorName(obj.name)) {
+    if (!zxutil.validatorName(obj.name)) {
       return { success: 11014, field: 'name', errMsg: '姓名 - 不合法！' };
     }
   };
@@ -106,7 +106,7 @@ var createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     Serverman.find(obj, function (err, results) {
       if (err) {
-        util.writeLog(ctrlName, '11998', err, obj);
+        zxutil.writeLog(ctrlName, '11998', err, obj);
         return callback([]);
       }
 
@@ -140,7 +140,7 @@ var createCtrl = function (dbHost, dbName) {
     Serverman.remove(obj, function (err, isOk) {
       if (err) {
         errCode = 11995;
-        util.writeLog(ctrlName, errCode, err, obj);
+        zxutil.writeLog(ctrlName, errCode, err, obj);
         return callback({ success: errCode, errMsg: err.message });
       }
 

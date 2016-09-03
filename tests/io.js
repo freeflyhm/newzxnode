@@ -14,13 +14,8 @@ if (require('./testconf').io) {
 
     var PORT = 3000;
     var site = 'http://localhost:' + PORT;
-
-    // var options = {
-    //   transports: ['websocket'],
-    //   'force new connection': true,
-    // };
-
     var dbHost  = process.env.DB_HOST_TEST;
+
     var http = require('http');
     var app = require('../src/app/app')(dbHost);
 
@@ -55,7 +50,7 @@ if (require('./testconf').io) {
           company: company._id,
           userName: 'user1',
           password: '123456',
-          role: 30,
+          role: 99,
         });
 
         user1.save(function (err) {
@@ -67,7 +62,6 @@ if (require('./testconf').io) {
           done();
         });
       });
-
     });
 
     it('should be ok', function (done) {
@@ -78,69 +72,159 @@ if (require('./testconf').io) {
         assert.strictEqual(err, null);
 
         var client1 = Client.connect(site + '/nspzx', {
+          query: 'dbName=' + res.body.dbName + '&token=' + res.body.token,
+          transports: ['websocket'],
+          'force new connection': true,
+        });
+
+        var client2 = Client.connect(site + '/nspzx', {
           query: 'dbName=sz&token=' + res.body.token,
           transports: ['websocket'],
           'force new connection': true,
         });
 
-        // var client2 = Client.connect(site + '/nspzx', {
-        //   query: 'token=' + res.body.token,
-        //   transports: ['websocket'],
-        //   'force new connection': true,
-        // });
+        var client3 = Client.connect(site + '/nspzx', {
+          query: 'dbName=sz&token=' + res.body.token,
+          transports: ['websocket'],
+          'force new connection': true,
+        });
 
         client1.on('connect', function () {
           console.log('client1 connect success');
-          done();
 
-          // // 通过客户端回调 callback, 无需用户干预
-          // client1.on('semit-user', function (obj, callback) {
-          //   var citys = { '深圳': 'sz' };
+          // 服务器通知此账号被加入房间
+          client1.on('semit-somebodyIsJoinRoom', function () {
+            console.log('client1 semit-somebodyIsJoinRoom');
+          });
 
-          //   console.log('client1 callback city');
-          //   callback(citys[obj.company.city]);
-          // });
+          // 服务器通知此账号自己想要登录
+          // 是否拒绝, 由用户决定
+          client1.on('sbroadcast-somebodyWantOnline', function () {
+            console.log('client1 sbroadcast-somebodyWantOnline');
 
-          // // 服务器通知自己有人已经使用此账号进入房间了
-          // // 是否要踢人, 由用户决定
-          // client1.on('semit-somebodyIsOnlined', function () {
-          //   console.log('client1 semit-somebodyIsOnlined');
+            // 通知服务器是否拒绝其他人进入房间
+            // iscancel 是否拒绝 true 拒绝 false 不拒绝
+            client1.emit('cemit-cancelSomebodyOnline', false);
+          });
 
-          //   // 通知服务器自己想要进入房间
-          //   client1.emit('cemit-somebodyWantOnline');
-          // });
+          client1.on('semit-cancelSomebodyOnline', function () {
+            console.log('client1 semit-cancelSomebodyOnline');
+            client1.disconnect();
+            done();
+          });
 
-          // client1.on('semit-cancelSomebodyOnline', function (iscancel) {
-          //   console.log('client1 semit-cancelSomebodyOnline: ', iscancel);
-
-          //   done();
-          // });
+          client1.on('disconnect', function () {
+            console.log('client1 disconnected');
+          });
         });
 
-        // client2.on('connect', function () {
-        //   console.log('client2 connect success');
+        client2.on('connect', function () {
+          console.log('client2 connect success');
 
-        //   // 通过客户端回调 callback, 无需用户干预
-        //   client2.on('semit-user', function (obj, callback) {
-        //     var citys = { '深圳': 'sz' };
+          // 服务器通知此账号被加入房间
+          // client2.on('semit-somebodyIsJoinRoom', function () {
+          //   console.log('client2 semit-somebodyIsJoinRoom');
+          //   if (ischange) {
+          //     client2.emit('cemit-changeRoom', 'gz');
+          //     ischange = false;
+          //   } else {
+          //     done();
+          //   }
+          // });
 
-        //     console.log('client2 callback city');
-        //     callback(citys[obj.company.city]);
-        //   });
+          // 服务器通知自己有人已经使用此账号进入房间了
+          // 是否要踢人, 由用户决定
+          client2.on('semit-somebodyIsOnlined', function () {
+            console.log('client2 semit-somebodyIsOnlined');
 
-        //   // 服务器通知此账号自己想要登录
-        //   // 是否拒绝, 由用户决定
-        //   client2.on('semit-somebodyWantOnline', function () {
-        //     console.log('client2 semit-somebodyWantOnline');
+            // 通知服务器自己想要进入房间
+            client2.emit('cemit-somebodyWantOnline');
+          });
 
-        //     // 通知服务器拒绝其他人进入房间
-        //     client2.emit('cemit-cancelSomebodyOnline', true, function () {
-        //       console.log('client2 cancelSomebodyOnline ok, do something');
-        //     });
-        //   });
-        // });
+          client2.on('sbroadcast-somebodyJoinRoom', function () {
+            console.log('client2 sbroadcast-somebodyJoinRoom');
+
+            client2.emit('cemit-somebodyJoinRoom');
+          });
+
+          client2.on('semit-joinRoomFail', function (res) {
+            console.log('--------------------------');
+            console.log(res);
+            client2.emit('cemit-changeRoom', 'sz');
+          });
+        });
+
+        client3.on('connect', function () {
+          console.log('client3 connect success');
+
+          // 服务器通知自己有人已经使用此账号进入房间了
+          // 是否要踢人, 由用户决定
+          client3.on('semit-somebodyIsOnlined', function () {
+            console.log('client3 semit-somebodyIsOnlined');
+
+            // 通知服务器自己想要进入房间
+            client3.emit('cemit-somebodyWantOnline');
+          });
+
+          client3.on('disconnect', function () {
+            console.log('client3 disconnected');
+          });
+        });
       });
     });
+
+    it('cemit-getusers', function (done) {
+      superagent.post(site + '/api/login').send({
+        userName: 'user1',
+        password: '123456',
+      }).end(function (err, res) {
+        assert.strictEqual(err, null);
+
+        var client4 = Client.connect(site + '/nspzx', {
+          query: 'dbName=' + res.body.dbName + '&token=' + res.body.token,
+          transports: ['websocket'],
+          'force new connection': true,
+        });
+
+        setTimeout(function () {
+          client4.emit('cemit-getusers', null, function (result) {
+            assert.strictEqual(result.clientsLength, 3);
+            done();
+          });
+        }, 1000);
+      });
+    });
+
+    // it('testzx', function (done) {
+    //   var client1 = Client.connect(site + '/testzx', {
+    //     transports: ['websocket'],
+    //     'force new connection': true,
+    //   });
+
+    //   var client2 = Client.connect(site + '/testzx', {
+    //     transports: ['websocket'],
+    //     'force new connection': true,
+    //   });
+
+    //   client1.on('connect', function () {
+    //     console.log('client1 connect success');
+
+    //     client1.emit('getId', function (result) {
+    //       console.log(result);
+    //       assert.strictEqual(result, 0);
+    //     });
+    //   });
+
+    //   client2.on('connect', function () {
+    //     console.log('client2 connect success');
+
+    //     client2.emit('getId', function (result) {
+    //       console.log(result);
+    //       assert.strictEqual(result, 1);
+    //       done();
+    //     });
+    //   });
+    // });
 
     after(function (done) {
       CompanyModel.remove({}, function (err, res) {

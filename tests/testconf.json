@@ -3,6 +3,7 @@
   "conn": true,
   "controllersDengjipai": true,
   "controllersFeestemp": true,
+  "controllersPingan": true,
   "controllersServerman": true,
   "controllersSetplace": true,
   "controllersUser": true,
@@ -16,5 +17,5 @@
   "schemasServerman": true,
   "schemasSetplace": true,
   "schemasUser": true,
-  "util": true
+  "zxutil": true
 }

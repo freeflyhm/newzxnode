@@ -107,10 +107,12 @@ newzxnode 是 full REST API 服务
 17003  | add - Operator.findOne err
 17004  | add - 团队操作人 - 已存在！
 
-编码 18| message - file: ~/app/controllers/setplace.js
+编码 18| message - file: ~/app/controllers/setplace.js -> ok
 -------|---------------------------------------------------------
 18999  | list - SetPlace.find err
 
-编码 19| message - file: ~/app/controllers/feestemp.js
+编码 19| message - file: ~/app/controllers/feestemp.js -> ok
 -------|---------------------------------------------------------
-19999  | list - FeesTemp.find err
+19999  | _objSave - obj.save err
+19998  | list - FeesTemp.find err
+19997  | update - FeesTemp.findOne err

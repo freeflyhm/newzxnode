@@ -14,9 +14,11 @@ var createApp = function (dbHost) {
   /* 引入模块依赖 */
   var express    = require('express');
 
-  //var path       = require('path');
   var bodyParser = require('body-parser');
   var jwt        = require('jsonwebtoken');
+
+  var request    = require('request');
+
   var getCtrl    = require('./ctrl');
   var User       = getCtrl(dbHost, 'auth', 'user');
 
@@ -24,22 +26,10 @@ var createApp = function (dbHost) {
   var app = express();
 
   /* 相关配置 */
-
-  // var DB_NAMES = {
-  //   '深圳': 'sz',
-  //   '广州': 'gz',
-  //   '杭州': 'hz',
-  // };
-
-  //app.set('port', process.env.PORT || 3000);
-  //app.set('dbHost', dbHost);
-
   /* 连接数据库 */
   /* 定义中间件 */
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
-
-  //app.use(express.static(path.join(__dirname, 'coverage')));
 
   /* 定义路由 */
   app.get('/', function (req, res) {  // jshint ignore: line
@@ -47,8 +37,47 @@ var createApp = function (dbHost) {
     res.end('server look\'s good');
   });
 
+  /**
+   * api: 注册
+   *
+   * req.body {
+   *   province
+   *   city
+   *   cname
+   *   ctel
+   *   cfax
+   *   caddress
+   *   uusername
+   *   upassword
+   *   uname
+   *   uphone
+   *   uqq
+   *   ucompanyabbr
+   * }
+   * @returns {}
+   */
   app.post('/api/register', function (req, res) {
-    User.register(req.body, function (results) {
+    // 限制客户端输入数据
+    var obj = {
+      companyObj: {
+        province: req.body.province,
+        city: req.body.city,
+        name: req.body.cname,
+        tel: req.body.ctel,
+        fax: req.body.cfax,
+        address: req.body.caddress,
+      },
+      userObj: {
+        userName: req.body.uusername,
+        password: req.body.upassword,
+        name: req.body.uname,
+        phone: Number(req.body.uphone),
+        qq: Number(req.body.uqq),
+        companyAbbr: req.body.ucompanyabbr,
+      },
+    };
+
+    User.register(obj, function (results) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.json(results);
     });
@@ -65,19 +94,6 @@ var createApp = function (dbHost) {
 
     User.login(obj, function (results) {
       if (results.success === 1) {
-        // var user = results.user;
-
-        // var profile = {
-        //   company: {
-        //     _id: user.company._id,
-        //     category: user.company.category,
-        //   },
-        //   user: {
-        //     _id: user._id,
-        //     role: user.role,
-        //   },
-        // };
-
         // we are sending the profile in the token
         // 有效时间 7days 60 * 60 * 24 * 7 = 604800
         var token = jwt.sign(
@@ -97,30 +113,31 @@ var createApp = function (dbHost) {
     });
   });
 
-  // app.post('/api/removeuser', function (req, res) {
-  //   var dbHost = req.body.dbHost;
-  //   var decoded;
-  //   var cid;
-  //   var uid;
+  app.get('/api/provincecity', function (req, res) {
+    var results = require('./zxutil').PROVINCE_CITY;
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
-  //   if (dbHost === 'newzxmongo') {
-  //     return res.json({ success: 10 });
-  //   }
+    res.json(results);
+  });
 
-  //   decoded = jwt.decode(req.body.token, process.env.JWT_TOKEN_SECRET);
-  //   cid = decoded && decoded.company;
-  //   uid = decoded && decoded._id;
+  app.get('/api/code/:id', function (req, res) {
+    var id = req.params.id || '1';
+    var j = request.jar();
+    var url;
 
-  //   if (cid && uid) {
-  //     User._remove(cid, uid, function (results) {
-  //       res.json(results);
-  //     });
+    if (id === '1') {
+      url = 'http://pingan.com/sics/sicsweb/image.jsp';
+    } else {
+      url = 'http://www.e-chinalife.com/' +
+          'selfcard/selfcard/validateNum/image.jsp';
+    }
 
-  //     return;
-  //   }
-
-  //   res.json({ success: 20 });
-  // });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    request.get(url, { jar: j })
+    .on('error', function (err) {
+      console.log(err);
+    }).pipe(res);
+  });
 
   return app;
 };

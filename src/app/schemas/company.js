@@ -34,8 +34,14 @@ var CompanySchema = new Schema({
   town: String,        // 区 * 已弃用
   address: String,     // 地址
   bankCard: String,    // 银行账户
-  isidcard: Boolean,   // 是否需要自动验证身份证
-  idcardfee: Number,   // 验证费单价
+  isidcard: {
+    type: Boolean,
+    default: false,
+  },                   // 是否需要自动验证身份证
+  idcardfee: {
+    type: Number,
+    default: 0,
+  },                   // 验证费单价
   meta: {
     createAt: {
       type: Date,

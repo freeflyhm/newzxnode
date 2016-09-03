@@ -48,17 +48,18 @@ if (require('./testconf').app) {
     describe('POST /api/register', function () {
       it('should ok', function (done) {
         superagent.post(site + '/api/register').send({
-          companyObj: {
-            name: 'testCompany',
-            city: '深圳',
-          },
-          userObj: {
-            userName: 'test',
-            password: '123456',
-            companyAbbr: 'tt',
-            name: '何苗',
-            phone: 11111111111,
-          },
+          province: '广东',
+          city: '深圳',
+          cname: 'testCompany',
+          ctel: '',
+          cfax: '',
+          caddress: '',
+          uusername: 'test',
+          upassword: '123456',
+          uname: '哈哈',
+          uphone: 11111111111,
+          uqq: 0,
+          ucompanyabbr: 'tt',
         }).end(function (err, res) {
           assert.strictEqual(err, null);
           assert.strictEqual(res.body.success, 1);
@@ -97,6 +98,25 @@ if (require('./testconf').app) {
             });
           }
         );
+      });
+    });
+
+    describe('GET /api/provincecity', function () {
+      it('should ok', function (done) {
+        superagent.get(site + '/api/provincecity').end(function (err, res) {
+          assert.strictEqual(err, null);
+          assert.strictEqual(Object.keys(res.body).length, 2);
+          done();
+        });
+      });
+    });
+
+    describe('GET /api/code/:id', function () {
+      it('should ok', function (done) {
+        superagent.get(site + '/api/code/1').end(function (err) {
+          assert.strictEqual(err, null);
+          done();
+        });
       });
     });
 

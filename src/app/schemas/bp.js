@@ -17,7 +17,7 @@ var ObjectId = Schema.Types.ObjectId;
 var BpSchema = new Schema({
   company: ObjectId,
   bpType: Number,                      // -1 贷 , 1 借
-  bpNum: { type: Number, default: 0 }, // 钱
+  bpNum: { type: Number, default: 0 }, // 钱 (单位: 分)
   bpNote: String,                      // 备注
   bpDate: Date,                        // 日期
   meta: {
