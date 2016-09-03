@@ -8,7 +8,7 @@
   "controllersSetplace": true,
   "controllersUser": true,
   "ctrl": true,
-  "io": true,
+  "io": false,
   "logpath": true,
   "model": true,
   "schemasCompany": true,
