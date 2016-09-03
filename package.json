@@ -16,16 +16,17 @@
   "author": "joehe <leanbrown@live.cn>",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0",
-    "body-parser": "^1.15.2",
-    "socket.io": "^1.4.8",
-    "mongoose": "^4.5.10",
-    "jsonwebtoken": "^7.1.9",
-    "socketio-jwt": "^4.5.0",
     "bcrypt-nodejs": "^0.0.3",
-    "validator": "^5.5.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.9",
+    "moment": "^2.14.1",
+    "mongoose": "^4.5.10",
+    "request": "^2.74.1",
+    "socket.io": "^1.4.8",
+    "socketio-jwt": "^4.5.0",
     "underscore": "^1.8.3",
-    "moment": "^2.14.1"
+    "validator": "^5.5.0"
   },
   "devDependencies": {
     "mocha": "^2.5.3",
