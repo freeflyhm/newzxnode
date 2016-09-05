@@ -11,6 +11,9 @@
 
 // static variable
 var _ERRS = {
+  servermanadd: '20110',
+  servermanupdate: '20111',
+  servermanremove: '20112',
   feestempadd: '20190',
   feestempupdate: '20191',
   dengjipaiadd: '20120',
@@ -364,7 +367,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 11999, errMsg: '权限不够' });
+        callback({ success: _ERRS.servermanadd });
       }
     });
 
@@ -377,7 +380,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 11998, errMsg: '权限不够' });
+        callback({ success: _ERRS.servermanupdate });
       }
     });
 
@@ -388,7 +391,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 11997, errMsg: '权限不够' });
+        callback({ success: _ERRS.servermanremove });
       }
     });
 
@@ -576,7 +579,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: '20120' });
+        callback({ success: _ERRS.dengjipaiadd });
       }
     });
 
@@ -589,7 +592,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: '20121' });
+        callback({ success: _ERRS.dengjipaiupdate });
       }
     });
 
@@ -600,7 +603,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: '20122' });
+        callback({ success: _ERRS.dengjipairemove });
       }
     });
 

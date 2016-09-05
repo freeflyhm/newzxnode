@@ -48,34 +48,34 @@ if (require('./testconf').controllersServerman) {
     // });
 
     describe('_objSave', function () {
-      it('should === 11999', function (done) {
+      it('should === 11990', function (done) {
         var newObj = new TestModel({ name: 'hehe' });
         newObj._id = {};
 
         TestCr._objSave(newObj, function (results) {
-          assert.strictEqual(results.success, 11999);
+          assert.strictEqual(results.success, '11990');
           done();
         });
       });
     });
 
     describe('_updateSave', function () {
-      it('should === 11996', function (done) {
+      it('should === 11960', function (done) {
         var obj = { _id: {} };
 
         TestCr._updateSave(obj, function (results) {
-          assert.strictEqual(results.success, 11996);
+          assert.strictEqual(results.success, '11960');
           done();
         });
       });
     });
 
     describe('_findOne', function () {
-      it('should === 11997', function (done) {
+      it('should === 11970', function (done) {
         var obj = { name: {} };
 
         TestCr._findOne(obj, null, function (results) {
-          assert.strictEqual(results.success, 11997);
+          assert.strictEqual(results.success, '11970');
           done();
         });
       });
@@ -104,20 +104,20 @@ if (require('./testconf').controllersServerman) {
       var obj11014 = { company: {}, name: {} };
       var obj1 = { company: companyId, name: '回调' };
       var tests = [
-        { obj: obj11014, success: 11014 },
+        { obj: obj11014, success: '11060' },
         { obj: obj1, success: 1 },
-        { obj: obj1, success: 11004 },
+        { obj: obj1, success: '11040' },
       ];
 
       _tests(tests, TestCr.add);
     });
 
     describe('update', function () {
-      it('success === 11014', function (done) {
+      it('success === 11060', function (done) {
         TestCr.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, 11014);
+            assert.strictEqual(results.success, '11060');
             done();
           }
         );

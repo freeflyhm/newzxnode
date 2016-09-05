@@ -164,7 +164,7 @@ var createCtrl = function (dbHost, dbName) {
       if (err) {
         errCode = _ERRS.removeDengjipaiRemove;
         zxutil.writeLog(ctrlName, errCode, err, obj);
-        return callback({ success: errCode, errMsg: err.message });
+        return callback({ success: errCode });
       }
 
       callback({ success: isOk.result.ok, _id: id });

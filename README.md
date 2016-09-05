@@ -50,17 +50,15 @@ newzxnode 是 full REST API 服务
 10035  | update - User.update err
 10036  | changeFeesTemp - Company.update err
 
-编码 11| message - file: ~/app/controllers/serverman.js
+编码 11| message - file: ~/app/controllers/serverman.js -> ok
 -------|---------------------------------------------------------
-11999  | _newSave - newObj.save err
-11998  | list - Serverman.find err
-11996  | update - Serverman.findByIdAndUpdate err
-11995  | remove - Serverman.remove err
-11997  | add - Serverman.findOne err
-11998  | update - Serverman.findOne err
-11004  | add - 姓名 - 已存在！
-11005  | update - 姓名 - 已存在！
-11014  | add - 姓名 - 不合法！
+11990  | _objSaveObjSaveErr
+11980  | listServermanFindErr
+11970  | _findOneServermanFindOneErr
+11960  | _updateSaveServermanFindOneErr
+11950  | removeServermanRemove
+11040  | _findOneNameExist
+11060  | _validatorValidatorName
 
 编码 12| message - file: ~/app/controllers/dengjipai.js -> ok
 -------|---------------------------------------------------------
@@ -122,6 +120,9 @@ newzxnode 是 full REST API 服务
 
 编码 20| message - file: ~/app/io.js
 -------|---------------------------------------------------------
+20110  | servermanadd
+20111  | servermanupdate
+20112  | servermanremove
 20120  | dengjipaiadd
 20121  | dengjipaiupdate
 20122  | dengjipairemove
