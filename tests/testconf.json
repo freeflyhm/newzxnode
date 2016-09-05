@@ -3,7 +3,7 @@
   "conn": true,
   "controllersDengjipai": true,
   "controllersFeestemp": true,
-  "controllersPingan": true,
+  "controllersPingan": false,
   "controllersServerman": true,
   "controllersSetplace": true,
   "controllersUser": true,

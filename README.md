@@ -62,14 +62,17 @@ newzxnode 是 full REST API 服务
 11005  | update - 姓名 - 已存在！
 11014  | add - 姓名 - 不合法！
 
-编码 12| message - file: ~/app/controllers/dengjipai.js
+编码 12| message - file: ~/app/controllers/dengjipai.js -> ok
 -------|---------------------------------------------------------
-12999  | _newSave - newObj.save err
-12998  | list - Dengjipai.find err
-12996  | update - Dengjipai.findByIdAndUpdate err
-12995  | remove - Dengjipai.remove err
-12997  | add - Dengjipai.findOne err
-12004  | add - 用户 - 已存在！
+12990  | _objSaveObjSaveErr
+12980  | listDengjipaiFindErr
+12970  | _findOneByNameDengjipaiFindOneErr
+12960  | _findOneByIdDengjipaiFindOneErr
+12950  | removeDengjipaiRemove
+12040  | _addSaveNameExist
+12050  | _updateSaveNameExist
+12060  | _validatorValidatorName
+12061  | _validatorValidatorPassword
 
 编码 13| message - file: ~/app/controllers/flag.js
 -------|---------------------------------------------------------
@@ -109,10 +112,18 @@ newzxnode 是 full REST API 服务
 
 编码 18| message - file: ~/app/controllers/setplace.js -> ok
 -------|---------------------------------------------------------
-18999  | list - SetPlace.find err
+18990  | listSetPlaceFindErr
 
 编码 19| message - file: ~/app/controllers/feestemp.js -> ok
 -------|---------------------------------------------------------
-19999  | _objSave - obj.save err
-19998  | list - FeesTemp.find err
-19997  | update - FeesTemp.findOne err
+19990  | _objSaveObjSaveErr
+19980  | listFeesTempFindErr
+19970  | updateFeesTempFindOneErr
+
+编码 20| message - file: ~/app/io.js
+-------|---------------------------------------------------------
+20120  | dengjipaiadd
+20121  | dengjipaiupdate
+20122  | dengjipairemove
+20190  | feestempadd
+20191  | feestempupdate

@@ -11,8 +11,11 @@
 'use strict';
 
 var createCtrl = function (dbHost, dbName) {
-  var SetPlace = require('../model')(dbHost, dbName, 'setplace');
+  var _ERRS = {
+    listSetPlaceFindErr: '18990',
+  };
   var writeLog = require('../zxutil').writeLog;
+  var SetPlace = require('../model')(dbHost, dbName, 'setplace');
 
   // public method
   var list;
@@ -26,7 +29,7 @@ var createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     SetPlace.find(obj, function (err, results) {
       if (err) {
-        writeLog('setplace', '18999', err, obj);
+        writeLog('setplace', _ERRS.listSetPlaceFindErr, err, obj);
         return callback([]);
       }
 

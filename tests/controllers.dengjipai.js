@@ -44,34 +44,34 @@ if (require('./testconf').controllersDengjipai) {
     var sid;
 
     describe('_objSave', function () {
-      it('should === 12999', function (done) {
+      it('should === 12990', function (done) {
         var newObj = new TestModel({ name: 'hehe' });
         newObj._id = {};
 
         TestCr._objSave(newObj, function (results) {
-          assert.strictEqual(results.success, 12999);
+          assert.strictEqual(results.success, '12990');
           done();
         });
       });
     });
 
     describe('_findOneById', function () {
-      it('should === 12996', function (done) {
+      it('should === 12960', function (done) {
         var obj = { _id: {} };
 
         TestCr._findOneById(obj, function (results) {
-          assert.strictEqual(results.success, 12996);
+          assert.strictEqual(results.success, '12960');
           done();
         });
       });
     });
 
     describe('_findOneByName', function () {
-      it('should === 12997', function (done) {
+      it('should === 12970', function (done) {
         var obj = { name: {} };
 
         TestCr._findOneByName(obj, null, function (results) {
-          assert.strictEqual(results.success, 12997);
+          assert.strictEqual(results.success, '12970');
           done();
         });
       });
@@ -97,9 +97,9 @@ if (require('./testconf').controllersDengjipai) {
       var obj12014 = { name: {} };
       var obj1 = { name: '何必', password: '123456' };
       var tests = [
-        { obj: obj12014, success: 12014 },
+        { obj: obj12014, success: '12060' },
         { obj: obj1, success: 1 },
-        { obj: obj1, success: 12004 },
+        { obj: obj1, success: '12040' },
       ];
 
       _tests(tests, TestCr.add);
@@ -107,7 +107,7 @@ if (require('./testconf').controllersDengjipai) {
 
     describe('update', function () {
       var obj12015 = { name: '何必' };
-      var test = { obj: obj12015, success: 12015 };
+      var test = { obj: obj12015, success: '12061' };
 
       _test(test, TestCr.update);
 
@@ -140,7 +140,7 @@ if (require('./testconf').controllersDengjipai) {
                       TestCr.update(
                         { _id: '', name: '回调', password: '1234567' },
                         function (results) {
-                          assert.strictEqual(results.success, 12005);
+                          assert.strictEqual(results.success, '12050');
                           done();
                         }
                       );

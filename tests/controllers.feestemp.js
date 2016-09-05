@@ -42,12 +42,12 @@ if (require('./testconf').controllersFeestemp) {
     var sid;
 
     describe('_objSave', function () {
-      it('should === 19999', function (done) {
+      it('should === 19990', function (done) {
         var newObj = new TestModel({});
         newObj._id = {};
 
         TestCr._objSave(newObj, function (results) {
-          assert.strictEqual(results.success, '19999');
+          assert.strictEqual(results.success, '19990');
           done();
         });
       });
@@ -79,11 +79,11 @@ if (require('./testconf').controllersFeestemp) {
     });
 
     describe('update', function () {
-      it('success === 19997', function (done) {
+      it('success === 19970', function (done) {
         TestCr.update(
           { _id: {}, name: 'dd' },
           function (results) {
-            assert.strictEqual(results.success, '19997');
+            assert.strictEqual(results.success, '19970');
             done();
           }
         );

@@ -11,6 +11,11 @@
 'use strict';
 
 var createCtrl = function (dbHost, dbName) {
+  var _ERRS = {
+    _objSaveObjSaveErr: '19990',
+    listFeesTempFindErr: '19980',
+    updateFeesTempFindOneErr: '19970',
+  };
   var ctrlName = 'feestemp';
   var getModel = require('../model');
   var FeesTemp = getModel(dbHost, dbName, ctrlName);
@@ -29,11 +34,9 @@ var createCtrl = function (dbHost, dbName) {
   _objSave = function (obj, callback) {
     obj.save(function (err, res) {
       if (err) {
-        errCode = '19999';
+        errCode = _ERRS._objSaveObjSaveErr;
         zxutil.writeLog(ctrlName, errCode, err, obj);
-        return callback({
-          success: errCode,
-        });
+        return callback({ success: errCode });
       }
 
       // res 是 save 成功后的 feestemp 对象
@@ -50,7 +53,7 @@ var createCtrl = function (dbHost, dbName) {
   list = function (obj, callback) {
     FeesTemp.find(obj, function (err, results) {
       if (err) {
-        zxutil.writeLog(ctrlName, '19998', err, obj);
+        zxutil.writeLog(ctrlName, _ERRS.listFeesTempFindErr, err, obj);
         return callback([]);
       }
 
@@ -66,11 +69,9 @@ var createCtrl = function (dbHost, dbName) {
   update = function (obj, callback) {
     FeesTemp.findOne({ _id: obj._id }, function (err, res) {
       if (err) {
-        errCode = '19997';
+        errCode = _ERRS.updateFeesTempFindOneErr;
         zxutil.writeLog(ctrlName, errCode, err, obj);
-        return callback({
-          success: errCode,
-        });
+        return callback({ success: errCode });
       }
 
       var resObj = _.extend(res, obj);

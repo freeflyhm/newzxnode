@@ -10,6 +10,13 @@
 'use strict';
 
 // static variable
+var _ERRS = {
+  feestempadd: '20190',
+  feestempupdate: '20191',
+  dengjipaiadd: '20120',
+  dengjipaiupdate: '20121',
+  dengjipairemove: '20122',
+};
 var DB_CITY = require('./zxutil').DB_CITY;
 var ROOMS = Object.keys(DB_CITY); // Array
 
@@ -532,7 +539,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 19998, errMsg: '权限不够' });
+        callback({ success: _ERRS.feestempadd });
       }
     });
 
@@ -545,7 +552,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 19998, errMsg: '权限不够' });
+        callback({ success: _ERRS.feestempupdate });
       }
     });
 
@@ -569,7 +576,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 12999, errMsg: '权限不够' });
+        callback({ success: '20120' });
       }
     });
 
@@ -582,7 +589,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 12998, errMsg: '权限不够' });
+        callback({ success: '20121' });
       }
     });
 
@@ -593,7 +600,7 @@ listen = function (serv) {
           }
         );
       } else {
-        callback({ success: 12997, errMsg: '权限不够' });
+        callback({ success: '20122' });
       }
     });
 
@@ -644,22 +651,6 @@ listen = function (serv) {
       _delOnlineObj(uid);
     });
   });
-
-  // var testzx = io.of('/testzx');
-  // var nextNum = 0;
-  // testzx.on('connection', function (socket) {
-  //   var id = nextNum;
-  //   nextNum += 1;
-
-  //   socket.on('getId', function (callback) {
-  //     callback(id);
-  //   });
-
-  //   // 断开连接
-  //   socket.on('disconnect', function () {
-  //     console.log('-------------------socket.on disconnect');
-  //   });
-  // });
 };
 
 module.exports = listen;
