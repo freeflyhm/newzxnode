@@ -362,8 +362,434 @@ var createCtrl = function (dbHost, dbName) {
   };
 
   chinaPostData = function (obj, callback) {
-    callback(obj);
+  var InforceDate = moment().format('YYYY-MM-DD')
+  var j = request.jar()
+  var PassWord = obj.card.password
+  var Rand = obj.codeNum
+  var url13 = 'http://www.e-chinalife.com/selfcard/selfcard/validateNum/ajaxPw.jsp?PassWord=' +
+    PassWord + '&Rand=' + Rand
+
+  var cookies = obj.cookies
+  var cookie = request.cookie(cookies[0])
+
+  // console.log('---------cookie')
+  // console.log(cookies[0])
+
+  var options13 = {
+    url: url13,
+    jar: j,
+    method: 'POST',
+    encoding: 'UTF-8',
+    headers: {
+      Accept: '*/*',
+      'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Host: 'www.e-chinalife.com',
+      Origin:'http://www.e-chinalife.com',
+      Referer:'http://www.e-chinalife.com/selfcard/selfcard/cardActive/cardActiveForm.jsp',
+      'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
+    }
+  }
+
+  var holder = {}
+
+  var checkAndChangeName = function (name) {
+    if (/^[\u4E00-\uFA29]*$/.test(name[0])) {
+      // 中文去空格
+      name = name.replace(/\s+/, '');
+
+      return {
+        name: name,
+        nameType: 0,
+      };
+    } else {
+      // 英文转大写,空格处理成+号
+      name = name.trim().toUpperCase().replace(/\s+/, '+');
+
+      return {
+        name: name,
+        nameType: 1,
+      };
+    }
+  }
+
+  var iconvEncodeGbkToString = function (str) {
+    var buf = iconv.encode(str, 'gbk');
+    var bufArr = [];
+    var i;
+
+    for (i = 0; i < buf.length; i += 1) {
+      bufArr.push('%' + buf[i].toString(16).toUpperCase()); // 转大写
+    }
+
+    return bufArr.join('');
+  }
+
+  var getIdType = function (cardCategory) {
+    var idType;
+
+    switch (cardCategory) {
+      case '身份证':
+        idType = 'I';
+        break;
+      case '护照':
+        idType = 'P';
+        break;
+      case '军官证':
+        idType = 'S';
+        break;
+      default:
+        idType = 'O';
+    }
+
+    return idType
+  }
+
+  var getBirthday = function (cardNum) {
+    return cardNum.substr(6, 4) +
+      '-' +
+      cardNum.substr(10, 2) +
+      '-' +
+      cardNum.substr(12, 2);
   };
+
+  var getSex = function (cardNum) {
+    return (cardNum.substr(16, 1) % 2 === 0) ? '女' : '男';
+  };
+
+  var getHolderSex = function (sex) {
+    return sex === '男' ? 'M' : 'F';
+  };
+
+  var Step13post = function (error, response, body) {
+    console.log('error')
+    console.log(error)
+    if (!error && response.statusCode === 200) {
+      var session13 = response.headers['set-cookie'];
+
+      console.log('\n\nchina------session13');
+      console.log(session13);
+      console.log(body)
+
+      PassWord = body.trim()
+
+      cookies = [session13[0].split(';')[0].trim()];
+      cookie = request.cookie(cookies[0]);
+
+      // console.log('\n\nchina------debug14');
+      // require('request-debug')(request, function (type, data) {
+      //   console.log(data.headers);
+      // });
+
+      var postData14 = [
+        'Card_NO=' + obj.card.pinganCardNum,
+        'PassWord=' + PassWord,
+        'POST_Y=POST_Y',
+        'Rand=' + Rand
+      ].join('&')
+
+      var options14 = {
+        hostname: 'www.e-chinalife.com',
+        path: '/selfcard/selfcard/cardActive/clauseCheck.jsp',
+        method: 'POST',
+        headers: {
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+          'Cache-Control': 'max-age=0',
+          Connection: 'keep-alive',
+          'Content-Length': Buffer.byteLength(postData14),
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Host: 'www.e-chinalife.com',
+          Origin:'http://www.e-chinalife.com',
+          Referer:'http://www.e-chinalife.com/selfcard/selfcard/cardActive/cardActiveForm.jsp',
+          'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+          cookie: cookie
+        }
+      }
+
+      var req = http.request(options14, function (res) {
+        var size = 0
+        var chunks = []
+        res.on('data', function (chunk) {
+          size += chunk.length
+          chunks.push(chunk)
+        })
+
+        res.on('end', function () {
+          var data = Buffer.concat(chunks, size)
+          var body = iconv.decode(data, 'gbk')
+          console.log('\n\nchina------14 body')
+          console.log(body)
+
+          if (body.indexOf('>302') !== -1) {
+            if (body.indexOf('ErrorMessage=OperationError&') !== -1) {
+              // 您输入的验证码不正确
+              obj.success = 10
+              callback(obj)
+            } else if (body.indexOf('ErrorMessage=2&') !== -1) {
+              // 该卡已经激活
+              obj.success = 11
+              callback(obj)
+            } else if (body.indexOf('ErrorMessage=0&') !== -1) {
+              // 您输入的卡号或密码不正确，请重新输入
+              obj.success = 13
+              callback(obj)
+            }
+
+            return
+          }
+
+          // callback({ success: 1 })
+          Step21post()
+        })  
+      })
+
+      req.on('error', function () {
+        obj.success = 25
+        callback(obj)
+      })
+
+      req.write(postData14)
+      req.end()
+    }
+  }
+
+  var Step21post = function () {
+    // 中国人寿保险股份有限公司短期保险基本条款.pdf||国寿通泰交通意外伤害保险（A款）（2013版）利益条款.pdf
+    var postData21 = 'pdfCheck=on&pdfCheck=on&POST_Y=clauseCheck&PDFname=%D6%D0%B9%FA%C8%CB%CA%D9%B1%A3%CF%D5%B9%C9%B7%DD%D3%D0%CF%DE%B9%AB%CB%BE%B6%CC%C6%DA%B1%A3%CF%D5%BB%F9%B1%BE%CC%F5%BF%EE.pdf%7C%7C%B9%FA%CA%D9%CD%A8%CC%A9%BD%BB%CD%A8%D2%E2%CD%E2%C9%CB%BA%A6%B1%A3%CF%D5%A3%A8A%BF%EE%A3%A9%A3%A82013%B0%E6%A3%A9%C0%FB%D2%E6%CC%F5%BF%EE.pdf&cardNo=' + obj.card.pinganCardNum
+    
+    var options21 = {
+      hostname: 'www.e-chinalife.com',
+      path: '/selfcard/selfcard/cardActive/invokeActiveInfo.jsp',
+      method: 'POST',
+      headers: {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+        'Cache-Control': 'max-age=0',
+        Connection: 'keep-alive',
+        'Content-Length': Buffer.byteLength(postData21),
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Host: 'www.e-chinalife.com',
+        Origin:'http://www.e-chinalife.com',
+        Referer:'http://www.e-chinalife.com/selfcard/selfcard/cardActive/clauseCheck.jsp',
+        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+        cookie: cookie
+      }
+    }
+
+    var req = http.request(options21, function (res) {
+      var size = 0
+      var chunks = []
+      res.on('data', function (chunk) {
+        size += chunk.length
+        chunks.push(chunk)
+      })
+
+      res.on('end', function () {
+        var data = Buffer.concat(chunks, size)
+        var body = iconv.decode(data, 'gbk')
+        console.log('\n\nchina------21 body')
+        console.log(body)
+        callback({ success: 1 })
+        // Step31post()
+      })  
+    })
+
+    req.on('error', function () {
+      obj.success = 21
+      callback(obj)
+    })
+
+    req.write(postData21)
+    req.end()
+  }
+
+  var Step31post = function () {
+    var postData31 = [
+      'CheckedNewRuleInput=false',                   // 检查新规则输入
+      'Holder_Name=' + holder.insured_name,          // 何苗
+      'Holder_IdType=' + holder.idType,              // 证件类型 I 身份证 O 其他
+      'Holder_IdCard=' + holder.idNo,
+      'Holder_Sex=' + holder.sex,                    // M 男 F 女
+      'Holder_Birthday=' + obj.person.birthday,
+      'Holder_Email=' + E_MAIL,
+      'Holder_Mobile=' + obj.phone,
+      'Holder_Address=',
+      'Holder_Phone=%A3%A8%D1%A1%CC%EE%CF%EE%A3%A9', // （选填项）
+      'checkInsCount=1',                             // 被保人总数量
+      'Ins_Relation1=5',                             // 是投保人的：5 本人
+      'Ipsn_No1=1',
+      'Insured_Name1=' + holder.insured_name,                  // 何苗
+      'Insured_IdType1=' + holder.idType,
+      'Insured_IdCard1=' + holder.idNo,
+      'Insured_Sex1=' + holder.sex,
+      'Insured_Birthday1=' + obj.person.birthday,
+      'Insured_Email1=' + E_MAIL,
+      'Insured_Mobile1=' + obj.phone,
+      'Check_Else_Amount1=0',                       // 目前是否已经参加或正在申请中的其它保险公司包含身故保险责任的人身保险？0 否
+      'Else_Amount1=0',                             // 在其他保险公司投保的保额总和（整数）
+      'Ben=1',                                      // 受益人： 法定继承人
+      'Ben_Relation=',
+      'Ben_Name=',
+      'Ben_IdType=' + holder.idType,
+      'Ben_IdCard=',
+      'Ben_Sex=' + holder.sex,
+      'Ben_Birthday=',
+      'Con_Relation=5',
+      'Con_Name=' + holder.insured_name,                      // 何苗
+      'Con_IdType=' + holder.idType,
+      'Con_IdCard=' + holder.idNo,
+      'Con_Sex=' + holder.sex,
+      'Con_Birthday=' + obj.person.birthday,
+      'Con_Email=' + E_MAIL,
+      'Con_Mobile=' + obj.phone,
+      'Inforce_Date=' + InforceDate,
+      'POST_Y=POST_Y',
+      'Insurance_Dur=10',                          // 保险期间 10
+      'Insurance_Dur_Unit=%C8%D5',                 // 日
+      'cardNo=' + obj.card.pinganCardNum,
+      'Card_Name=%BA%BD%BF%D5%C2%C3%BF%CD%D2%E2%CD%E2%C9%CB%BA%A6%B1%A3%CF%D5A', // 航空旅客意外伤害保险A
+      'Card_NO=' + obj.card.pinganCardNum
+    ].join('&')
+
+    var options31 = {
+      hostname: 'www.e-chinalife.com',
+      path: '/selfcard/selfcard/cardActive/invokeActiveProcess.jsp',
+      method: 'POST',
+      headers: {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+        'Cache-Control': 'max-age=0',
+        Connection: 'keep-alive',
+        'Content-Length': Buffer.byteLength(postData31),
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Host: 'www.e-chinalife.com',
+        Origin:'http://www.e-chinalife.com',
+        Referer:'http://www.e-chinalife.com/selfcard/selfcard/cardActive/invokeActiveInfo.jsp',
+        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+        cookie: cookie
+      }
+    }
+
+    // console.log(postData31)
+    // callback({ success: 1, obj: obj })
+    // return
+
+    var req = http.request(options31, function (res) {
+      var size = 0
+      var chunks = []
+      res.on('data', function (chunk) {
+        size += chunk.length
+        chunks.push(chunk)
+      })
+
+      res.on('end', function () {
+        var data = Buffer.concat(chunks, size)
+        var body = iconv.decode(data, 'gbk')
+        console.log(body)
+
+        // callback({ success: 1, obj: obj })
+        Step41post()
+      })  
+    })
+
+    req.on('error', function () {
+      obj.success = 31
+      callback(obj)
+    })
+
+    req.write(postData31)
+    req.end()
+  }
+
+  var Step41post = function () {
+    var postData41 = [
+      'isNewStepInfo=false',
+      'ins_list=',
+      'Card_Name=%BA%BD%BF%D5%C2%C3%BF%CD%D2%E2%CD%E2%C9%CB%BA%A6%B1%A3%CF%D5A', // 航空旅客意外伤害保险A
+      'Holder_Mobile=' + obj.phone
+    ].join('&')
+
+    var path = '/selfcard/selfcard/cardActive/activeSuccess.jsp?Inforce_Date=' +
+      InforceDate + '&POST_Y=POST_Y'
+
+    var options41 = {
+      hostname: 'www.e-chinalife.com',
+      path: path,
+      method: 'POST',
+      headers: {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6',
+        'Cache-Control': 'max-age=0',
+        Connection: 'keep-alive',
+        'Content-Length': Buffer.byteLength(postData41),
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Host: 'www.e-chinalife.com',
+        Origin:'http://www.e-chinalife.com',
+        Referer:'http://www.e-chinalife.com/selfcard/selfcard/cardActive/invokeActiveProcess.jsp',
+        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+        cookie: cookie
+      }
+    }
+
+    var req = http.request(options41, function (res) {
+      var size = 0
+      var chunks = []
+      res.on('data', function (chunk) {
+        size += chunk.length
+        chunks.push(chunk)
+      })
+
+      res.on('end', function () {
+        var data = Buffer.concat(chunks, size)
+        var body = iconv.decode(data, 'gbk')
+        console.log(body)
+
+        if (body.indexOf('投保（激活）成功') !== -1) {
+          callback({ success: 1 })
+        }
+      })  
+    })
+
+    req.on('error', function () {
+      obj.success = 41
+      callback(obj)
+    })
+
+    req.write(postData41)
+    req.end()
+  }
+
+  // holder
+  var changeNameObj = checkAndChangeName(obj.person.name);
+  if (changeNameObj.nameType === 0) {
+    holder.insured_name = iconvEncodeGbkToString(changeNameObj.name);
+  } else {
+    holder.insured_name = changeNameObj.name;
+  }
+
+  holder.idType       = getIdType(obj.person.cardCategory);
+  holder.idNo         = obj.person.cardNum.toUpperCase();   // 转大写
+
+  if (holder.idType === 'I') {
+    obj.person.birthday = getBirthday(obj.person.cardNum);
+    obj.person.sex      = getSex(obj.person.cardNum);
+  }
+
+  holder.sex = getHolderSex(obj.person.sex);
+
+  //-------------------------------------------------
+
+  j.setCookie(cookie, url13)
+
+  console.log('\n\nchina------debug13');
+  require('request-debug')(request, function (type, data) {
+    console.log(data.headers);
+  });
+
+  request(options13, Step13post)
+};
 
   pinganDownloadImg = function (callback) {
     var j = request.jar();
